@@ -1,10 +1,5 @@
 # LowCo2
 
-### Zeiterfassung
-https://docs.google.com/spreadsheets/d/1ciXUxWBHKJaS97QTnzsY2lcP2Up7ShhN_Ap_1lQG9ig/edit#gid=0
-### Notion
-https://www.notion.so/invite/a55dcb1446b5d7f186334f34f69612358946839b
-
 ### Create iOS
 - ionic cap add ios
 - npm run build
