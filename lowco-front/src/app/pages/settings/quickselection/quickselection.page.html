@@ -1,0 +1,33 @@
+<ion-content>
+    <ion-content>
+        <div id="survey">
+            <div class="searchBarDiv">
+                <ion-searchbar class="search" (ionChange)="search($event)"
+                    placeholder="Nach Emissionswerte suchen"></ion-searchbar>
+            </div>
+            <div id="surveys" *ngIf="!loading">
+                <div *ngFor="let survey of selectedSurveys" style="-ms-grid-column-span: 1;" #surveyDiv
+                    [class.selected]="survey.selected">
+                    <div (click)="addToQuicks(survey._id, surveyDiv)" id="box">
+                        <div class="titleAndInfo">
+                            <p class="title" id="{{survey.id}}">{{survey.title}}</p>
+                            <ion-popover trigger="{{survey.id}}" triggerAction="click">
+                                <ng-template>
+                                    <ion-content class="ion-padding">{{survey.title}}</ion-content>
+                                </ng-template>
+                            </ion-popover>
+                        </div>
+                        <ion-icon [name]="survey.iconName" class="icon"></ion-icon>
+                    </div>
+
+                    <div class="check" (click)="addToQuicks(survey._id, surveyDiv)"><ion-icon
+                            name="checkmark-circle-outline"></ion-icon></div>
+                </div>
+            </div>
+            <div *ngIf="loading" id="loadingSpinner" class="loading"
+                style="display: flex; align-items: center; justify-content: center;">
+                <ion-spinner></ion-spinner>
+            </div>
+        </div>
+    </ion-content>
+</ion-content>

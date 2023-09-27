@@ -1,0 +1,30 @@
+<div class="hwDiv">
+  <div class="titleAndInfo">
+    <p class="title" id="{{id}}">{{title}}</p>
+    <ion-popover trigger="{{id}}" triggerAction="click">
+      <ng-template>
+        <ion-content class="ion-padding">{{title}}</ion-content>
+      </ng-template>
+    </ion-popover>
+    <!-- <ion-icon name="information-circle-outline" class="infoIcon"></ion-icon> -->
+  </div>
+
+  <div class="contentDiv" (click)="openModal()">
+    <div class="centerBox">
+      <ion-icon class="icon" name="{{ icon }}"></ion-icon>
+    </div>
+    <div class="valueBox">
+      <p *ngIf="loaded">{{value | number:'.1-2'}} {{unit}}</p>
+      <p *ngIf="!loaded"><ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text></p>
+    </div>
+  </div>
+
+  <div class="editBox" (click)="openModal()">
+    <div class="daysLeft">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>{{ daysLeft }}d</p>
+    </div>
+
+    <ion-icon class="edit" name="create"></ion-icon>
+  </div>
+</div>

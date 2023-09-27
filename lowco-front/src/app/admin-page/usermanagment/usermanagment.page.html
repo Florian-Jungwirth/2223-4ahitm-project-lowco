@@ -1,0 +1,21 @@
+<ion-content>
+  <div id="admin">
+    <div class="searchBarDiv">
+      <ion-searchbar id="open-modal" class="search" (ionChange)="search($event)"
+        placeholder="Benutzer nach Email suchen"></ion-searchbar>
+    </div>
+
+    <div id="userList">
+      <div *ngFor="let user of setUsers">
+        <div class="left">
+          <p>{{user.firstname}} {{user.lastname}}</p>
+        </div>
+        <div class="right">
+          <div (click)="editUser(user)"><ion-icon name="create-outline"></ion-icon></div>
+          <div><ion-icon name="ban-outline"></ion-icon></div>
+          <div class="bin" (click)="deleteUser(user)"><ion-icon name="trash-outline"></ion-icon></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

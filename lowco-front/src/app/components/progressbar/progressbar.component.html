@@ -1,0 +1,17 @@
+<div class="fwBox">
+  <div class="titleDiv">
+    <div class="iconAndTitle">
+      <ion-icon *ngIf="titleIcon !== ''" class="titleIcon" name="{{titleIcon}}"></ion-icon>
+      <p class="title">{{title}}</p>
+    </div>
+    <ion-icon *ngIf="showWarning" name="alert-circle" class="warning" color="warning"></ion-icon>
+  </div>
+  <div class="contentDiv">
+    <div class="numbers">
+      <p>{{current}}</p>
+      <p>/</p>
+      <p>{{target}}</p>
+    </div>
+    <ion-progress-bar class="progress" value="{{ current/target }}}"></ion-progress-bar>
+  </div>
+</div>

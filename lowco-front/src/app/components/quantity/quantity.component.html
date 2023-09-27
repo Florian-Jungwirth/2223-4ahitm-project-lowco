@@ -1,0 +1,32 @@
+<div class="hwDiv">
+  <div class="titleAndInfo">
+    <p class="title" id="{{id}}">{{title}}</p>
+    <ion-popover trigger="{{id}}" triggerAction="click">
+      <ng-template>
+        <ion-content class="ion-padding">{{title}}</ion-content>
+      </ng-template>
+    </ion-popover>
+  </div>
+
+  <div class="contentDiv">
+    <div [class]="isClickable" id="removeButton" (click)="removeOne()" class="button">
+      <ion-icon name="remove-circle-outline"></ion-icon>
+    </div>
+    <div class="center">
+      <ion-icon class="icon" name="{{icon}}"></ion-icon>
+      <p>{{value}}</p>
+    </div>
+    <div class="changeQuantity button" (click)="addOne()">
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </div>
+  </div>
+
+  <div class="editBox" (click)="openModal()">
+    <div class="daysLeft">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>{{ daysLeft }}d</p>
+    </div>
+
+    <ion-icon class="edit" name="create"></ion-icon>
+  </div>
+</div>

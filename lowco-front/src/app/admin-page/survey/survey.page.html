@@ -1,0 +1,113 @@
+<ion-content>
+  <div id="survey">
+    <div class="searchBarDiv">
+      <ion-searchbar id="open-modal" class="search" (ionChange)="search($event)"
+        placeholder="Nach Emissionswerte suchen"></ion-searchbar>
+    </div>
+
+    <div id="surveyList">
+      <ng-container *ngFor="let survey of setSurveys">
+        <div [class.categoryActive]="survey.category" *ngIf="survey.activated == 1">
+          <div class="left"><ion-icon name="{{survey.iconName}}"></ion-icon>
+            <p>{{survey.title}}</p><p *ngIf="survey.category" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
+          </div>
+          <div class="right">
+            <div (click)="editModal(survey)"><ion-icon name="create-outline"></ion-icon></div>
+            <div class="ban" (click)="deactivate(survey)">
+              <ion-icon name="ban-outline"></ion-icon>
+            </div>
+            <div class="bin" (click)="deleteSurvey(survey)"><ion-icon name="trash-outline"></ion-icon></div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div id="deactivated" (click)="changeCollapsed()">
+      <ion-icon *ngIf="collapsed" name="chevron-forward-outline"></ion-icon><ion-icon *ngIf="!collapsed"
+        name="chevron-down-outline"></ion-icon>
+      <p class="deactivatedText">Deaktiviert</p>
+    </div>
+
+    <div *ngIf="!collapsed" id="deactivatedList">
+      <ng-container *ngFor="let survey of setSurveys">
+        <div *ngIf="survey.activated == 0" [class.categoryActive]="survey.category">
+          <div class="left"><ion-icon name="{{survey.iconName}}"></ion-icon>
+            <p>{{survey.title}}</p><p *ngIf="survey.category" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
+          </div>
+          <div class="right" [class.categoryActive]="survey.category">
+            <div (click)="editModal(survey)"><ion-icon name="create-outline"></ion-icon></div>
+            <div class="unban" (click)="activate(survey)">
+              <ion-icon name="checkmark-outline"></ion-icon>
+            </div>
+            <div class="bin" (click)="deleteSurvey(survey)"><ion-icon name="trash-outline"></ion-icon></div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <ion-modal #modal>
+    <ng-template>
+      <div class="positioning">
+        <form [formGroup]="surveyForm" class="editForm">
+          <ion-item>
+            <ion-label position="floating">Title</ion-label>
+            <ion-input type="text" formControlName="surveyTitle"></ion-input>
+          </ion-item>
+          <ion-item (click)="modal2.present()">
+            <div class="iconSelection">
+              <ion-input type="text" *ngIf="selectedIcon == ''" readonly value="Icon auswählen"></ion-input>
+              <ion-icon *ngIf="selectedIcon != ''" [name]="selectedIcon"></ion-icon>
+              <ion-icon class="linkTo" name="open-outline"></ion-icon>
+            </div>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Typ</ion-label>
+            <ion-select formControlName="surveyType">
+              <ion-label position="floating">Typ</ion-label>
+              <ion-select-option *ngFor="let type of types" [value]="type.value">{{type.key}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item *ngIf="surveyForm.get('surveyType')?.value == 'e'">
+            <ion-label position="floating">Maß</ion-label>
+            <ion-select formControlName="surveyMeasurements">
+              <ion-label position="floating">Maß</ion-label>
+              <ion-select-option *ngFor="let measurement of measurements"
+                [value]="measurement.value.name">{{measurement.key}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Standardwert</ion-label>
+            <ion-input type="number" formControlName="surveyStandard"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Kategorie</ion-label>
+            <ion-select formControlName="surveyCat">
+              <ion-label position="floating">Kategorie</ion-label>
+              <ion-select-option *ngFor="let category of categories"
+                [value]="category._id">{{category.title}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div id="subBtnDiv">
+            <input *ngIf="edit" class="subBtn" value="Speichern" type="button" (click)="updateSurvey()">
+            <input *ngIf="!edit" class="subBtn" value="Erstellen" type="button" (click)="createSurvey()">
+            <p (click)="modal.dismiss()">Abbrechen</p>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal #modal2>
+    <ng-template>
+      <app-search-icon class="ion-page" title="Icons" [selectedIcon]="selectedIcon"
+        (selectionChange)="iconSelectionChange($event)" (selectionCancel)="modal2.dismiss()"></app-search-icon>
+    </ng-template>
+  </ion-modal>
+
+  <div id="addBtn" (click)="createModal()">
+    <ion-icon name="add-outline"></ion-icon>
+  </div>
+
+</ion-content>

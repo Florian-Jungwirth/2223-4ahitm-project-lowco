@@ -1,0 +1,231 @@
+#survey {
+  background-color: var(--ion-color-light-tint);
+  height: 100vh;
+  padding: calc(40px + 2.5em) 5px 5px;
+  overflow-y: scroll;
+}
+
+.searchBarDiv {
+  padding: calc(40px + 2em) 5px 5px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+  margin: 0;
+  background-color: var(--ion-color-light-tint);
+  border-radius: 10px;
+}
+
+.search {
+  padding: 5px 0 0;
+  width: 100%;
+}
+
+.subBtn {
+  width: 48%;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: var(--ion-text-color);
+  color: var(--ion-color-medium-contrast);
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-radius: 3px;
+  border: none;
+  margin-top: 1em;
+  text-align: center;
+}
+
+.iconSelection {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.linkTo {
+  font-size: 1em;
+}
+
+#subBtnDiv {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#addNewSurveyDiv {
+  position: fixed;
+  bottom: 3em;
+  right: 1.5em;
+  width: 3em;
+  height: 3em;
+
+  > #addNewSurveyBtn {
+    width: 100%;
+    height: 100%;
+    background-color: var(--ion-text-color);
+    color: var(--ion-color-medium-contrast);
+    font-size: 2em;
+    border-radius: 70%;
+    border: none;
+  }
+}
+
+.positioning {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editForm {
+    ion-item {
+        --background: transparent;
+    }
+}
+
+#addBtn {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    background-color: var(--ion-color-project-blue);
+    border-radius: 50%;
+    font-size: 1.5em;
+    box-shadow: 0.05em 0.05em 0.05em rgba(255, 255, 255, 0.397);
+    padding: 0.5em;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel {
+  background-color: var(--ion-color-medium-tint);
+  color: var(--ion-text-color);
+}
+
+ion-content {
+  --background: var(--ion-color-light-tint);
+}
+
+#deactivated {
+  background-color: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin: 0 5px;
+  padding: 5px;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.deactivatedText {
+  padding: 5px;
+  margin: 0;
+}
+
+#surveyList {
+  background-color: var(--ion-color-light-tint);
+  padding: calc(40px + 2em) 5px 5px;
+  overflow-y: scroll;
+}
+
+#deactivatedList {
+  padding: 5px;
+
+  >div {
+    padding: 0px 5px !important;
+  }
+
+  .left {
+    p  {
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      opacity: 0.7;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-icon {
+      opacity: 0.7;
+    }
+  }
+}
+
+#surveyList, #deactivatedList {
+
+  > div {
+    background-color: var(--ion-color-light);
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      > div {
+        font-size: 1.5em;
+      }
+
+      .bin {
+        color: var(--ion-color-project-red);
+        padding-left: 3px;
+      }
+
+      .ban {
+        color: var(--ion-color-project-orange);
+        padding-left: 3px;
+      }
+
+      .unban {
+        color: var(--ion-color-project-greenl);
+        padding-left: 3px;
+      }
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+
+      ion-icon {
+        font-size: 2em;
+        padding-right: 10px;
+      }
+    }
+  }
+
+  > div:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  > div:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  > div:not(:last-child) {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+  }
+
+}
+
+.categoryActive {
+  background-color: var(--ion-color-light-low-opacity) !important;
+}
+
+.deactivatedInCategory {
+  font-size: 0.8em;
+  opacity: 0.5;
+  padding-left: 0.3em;
+}

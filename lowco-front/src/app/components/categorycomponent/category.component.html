@@ -1,0 +1,11 @@
+<div id="fwPre">
+  <div class="titleDiv">
+    <p class="title">{{title}}</p>
+    <ion-icon *ngIf="showWarning" name="alert-circle" class="warning" color="warning"></ion-icon>
+  </div>
+  <div class="contentDiv">
+    <div class="centerBox">
+      <ion-icon *ngIf="icon !== ''" class="titleIcon" name="{{icon}}"></ion-icon>
+    </div>
+  </div>
+</div>

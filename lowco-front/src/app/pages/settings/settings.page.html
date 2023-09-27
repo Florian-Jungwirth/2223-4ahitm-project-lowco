@@ -1,0 +1,44 @@
+<ion-content>
+  <div id="settings">
+    <div routerLink="profile">
+      <div class="left">
+        <ion-icon name="person-circle-outline"></ion-icon>
+        <p>Benutzerprofil</p>
+      </div>
+    </div>
+    <div routerLink="quickselection">
+      <div class="left">
+        <ion-icon name="heart-circle-outline"></ion-icon>
+        <p>Schnellauswahl</p>
+      </div>
+    </div>
+    <div>
+      <div class="left">
+        <ion-icon name="thermometer-outline"></ion-icon>
+        <p>Einheiten</p>
+      </div>
+      <div>
+        <ion-list color="none" lines="none" class="bg-transparent" style="padding: 0px;">
+          <ion-item color="none" lines="none">
+            <ion-select color="none" lines="none" aria-label="Metric System" interface="popover" (ionChange)="changeInput($event)" value="{{metric}}">
+              <ion-select-option value="0">imperial</ion-select-option>
+              <ion-select-option value="1">metrisch</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+    <div routerLink="/admin" *ngIf="isAdmin">
+      <div class="left">
+        <ion-icon name="hammer-outline"></ion-icon>
+        <p>Administration</p>
+      </div>
+    </div>
+    <div (click)="logOut()">
+      <div class="left logOut">
+        <ion-icon name="log-out-outline"></ion-icon>
+        <p>Abmelden</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

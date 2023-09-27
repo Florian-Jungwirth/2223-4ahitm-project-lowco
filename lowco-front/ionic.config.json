@@ -1,0 +1,7 @@
+{
+  "name": "lowco2",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,59 @@
+<!-- <div id="home">
+  <div id="canvasThree" #canvas></div>
+  <ion-modal #modal2 id="bottomModal" [isOpen]="true" [initialBreakpoint]="0.5" [breakpoints]="[0.10, 0.5]"
+    [backdropDismiss]="false" [backdropBreakpoint]="0.5">
+    <ng-template #positionBox>
+      <div id="positionBox">
+        <div class="positioning">
+          <ion-icon name="heart-outline"></ion-icon>
+          <ion-icon id="menuIcon" name="grid-outline" (touchstart)="changePage()" (click)="changePage()"></ion-icon>
+        </div>
+        <app-simple [title]="'Screen Time'" [id]="0" [showWarning]="true" [dataType]="'number'"
+          [icon]="'phone-portrait-outline'" [unit]="'h'" [value]="'1.45'"></app-simple>
+        <app-simple [title]="'Gaming'" [showWarning]="false" [dataType]="'number'" [id]="0"
+          [icon]="'game-controller-outline'" [unit]="'min'" [value]="'1.45'"></app-simple>
+        <app-progressbar [titleIcon]="'footsteps'" [target]="target" [current]="steps" [title]="'Steps'"
+        [progress]="progress"></app-progressbar>
+        <app-progressbar [titleIcon]="'footsteps'" [id]="0" [target]="target" [current]="steps" [title]="'Steps'"
+          [progress]="progress"></app-progressbar>
+      </div>
+    </ng-template>
+  </ion-modal>
+</div> -->
+
+<ion-content>
+  <div id="home">
+    <div id="canvasThree" #canvas></div>
+    <div id="quickMenu" #menu>
+      <div class="positioning">
+        <ion-icon name="bar-chart-outline" routerLink="/lowco/dashboard"></ion-icon>
+        <!-- add (click)="isOpen()" for clicking on computer -->
+        <div class="scrollUpDiv" (touchstart)="isOpen()">
+          <div class="scrollUpButton"></div>
+        </div>
+        <ion-icon id="menuIcon" name="grid-outline" routerLink="/lowco/activities"></ion-icon>
+      </div>
+      <div id="surveys" #surveys>
+        <ng-container *ngFor="let survey of quickSelection">
+          <div [style]="survey.style">
+            <app-simple *ngIf="types.Einfach == survey.type" [title]="survey.title" [showWarning]="false"
+              [icon]="survey.iconName" [unit]="getUnitById(survey)" [value]="getValueById(survey)" [id]="survey._id"
+              [measurement]="survey.measurement" [daysLeft]="0"></app-simple>
+
+            <app-quantity *ngIf="types.Anzahl == survey.type" [title]="survey.title" [showWarning]="false"
+              [icon]="survey.iconName" [value]="getValueById(survey)" [id]="survey._id" [daysLeft]="0"></app-quantity>
+          </div>
+        </ng-container>
+        <!-- <div class="inputSelection">
+          <p>Water: </p>
+          <input type="color" id="head" name="head" [(ngModel)]="waterColor" (change)="waterChange()">
+        </div>
+        <div class="inputSelection">
+          <p>Time: </p>
+          <input type="time" id="appt" name="appt" [(ngModel)]="time">
+          <input type="button" (click)="timeChange()" value="Send">
+        </div> -->
+      </div>
+    </div>
+  </div>
+</ion-content>

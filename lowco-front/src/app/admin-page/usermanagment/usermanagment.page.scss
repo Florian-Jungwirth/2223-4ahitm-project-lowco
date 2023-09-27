@@ -1,0 +1,71 @@
+#admin {
+  background-color: var(--ion-color-light-tint);
+  padding: calc(40px + 2.5em) 5px 5px;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+#userList {
+  background-color: var(--ion-color-light-tint);
+  padding: calc(40px + 2em) 5px 5px;
+  overflow-y: scroll;
+
+  > div {
+    background-color: var(--ion-color-light);
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    .right {
+      display: flex;
+      align-items: center;
+
+      > div {
+        font-size: 1.5em;
+      }
+
+      .bin {
+        color: var(--ion-color-project-red);
+      }
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+
+      ion-icon {
+        font-size: 2em;
+        padding-right: 10px;
+      }
+    }
+  }
+
+  > div:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  > div:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  > div:not(:last-child) {
+    border-bottom: 1px solid var(--ion-color-light-shade);
+  }
+}
+
+.searchBarDiv {
+  padding: calc(40px + 2em) 5px 5px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+  margin: 0;
+  background-color: var(--ion-color-light-tint);
+  border-radius: 10px;
+}

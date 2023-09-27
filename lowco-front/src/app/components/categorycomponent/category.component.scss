@@ -1,0 +1,43 @@
+#fwPre {
+    background-color: var(--ion-color-light);
+    width: 100%;
+    border-radius: 15px;
+    margin-top: 5px;
+    border: 1px solid var(--ion-color-light-shade);
+
+
+    .titleDiv {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--ion-color-light-shade);
+        padding: 0px 10px;
+
+        .title {
+            font-size: 0.8em;
+        }
+
+        .warning {
+            font-size: 1.2em;
+        }
+    }
+
+    .contentDiv {
+        padding: 10px 0px 40px;
+        font-size: 100px;
+
+        .centerBox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+
+            .icon {
+                font-size: 4em;
+                margin: 0 auto;
+            }
+        }
+
+    }
+
+}

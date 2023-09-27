@@ -1,0 +1,61 @@
+.fwBox {
+  width: 100%;
+  background-color: var(--ion-color-light);
+  padding: 1em 8%;
+  border-radius: 15px;
+
+  .titleDiv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    padding-bottom: 1%;
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
+    .iconAndTitle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+
+      .titleIcon {
+        font-size: 1.3em;
+      }
+
+      p {
+        margin: 0;
+        padding-left: 10%;
+      }
+    }
+
+    .warning {
+      font-size: 1.2em;
+    }
+  }
+
+  .contentDiv {
+    .numbers {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      p {
+        padding: 0.3em;
+      }
+    }
+
+    .progress {
+      border-radius: 5px;
+      height: 0.5em;
+    }
+
+    .progress::part(track) {
+        background: var(--ion-color-project-brown-op);
+    }
+    
+    .progress::part(progress) {
+        background: var(--ion-color-project-brown);
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<ion-header>
+  <nav>
+    <ion-icon routerLink="/lowco" *ngIf="!showBackButton" class="navIcons" name="home-outline"></ion-icon>
+    <ion-icon *ngIf="showBackButton" class="navIcons" (click)="goBack()" name="chevron-back-outline"></ion-icon>
+    <h1>{{title}}</h1>
+    <ion-icon class="navIcons" name="log-out-outline" (click)="logOut()"></ion-icon>
+  </nav>
+</ion-header>
+
+<ion-router-outlet></ion-router-outlet>

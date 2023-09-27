@@ -1,0 +1,25 @@
+<ion-content>
+  <div id="activitySelection">
+    <!-- <ion-searchbar [debounce]="1000" (ionChange)="handleChange($event)"></ion-searchbar> -->
+    <div class="searchBarDiv">
+      <ion-searchbar class="search" (ionChange)="search($event)" placeholder="Nach Kategorien suchen"></ion-searchbar>
+    </div>
+
+    <div class="categoryBox" *ngIf="!loading">
+      <div *ngFor="let category of selectedCategories">
+        <app-categoryComponent [title]="category.title" [showWarning]="false" [icon]="category.iconName"
+          (click)="navigateTo(category._id)"></app-categoryComponent>
+      </div>
+    </div>
+
+    <div *ngIf="loading" id="loadingSpinner" class="loading"
+      style="display: flex; align-items: center; justify-content: center;">
+      <ion-spinner></ion-spinner>
+    </div>
+    <!-- <app-category [title]="'Reisen'" [showWarning]="true" [icon]="'airplane-outline'" (click)="navigateTo(22)"></app-category>
+  <app-category [title]="'Transport'" [icon]="'car-outline'"></app-category>
+  <app-category [title]="'Ernährung'" [icon]="'fast-food-outline'"></app-category>
+  <app-category [title]="'Haushalt'" [icon]="'home-outline'"></app-category>
+  <app-category [title]="'Kleidung'" [icon]="'shirt-outline'"></app-category> -->
+  </div>
+</ion-content>

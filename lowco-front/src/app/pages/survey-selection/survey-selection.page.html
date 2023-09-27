@@ -1,0 +1,22 @@
+<ion-content>
+  <div id="survey">
+    <div class="searchBarDiv">
+      <ion-searchbar class="search" (ionChange)="search($event)" placeholder="Nach Emissionswerte suchen"></ion-searchbar>
+    </div>
+    <div id="surveys" *ngIf="!loading">
+      <div *ngFor="let survey of selectedSurveys" style="grid-column: 1/3;">
+        <app-simple *ngIf="types.Einfach == survey.type" [title]="survey.title" [showWarning]="false"
+          [icon]="survey.iconName" [unit]="getUnitById(survey)" [value]="getValueById(survey)" [id]="survey._id"
+          [measurement]="survey.measurement" [daysLeft]="0"></app-simple>
+
+        <app-quantity *ngIf="types.Anzahl == survey.type" [title]="survey.title" [showWarning]="false"
+          [icon]="survey.iconName" [value]="getValueById(survey)" [id]="survey._id" [daysLeft]="0"></app-quantity>
+      </div>
+    </div>
+    <div *ngIf="loading" id="loadingSpinner" class="loading" style="display: flex; align-items: center; justify-content: center;">
+      <ion-spinner></ion-spinner>
+    </div>
+  </div>
+</ion-content>
+<!-- <app-progressbar *ngIf="false" style="grid-column: 1/3;" [titleIcon]="'footsteps'" [target]="10000" [current]="2300"
+        [title]="'Steps'"></app-progressbar> -->

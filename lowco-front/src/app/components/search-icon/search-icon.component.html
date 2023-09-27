@@ -1,0 +1,29 @@
+<div id="iconModal">
+  <div class="top">
+    <div (click)="cancelChanges()">
+      <ion-icon name="close"></ion-icon>
+    </div>
+  </div>
+  <div class="middle">
+    <ion-searchbar (ionInput)="searchbarInput($event)"></ion-searchbar>
+    <div>
+      <ion-segment value="outline" (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="outline">
+          <ion-label>Outline</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="filled">
+          <ion-label>Filled</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="sharp">
+          <ion-label>Sharp</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+
+  <div class="icons">
+    <div class="icon" (click)="selectIcon(iconName.name)" *ngFor="let iconName of filteredItems">
+      <ion-icon name="{{iconName.name}}"></ion-icon>
+    </div>
+  </div>
+</div>
