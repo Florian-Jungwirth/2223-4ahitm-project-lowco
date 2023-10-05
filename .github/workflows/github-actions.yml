@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - lowco-back
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
 
 env:
   DOCKER_HUB_USERNAME: ${{DOCKERHUB_USERNAME}}
