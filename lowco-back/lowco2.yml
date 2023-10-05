@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: lowco2-pod
+   labels:
+      app: lowco2
+spec:
+   selector:
+      matchLabels:
+         app: lowco2
+   template:
+      metadata:
+         labels:
+            app: lowco2
+      spec:
+         containers:
+         - name: lowco2
+           image: zauner/vegastrobackend:latest
+           imagePullPolicy: Always
+           ports:
+           - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lowco2-service
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30000
+  selector:
+    app: lowco2
