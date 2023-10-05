@@ -18,6 +18,7 @@ jobs:
       - name: Build
         run: |
           cd lowco-back
+          ls
           docker build -t floaterd2201/lowco2
 
       - name: Login into Docker
