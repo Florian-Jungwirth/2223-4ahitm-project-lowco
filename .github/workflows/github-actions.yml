@@ -7,7 +7,6 @@ on:
 
 env:
   IMAGE_NAME: floaterd2201/lowco2
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
   build-push:
@@ -18,7 +17,7 @@ jobs:
 
       - name: Build
         run: |
-          cd lowco2/lowco-back
+          cd lowco-back
           docker build -t floaterd2201/lowco2
 
       - name: Login into Docker
