@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron index.js",
-    "build": "electron-builder",
-    "electron:package": "electron-builder"
+    "build": "electron-builder"
   },
   "build": {
     "productName": "LowCo2",
