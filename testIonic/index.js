@@ -6,7 +6,7 @@ function createWindow() {
         height: 800
     });
 
-    mainWindow.loadURL('http://localhost:8100');
+    mainWindow.loadFile('./www/index.html');
     
     mainWindow.on('closed', function () {
         app.quit();
