@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: lowco2-deployment
   labels:
-    app: vegastobackend
+    app: lowco2
   namespace: student-f-jungwirth1
 spec:
   replicas: 1

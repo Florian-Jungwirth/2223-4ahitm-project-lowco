@@ -15,7 +15,7 @@ spec:
       spec:
          containers:
          - name: lowco2
-           image: zauner/vegastrobackend:latest
+           image: floaterd2201/lowco2:latest
            imagePullPolicy: Always
            ports:
            - containerPort: 3000
