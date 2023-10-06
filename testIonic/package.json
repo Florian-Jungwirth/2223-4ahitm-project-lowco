@@ -1,0 +1,33 @@
+{
+  "name": "testionic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron index.js",
+    "build": "electron-builder",
+    "electron:package": "electron-builder"
+  },
+  "build": {
+    "productName": "LowCo2",
+    "appId": "com.example.yourapp",
+    "files": [
+      "main.js",
+      "www/**/*"
+    ],
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "icon": ""
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^26.3.0",
+    "electron-builder": "^24.6.4"
+  }
+}
