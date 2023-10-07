@@ -9,7 +9,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "electron:start": "ng build --configuration production && electron .",
+    "electron:make-windows": "ng build --configuration production && electron-forge make --arch=x64 --platform=win32",
+    "electron:make-mac": "electron-forge make --platform=darwin --arch=x64"
   },
   "private": true,
   "dependencies": {
@@ -33,11 +36,12 @@
     "@tweenjs/tween.js": "^20.0.3",
     "axios": "^1.3.0",
     "chart.js": "^4.3.0",
+    "electron-squirrel-startup": "^1.0.0",
     "ionicons": "^6.0.3",
     "rxjs": "~7.5.0",
     "simplex-noise": "^4.0.1",
     "suncalc": "^1.9.0",
-    "three": "^0.148.0",
+    "three": "^0.157.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
@@ -52,13 +56,20 @@
     "@angular/compiler-cli": "^15.0.0",
     "@angular/language-service": "^15.0.0",
     "@capacitor/cli": "4.6.1",
+    "@electron-forge/cli": "^6.4.2",
+    "@electron-forge/maker-deb": "^6.4.2",
+    "@electron-forge/maker-rpm": "^6.4.2",
+    "@electron-forge/maker-squirrel": "^6.4.2",
+    "@electron-forge/maker-zip": "^6.4.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
     "@ionic/angular-toolkit": "^6.0.0",
     "@types/jasmine": "~4.0.0",
     "@types/node": "^12.11.1",
     "@types/suncalc": "^1.9.0",
-    "@types/three": "^0.147.1",
+    "@types/three": "^0.156.0",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
+    "electron": "^26.3.0",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "30.7.6",
@@ -75,6 +86,6 @@
     "typescript": "~4.8.4"
   },
   "description": "An Ionic project",
-  "main": "karma.conf.js",
+  "main": "main.js",
   "license": "ISC"
 }

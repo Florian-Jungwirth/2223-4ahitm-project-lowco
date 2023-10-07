@@ -1,6 +1,6 @@
 <ion-header>
   <nav>
-    <img *ngIf="!showBackButton" src="../../assets/icon/favicon.svg" id="logo" routerLink="/">
+    <img *ngIf="!showBackButton" src="assets/icon/favicon.svg" id="logo" routerLink="/">
     <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
     <h1>{{title}}</h1>
     <ion-icon name="settings-outline" class="navIcons" routerLink="/lowco/settings"></ion-icon>

@@ -40,13 +40,13 @@ export class PagesPage {
       // this.showNum = obj.value
     });
 
-    this.router.events.subscribe((event) => {      
+    this.router.events.subscribe((event: any) => {      
       if (event instanceof NavigationEnd) {        
         this.showBackButton = this.router.url !== '/lowco';
       }
     });
 
-    this.titleService.title.subscribe(data => {
+    this.titleService.title.subscribe((data: string) => {
       this.title = data;
     })
   }

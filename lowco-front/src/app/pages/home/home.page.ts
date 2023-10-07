@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { createNoise2D } from 'simplex-noise';
 import { Water } from 'three/examples/jsm/objects/Water';
 import { Sky } from 'three/examples/jsm/objects/Sky';
@@ -57,7 +57,7 @@ export class HomePage {
   envmap: THREE.Texture;
   sun = new THREE.Vector3();
   sunColor = 0xffffff;
-  waterColor = '#00363c';
+  waterColor = '#259e9a';
   previousTheta: any;
   previousPhi: any;
   quickSelection: any[];
@@ -188,7 +188,6 @@ export class HomePage {
     const self = this;
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.physicallyCorrectLights = true;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFShadowMap;
     this.container.nativeElement.appendChild(this.renderer.domElement);
@@ -209,7 +208,7 @@ export class HomePage {
       textureWidth: 512,
       textureHeight: 512,
       waterNormals: new THREE.TextureLoader().load(
-        '../../../assets/textures/waternormals.jpg',
+        'assets/textures/waternormals.jpg',
         function (texture) {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         }
@@ -258,14 +257,14 @@ export class HomePage {
           puffArray.push(smallPuff);
         }
 
-        const cloudGeo = mergeBufferGeometries(puffArray);
+        const cloudGeo = mergeGeometries(puffArray);
         cloudGeo.translate(
           Math.random() * 5,
           Math.random() * 10 + 11,
           Math.random() * 5
         );
         cloudGeo.rotateY(Math.random() * Math.PI * 2);
-        geo = mergeBufferGeometries([geo, cloudGeo]);
+        geo = mergeGeometries([geo, cloudGeo]) as SphereGeometry;
       }
 
       const mesh = new Mesh(
@@ -302,12 +301,12 @@ export class HomePage {
     skyUniforms['mieCoefficient'].value = 0.000009;
     skyUniforms['mieDirectionalG'].value = 0.9;
 
-    this.directionalLight = new THREE.DirectionalLight(this.sunColor, 3);
+    this.directionalLight = new THREE.DirectionalLight(this.sunColor, 0.1);
     this.directionalLight.castShadow = true;
     this.directionalLight.shadow.camera.near = 0.1;
     this.directionalLight.shadow.camera.far = this.ISLANDSIZE * 10;
-    this.directionalLight.shadow.mapSize.width = 2048;
-    this.directionalLight.shadow.mapSize.height = 2048;
+    this.directionalLight.shadow.mapSize.width = 128;
+    this.directionalLight.shadow.mapSize.height = 128;
     this.directionalLight.shadow.camera.left = -this.ISLANDSIZE * 2;
     this.directionalLight.shadow.camera.right = this.ISLANDSIZE * 2;
     this.directionalLight.shadow.camera.top = this.ISLANDSIZE * 2;
@@ -318,7 +317,7 @@ export class HomePage {
     // let cameraHelper = new THREE.CameraHelper(this.directionalLight.shadow.camera)
     // this.scene.add(cameraHelper)
 
-    const ambientLight = new THREE.AmbientLight(this.sunColor, 1);
+    const ambientLight = new THREE.AmbientLight(this.sunColor, 0.4);
     this.scene.add(ambientLight);
 
     const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
@@ -624,27 +623,27 @@ export class HomePage {
     function makeHex(height: number, position: THREE.Vector2) {
       let geo = hexGeometry(height, position);
       if (height > STONE_HEIGHT) {
-        stoneGeo = mergeBufferGeometries([geo, stoneGeo]);
+        stoneGeo = mergeGeometries([geo, stoneGeo]) as BoxGeometry;
 
         if (Math.random() > 0.8) {
-          stoneGeo = mergeBufferGeometries([stoneGeo, stone(height, position)]);
+          stoneGeo = mergeGeometries([stoneGeo, stone(height, position)]) as BoxGeometry;
         }
       } else if (height > DIRT_HEIGHT) {
-        dirtGeo = mergeBufferGeometries([geo, dirtGeo]);
+        dirtGeo = mergeGeometries([geo, dirtGeo]) as BoxGeometry;
       } else if (height > GRASS_HEIGHT) {
-        grassGeo = mergeBufferGeometries([geo, grassGeo]);
+        grassGeo = mergeGeometries([geo, grassGeo]) as BoxGeometry;
 
         if (Math.random() > 0.8) {
-          grassGeo = mergeBufferGeometries([grassGeo, tree(height, position)]);
+          grassGeo = mergeGeometries([grassGeo, tree(height, position)]) as BoxGeometry;
         }
       } else if (height > SAND_HEIGHT) {
-        sandGeo = mergeBufferGeometries([geo, sandGeo]);
+        sandGeo = mergeGeometries([geo, sandGeo]) as BoxGeometry;
 
         if (Math.random() > 0.8 && stoneGeo) {
-          stoneGeo = mergeBufferGeometries([stoneGeo, stone(height, position)]);
+          stoneGeo = mergeGeometries([stoneGeo, stone(height, position)]) as BoxGeometry;
         }
       } else if (height > DIRT2_HEIGHT) {
-        dirt2Geo = mergeBufferGeometries([geo, dirt2Geo]);
+        dirt2Geo = mergeGeometries([geo, dirt2Geo]) as BoxGeometry;
       }
     }
 
@@ -707,7 +706,7 @@ export class HomePage {
       geo3.rotateY(rotation);
       geo3.translate(position.x, height + treeHeight * 1.25 + 1, position.y);
 
-      return mergeBufferGeometries([geo, geo2, geo3]);
+      return mergeGeometries([geo, geo2, geo3]);
     }
 
     // this.glbLoader('trash_models/bag.glb').then((glbScene) => {
