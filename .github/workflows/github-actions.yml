@@ -46,12 +46,14 @@ jobs:
           if: startsWith(matrix.os, 'windows-latest')
           run: |
               cd lowco-front
+              npm i
               npm run electron:make-windows
   
         - name: Run electron on mac  
           if: startsWith(matrix.os, 'macos-latest')
           run: |
               cd lowco-front
+              npm i
               npm run electron:make-mac
   
   release:
