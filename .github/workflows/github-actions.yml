@@ -72,7 +72,7 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/squirrel.windows/x64/lowco2-0.0.1 Setup.exe
             tag: latest
-            name: lowco2-windows-setup.exe
+            asset_name: lowco2-windows-setup.exe
             overwrite: true
             prerelease: true
 
@@ -91,6 +91,6 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
             tag: latest
-            name: lowco2-mac.zip
+            asset_name: lowco2-mac.zip
             overwrite: true
             prerelease: true
