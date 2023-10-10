@@ -21,7 +21,7 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-back/lowco2.yml
             tag: latest
-            release_name: Release ${{ github.event.repository.updated_at }}
+            release_name: Release ${{ github.run_number }}
             overwrite: true 
 
   build-push:
