@@ -12,8 +12,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "electron:start": "electron .",
+    "electron:make": "electron-forge make",
     "electron:make-windows": "electron-forge make --arch=x64 --platform=win32",
-    "electron:make-mac": "electron-forge make --platform=darwin --arch=x64"
+    "electron:make-mac": "electron-forge make --platform=darwin --arch=arm64"
   },
   "private": true,
   "dependencies": {
