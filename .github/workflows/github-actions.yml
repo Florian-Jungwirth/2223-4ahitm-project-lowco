@@ -16,7 +16,7 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Create Release
-          uses: svenstaro/upload-release-action@v2
+          uses: svenstaro/upload-release-action@v3
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-back/lowco2.yml
@@ -62,7 +62,7 @@ jobs:
           run: |
               cd lowco-front
               npm i
-              npm run build-prod
+              npm run build
               npm run electron:make-windows
 
         - name: Upload Windows file
@@ -80,13 +80,13 @@ jobs:
           run: |
               cd lowco-front
               npm i
-              npm run build-prod
+              npm run build
               npm run electron:make-mac
 
         - name: Upload Mac file
           if: startsWith(matrix.os, 'macos-latest')
           uses: svenstaro/upload-release-action@v2
-          
+
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
