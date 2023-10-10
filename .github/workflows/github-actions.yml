@@ -9,6 +9,18 @@ env:
   IMAGE_NAME: floaterd2201/lowco2
 
 jobs:
+  release:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Create Release
+          uses: svenstaro/upload-release-action@v2
+          with:
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
+            tag: latest
+            release_name: Release ${{ github.event.repository.updated_at }}
+            overwrite: true
+
   build-push:
     runs-on: ubuntu-latest
     steps:
@@ -47,29 +59,11 @@ jobs:
           run: |
               cd lowco-front
               npm i
+              npm run build-prod
               npm run electron:make-windows
-  
-        - name: Run electron on mac  
-          if: startsWith(matrix.os, 'macos-latest')
-          run: |
-              cd lowco-front
-              npm i
-              npm run electron:make-mac
-  
-  release:
-        needs: [build-push, electron]
-        runs-on: ubuntu-latest
-        steps:
-        - name: Create Release
-          uses: svenstaro/upload-release-action@v2
-          with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
-            tag: latest
-            release_name: Release ${{ github.event.repository.updated_at }}
-            overwrite: true
-  
+
         - name: Upload Windows file
+          if: startsWith(matrix.os, 'windows-latest')
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -78,7 +72,16 @@ jobs:
             overwrite: true
             prerelease: true
 
+        - name: Run electron on mac  
+          if: startsWith(matrix.os, 'macos-latest')
+          run: |
+              cd lowco-front
+              npm i
+              npm run build-prod
+              npm run electron:make-mac
+
         - name: Upload Mac file
+          if: startsWith(matrix.os, 'macos-latest')
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
