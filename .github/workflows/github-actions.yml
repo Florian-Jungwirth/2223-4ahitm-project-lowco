@@ -9,9 +9,12 @@ env:
   IMAGE_NAME: floaterd2201/lowco2
 
 jobs:
-  release:
+  release: 
         runs-on: ubuntu-latest
         steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
         - name: Create Release
           uses: svenstaro/upload-release-action@v2
           with:
@@ -19,7 +22,7 @@ jobs:
             file: lowco-back/lowco2.yml
             tag: latest
             release_name: Release ${{ github.event.repository.updated_at }}
-            overwrite: true
+            overwrite: true 
 
   build-push:
     runs-on: ubuntu-latest
@@ -83,6 +86,7 @@ jobs:
         - name: Upload Mac file
           if: startsWith(matrix.os, 'macos-latest')
           uses: svenstaro/upload-release-action@v2
+          
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
