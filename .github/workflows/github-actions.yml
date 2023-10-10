@@ -50,9 +50,11 @@ jobs:
         
       steps:
         - name: Checkout Repo
+          if: startsWith(matrix.os, 'windows-latest')
           uses: actions/checkout@v3
   
         - name: Use Node.js
+          if: startsWith(matrix.os, 'windows-latest')
           uses: actions/setup-node@v3
           with:
             node-version: 20
@@ -72,9 +74,18 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/squirrel.windows/x64/lowco2-0.0.1 Setup.exe
             tag: latest
-            release_name: Release ${{ github.run_number }}
             overwrite: true
             prerelease: true
+
+        - name: Checkout Repo
+          if: startsWith(matrix.os, 'macos-latest')
+          uses: actions/checkout@v3
+  
+        - name: Use Node.js
+          if: startsWith(matrix.os, 'macos-latest')
+          uses: actions/setup-node@v3
+          with:
+            node-version: 20
 
         - name: Run electron on mac  
           if: startsWith(matrix.os, 'macos-latest')
@@ -91,6 +102,5 @@ jobs:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
             tag: latest
-            release_name: Release ${{ github.run_number }}
             overwrite: true
             prerelease: true
