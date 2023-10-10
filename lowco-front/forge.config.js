@@ -8,7 +8,6 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        // The ICO file to use as the icon for the generated Setup.exe
         setupIcon: './src/assets/icon/favicon.ico'
       }
     },
