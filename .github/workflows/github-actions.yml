@@ -16,7 +16,7 @@ jobs:
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
+            file: lowco-back/lowco2.yml
             tag: latest
             release_name: Release ${{ github.event.repository.updated_at }}
             overwrite: true
@@ -85,7 +85,8 @@ jobs:
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-back/lowco2.yml
+            file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
             tag: latest
             release_name: Release ${{ github.event.repository.updated_at }}
             overwrite: true
+            prerelease: true
