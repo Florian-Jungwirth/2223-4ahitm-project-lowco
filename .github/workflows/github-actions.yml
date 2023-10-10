@@ -57,6 +57,7 @@ jobs:
               npm run electron:make-mac
   
   release:
+        needs: [build-push, electron]
         runs-on: ubuntu-latest
         steps:
         - name: Create Release
