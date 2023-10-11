@@ -44,6 +44,8 @@ jobs:
 
           cd android
 
+          chmod +x ./gradlew
+
           ./gradlew assembleDebug
 
       - name: Create Release
