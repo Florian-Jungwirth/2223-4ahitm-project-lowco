@@ -14,8 +14,7 @@ export class SettingsPage implements OnInit {
   metric: number;
   first = true;
 
-  constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {
-  }
+  constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {}
 
   async ngOnInit() {
     this.isAdmin = await this.authService.isUserAdmin();
