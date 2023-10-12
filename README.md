@@ -24,3 +24,5 @@
 Android tutorial in detail: https://ionicframework.com/docs/developing/android#set-up-an-android-device
 
 In case of an error with BoxGeometry (after running npm install in lowco-back and lowco-front), go into BoxGeometry.d.ts and SphereGeometry.d.ts and remove the parameters object in both files
+
+In case of the backend not connecting (for development purposes), create an .env file in the directory with ENV_MONGO_URL=<database url> in it
