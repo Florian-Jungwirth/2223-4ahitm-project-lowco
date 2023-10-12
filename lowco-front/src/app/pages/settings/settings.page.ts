@@ -12,7 +12,6 @@ export class SettingsPage implements OnInit {
   isAdmin = false;
   user: any;
   metric: number;
-  first = true;
 
   constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {}
 
@@ -32,9 +31,6 @@ export class SettingsPage implements OnInit {
   }
 
   changeInput(event: any) {
-    if (!this.first) {
-      this.authService.updateMetric(this.user.id, event.target.value);
-    }
-    this.first = false
+    this.authService.updateMetric(this.user.id, event.detail.value);
   }
 }
