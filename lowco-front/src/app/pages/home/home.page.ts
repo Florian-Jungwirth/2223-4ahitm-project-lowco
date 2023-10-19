@@ -78,30 +78,13 @@ export class HomePage {
 
   constructor(
     private surveyService: SurveyService,
-    private titleService: TitleService
+    private titleService: TitleService,
+    private bac: BackGroundGeolocation
   ) {
-    this.getPosition().subscribe((position: GeolocationPosition) => {
+    window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
-      this.latitude = position.coords.latitude;
+      this.latitude = position.coords.latitude;    
     });
-  }
-
-  getPosition(): Observable<any> {
-    return new Observable(
-      (observer: {
-        next: (arg0: GeolocationPosition) => void;
-        complete: () => void;
-        error: (arg0: GeolocationPositionError) => void;
-      }) => {
-        window.navigator.geolocation.getCurrentPosition(
-          (position: GeolocationPosition) => {
-            observer.next(position);
-            observer.complete();
-          },
-          (error) => observer.error(error)
-        );
-      }
-    );
   }
 
   ionViewWillEnter() {
