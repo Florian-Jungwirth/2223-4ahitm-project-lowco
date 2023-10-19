@@ -78,8 +78,7 @@ export class HomePage {
 
   constructor(
     private surveyService: SurveyService,
-    private titleService: TitleService,
-    private bac: BackGroundGeolocation
+    private titleService: TitleService
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
