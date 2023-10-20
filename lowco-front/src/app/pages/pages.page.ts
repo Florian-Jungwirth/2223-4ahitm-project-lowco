@@ -4,6 +4,12 @@ import { AnimationController, IonModal, NavController } from '@ionic/angular';
 import { ModalService } from '../services/modal.service';
 import { TitleService } from '../services/title.service';
 import { SurveyService } from '../services/survey.service';
+import { Capacitor } from "@capacitor/core";
+import {
+  FirebaseMessaging,
+  GetTokenOptions,
+} from "@capacitor-firebase/messaging";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pages',
@@ -18,6 +24,7 @@ export class PagesPage {
   @ViewChild('modal') modal: IonModal;
   units: any;
   title = "";
+  token = "";
   // selectedBefore = null;
   //showNum = 0;
 
@@ -25,10 +32,9 @@ export class PagesPage {
     private animationCtrl: AnimationController,
     private modalService: ModalService,
     private router: Router,
-    // private location: Location,
     private navCtrl: NavController,
     private surveyService: SurveyService,
-    private titleService: TitleService
+    private titleService: TitleService,
   ) {
     this.modalService.modalState.subscribe((obj) => {
       this.isModalOpen = true;
@@ -39,6 +45,7 @@ export class PagesPage {
       this.valueBefore = obj.value
       // this.showNum = obj.value
     });
+    
 
     this.router.events.subscribe((event: any) => {      
       if (event instanceof NavigationEnd) {        
@@ -49,6 +56,26 @@ export class PagesPage {
     this.titleService.title.subscribe((data: string) => {
       this.title = data;
     })
+
+    FirebaseMessaging.addListener("notificationReceived", (event) => {
+      console.log("notificationReceived: ", { event });
+    });
+    FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
+      console.log("notificationActionPerformed: ", { event });
+    });
+    if (Capacitor.getPlatform() === "web") {
+      navigator.serviceWorker.addEventListener("message", (event: any) => {
+        console.log("serviceWorker message: ", { event });
+        const notification = new Notification(event.data.notification.title, {
+          body: event.data.notification.body,
+        });
+        notification.onclick = (event) => {
+          console.log("notification clicked: ", { event });
+        };
+      });
+    }
+
+    this.getToken().then(this.requestPermissions)
   }
 
   enterAnimation = (baseEl: HTMLElement) => {
@@ -121,5 +148,23 @@ export class PagesPage {
 
   dismiss() {
     this.isModalOpen = false;
+  }
+
+  public async requestPermissions(): Promise<void> {
+    await FirebaseMessaging.requestPermissions();
+  }
+
+  public async getToken(): Promise<void> {
+    const options: GetTokenOptions = {
+      vapidKey: environment.firebase.vapidKey,
+    };
+    if (Capacitor.getPlatform() === "web") {
+      options.serviceWorkerRegistration =
+        await navigator.serviceWorker.register("firebase-messaging-sw.js");
+    }
+    const { token } = await FirebaseMessaging.getToken(options);
+    console.log(token);
+    
+    this.token = token;
   }
 }

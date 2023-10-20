@@ -29,7 +29,8 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
-              }
+              },
+              "src/firebase-messaging-sw.js"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": []
@@ -78,9 +79,6 @@
             },
             "development": {
               "browserTarget": "app:build:development"
-            },
-            "ci": {
-              "progress": false
             }
           },
           "defaultConfiguration": "development"

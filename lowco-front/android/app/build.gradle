@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace "com.game.lowco2"
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.ionic.starter"
+        applicationId "com.game.lowco2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

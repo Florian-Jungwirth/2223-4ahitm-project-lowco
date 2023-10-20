@@ -9,7 +9,6 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { error } from 'console';
 
 @Component({
   selector: 'app-login',
@@ -49,7 +48,7 @@ export class LoginPage implements OnInit {
     this.authService.login(this.loginForm.value).subscribe({
       async next(res) {
         if (res.token) {
-          await self.router.navigateByUrl('/lowco');
+          await self.router.navigateByUrl("/lowco")
         } else {
           const toast = await self.toastController.create({
             message: 'Falsche Email oder Passwort!',
