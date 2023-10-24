@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { CategoryModel } from './category.model';
+import { CategoryModel, CategorySaveModel } from '../../models/category.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
@@ -15,7 +15,7 @@ export class CategoryPage {
     private categoryService: CategoryService,
     private alertController: AlertController,
     private titleService: TitleService
-  ) {}
+  ) { }
 
   ionViewWillEnter() {
     this.titleService.setTitle('Kategorien')
@@ -41,7 +41,7 @@ export class CategoryPage {
     })
   }
 
-  selectedIcon="";
+  selectedIcon = "";
 
   categoryForm = new FormGroup({
     categoryTitle: new FormControl('', [Validators.required]),
@@ -60,8 +60,8 @@ export class CategoryPage {
 
   async updateCategory() {
     let formValues = this.categoryForm.value;
-    //@ts-ignore
-    let updatedCategory: CategoryModel = {title: formValues.categoryTitle, iconName: this.selectedIcon,
+    let updatedCategory: CategorySaveModel = {
+      title: formValues.categoryTitle || '', iconName: this.selectedIcon,
     };
     this.categoryService
       .updateCategory(this.categoryId, updatedCategory).subscribe({
@@ -72,15 +72,15 @@ export class CategoryPage {
           //TODO: Errorhandling
         }
       });
-    
+
     for (const category of this.setCategories) {
-      if(category._id == this.categoryId) {
+      if (category._id == this.categoryId) {
         category.title = updatedCategory.title;
         category.iconName = updatedCategory.iconName;
         break;
       }
     }
-    
+
     this.modal.dismiss();
   }
 
@@ -94,7 +94,7 @@ export class CategoryPage {
   async createCategory() {
     let formValues = this.categoryForm.value;
     //@ts-ignore
-    let createCategory: CategoryModel = {title: formValues.categoryTitle, iconName: this.selectedIcon};
+    let createCategory: CategoryModel = { title: formValues.categoryTitle, iconName: this.selectedIcon };
     this.categoryService.createNewCategory(createCategory).subscribe({
       next: (category) => {
         this.setCategories.push(category)
@@ -150,7 +150,7 @@ export class CategoryPage {
   }
 
   @ViewChild('modal2', { static: true }) modal2!: IonModal;
-  
+
   iconSelectionChange(icon: string) {
     this.selectedIcon = icon;
     this.modal2.dismiss();

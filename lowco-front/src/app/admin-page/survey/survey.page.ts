@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SurveyModel } from './survey.model';
+import { SurveyModel } from '../../models/survey.model';
 import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
@@ -31,7 +31,7 @@ export class SurveyPage implements OnInit {
   async ngOnInit() {
     this.setSurveys = await this.surveyService.getAllSurveysAdmin();
     console.log(this.setSurveys);
-    
+
     this.allSurveys = this.setSurveys;
 
     this.categoryService.getAllCategories().subscribe({
@@ -52,12 +52,12 @@ export class SurveyPage implements OnInit {
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         array.push({ key: key, value: obj[key] });
-      } 
+      }
+    }
+    return array;
   }
-  return array;
-  }
-  
-  selectedIcon="";
+
+  selectedIcon = "";
 
   surveyForm = new FormGroup({
     surveyTitle: new FormControl('', [Validators.required]),
@@ -69,7 +69,7 @@ export class SurveyPage implements OnInit {
 
   async editModal(survey: SurveyModel) {
     this.surveyId = survey._id
-    
+
     this.surveyForm.setValue({
       surveyTitle: survey.title,
       surveyStandard: survey.standardValue,
@@ -85,11 +85,11 @@ export class SurveyPage implements OnInit {
   async updateSurvey() {
     let formValues = this.surveyForm.value;
     //@ts-ignore
-    let updatedSurvey: SurveyModel = {title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyUnit, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat}
+    let updatedSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyUnit, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat }
     this.surveyService.updateSurvey(this.surveyId, updatedSurvey)
-    
+
     for (const survey of this.setSurveys) {
-      if(survey._id == this.surveyId) {
+      if (survey._id == this.surveyId) {
         survey.title = updatedSurvey.title
         survey.iconName = updatedSurvey.iconName
         survey.standardValue = updatedSurvey.standardValue
@@ -110,10 +110,10 @@ export class SurveyPage implements OnInit {
     this.modal.present()
   }
 
-  async createSurvey() {    
+  async createSurvey() {
     let formValues = this.surveyForm.value;
     //@ts-ignore
-    let createSurvey: SurveyModel = {title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat}
+    let createSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat }
     this.surveyService.createNewSurvey(createSurvey).then((survey) => {
       this.setSurveys.push(survey)
     })
@@ -133,7 +133,7 @@ export class SurveyPage implements OnInit {
         {
           text: 'Ja',
           cssClass: 'alert-button-confirm',
-          handler: ()=> {
+          handler: () => {
             this.surveyService.deleteSurvey(survey._id);
             this.setSurveys.splice(this.setSurveys.indexOf(survey), 1)
           }
@@ -150,7 +150,7 @@ export class SurveyPage implements OnInit {
   }
 
   @ViewChild('modal2', { static: true }) modal2!: IonModal;
-  
+
   iconSelectionChange(icon: string) {
     this.selectedIcon = icon;
     this.modal2.dismiss();

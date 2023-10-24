@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CategoryModel } from '../admin-page/category/category.model';
+import { CategoryModel, CategorySaveModel } from '../models/category.model';
 import { AuthService } from '../auth/auth.service';
 import { API_URL } from '../constants';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CategoryService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getAllCategories(): Observable<CategoryModel[]> {
     return this.httpClient.get<CategoryModel[]>(`${API_URL}category`);
@@ -31,7 +31,7 @@ export class CategoryService {
     return selectedCategories;
   }
 
-  updateCategory(categoryId: string, category: CategoryModel) {
+  updateCategory(categoryId: string, category: CategorySaveModel) {
     return this.httpClient.patch(`${API_URL}category/${categoryId}`, category);
   }
 

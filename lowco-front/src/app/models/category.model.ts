@@ -4,3 +4,8 @@ export interface CategoryModel {
     iconName: string;
     activated: number;
 }
+
+export interface CategorySaveModel {
+    title: string;
+    iconName: string;
+}

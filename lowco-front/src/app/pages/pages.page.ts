@@ -4,12 +4,16 @@ import { AnimationController, IonModal, NavController } from '@ionic/angular';
 import { ModalService } from '../services/modal.service';
 import { TitleService } from '../services/title.service';
 import { SurveyService } from '../services/survey.service';
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
+import { BackgroundGeolocationPlugin } from "@capacitor-community/background-geolocation";
+const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
+
 import {
   FirebaseMessaging,
   GetTokenOptions,
 } from "@capacitor-firebase/messaging";
 import { environment } from 'src/environments/environment';
+import { Coordinate } from '../models/coordinate.model';
 
 @Component({
   selector: 'app-pages',
@@ -45,10 +49,9 @@ export class PagesPage {
       this.valueBefore = obj.value
       // this.showNum = obj.value
     });
-    
 
-    this.router.events.subscribe((event: any) => {      
-      if (event instanceof NavigationEnd) {        
+    this.router.events.subscribe((event: any) => {
+      if (event instanceof NavigationEnd) {
         this.showBackButton = this.router.url !== '/lowco';
       }
     });
@@ -60,21 +63,27 @@ export class PagesPage {
     FirebaseMessaging.addListener("notificationReceived", (event) => {
       console.log("notificationReceived: ", { event });
     });
-    FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
-      console.log("notificationActionPerformed: ", { event });
-    });
-    if (Capacitor.getPlatform() === "web") {
-      navigator.serviceWorker.addEventListener("message", (event: any) => {
-        console.log("serviceWorker message: ", { event });
-        const notification = new Notification(event.data.notification.title, {
-          body: event.data.notification.body,
-        });
-        notification.onclick = (event) => {
-          console.log("notification clicked: ", { event });
-        };
-      });
-    }
 
+    FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
+      console.log("notificationActionPerformed: ", JSON.stringify(event));
+    });
+
+    FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
+      console.log("notificationActionPerformed: ", JSON.stringify(event));
+
+      if (Capacitor.getPlatform() === "web") {
+        navigator.serviceWorker.addEventListener("message", (event: any) => {
+          console.log("serviceWorker message: ", { event });
+          const notification = new Notification(event.data.notification.title, {
+            body: event.data.notification.body,
+          });
+          notification.onclick = (event) => {
+            console.log("notification clicked: ", { event });
+          };
+        });
+      }
+    })
+    
     this.getToken().then(this.requestPermissions)
   }
 
@@ -114,11 +123,11 @@ export class PagesPage {
   };
 
   okModal() {
-    
-    if(this.valueBefore != this.obj.value || this.obj.unit != this.unitBefore) {
+
+    if (this.valueBefore != this.obj.value || this.obj.unit != this.unitBefore) {
       this.surveyService.updateUserSurvey(
         this.obj.id,
-        this.obj.value*this.obj.relevantMeasures[this.obj.unit],
+        this.obj.value * this.obj.relevantMeasures[this.obj.unit],
         this.obj.unit
       );
       this.modalService.updateValue(this.obj.id, this.obj.value, this.obj.unit);
@@ -135,15 +144,15 @@ export class PagesPage {
 
   changeInput(e: any) {
     this.obj.unit = e.target.value
-  //   if(this.selectedBefore == null) {
-  //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.obj.unit]
-  //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
-  //   } else {
-  //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.selectedBefore]
-  //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
-  //   }
+    //   if(this.selectedBefore == null) {
+    //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.obj.unit]
+    //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
+    //   } else {
+    //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.selectedBefore]
+    //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
+    //   }
 
-  //   this.selectedBefore = e.target.value
+    //   this.selectedBefore = e.target.value
   }
 
   dismiss() {
@@ -164,7 +173,127 @@ export class PagesPage {
     }
     const { token } = await FirebaseMessaging.getToken(options);
     console.log(token);
-    
+
     this.token = token;
   }
+
 }
+
+function getDistanceBetweenTwoPoints(previousCoord: Coordinate, currentCoord: Coordinate) {
+  if (previousCoord.lat == currentCoord.lat && previousCoord.lon == currentCoord.lon || previousCoord.lat == -1) {
+    return 0;
+  }
+
+  const radlat1 = (Math.PI * previousCoord.lat) / 180;
+  const radlat2 = (Math.PI * currentCoord.lat) / 180;
+
+  const theta = previousCoord.lon - currentCoord.lon;
+  const radtheta = (Math.PI * theta) / 180;
+
+  let dist =
+    Math.sin(radlat1) * Math.sin(radlat2) +
+    Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+
+  if (dist > 1) {
+    dist = 1;
+  }
+
+  dist = Math.acos(dist);
+  dist = (dist * 180) / Math.PI;
+  dist = dist * 60 * 1.1515;
+  dist = dist * 1.609344;
+
+  return dist;
+}
+
+let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
+let distance = 0;
+let isDriving = false;
+let drivingStartTime: Date | null = null;
+let lastSpeedUpdate: Date | null = null;
+const speedLimit = 25;
+
+BackgroundGeolocation.addWatcher(
+  {
+    backgroundMessage: "Cancel to prevent battery drain.",
+
+    backgroundTitle: "Tracking You.",
+
+    requestPermissions: true,
+
+    stale: false,
+
+    distanceFilter: 5
+  },
+  function callback(location, error) {
+    if (error) {
+      if (error.code === "NOT_AUTHORIZED") {
+        if (window.confirm(
+          "This app needs your location, " +
+          "but does not have permission.\n\n" +
+          "Open settings now?"
+        )) {
+          BackgroundGeolocation.openSettings();
+        }
+      }
+      return console.error(error);
+    }
+
+    // if (location?.simulated) {
+    //   window.alert("Your location seems to be simulated.")
+    //   return;
+    // }
+
+    let currentCoord = { lat: location?.latitude || 0, lon: location?.longitude || 0 }
+
+    if (location != undefined && location.speed != null) {
+      let speedInKMH = location.speed * 3.6
+      console.log("speed: " + (location.speed * 3.6))
+
+      if (speedInKMH > speedLimit) {
+        // Die Geschwindigkeitsgrenze ist überschritten, Benutzer ist in Bewegung.
+        if (!isDriving) {
+          // Neue Fahrt beginnt.
+          isDriving = true;
+          drivingStartTime = new Date();
+          console.log("Fahrt wurde gestartet");
+        }
+        lastSpeedUpdate = new Date();
+        console.log("Fährt noch immer");
+      } else {
+        // Die Geschwindigkeit ist unter der Grenze.
+        if (isDriving) {
+          // Der Benutzer war vorher in Bewegung.
+          const currentTime = new Date();
+          if (lastSpeedUpdate) {
+            const timeDifference = currentTime.getTime() - lastSpeedUpdate.getTime();
+
+            if (timeDifference >= 5 * 60 * 1000) {
+              // Wenn die Geschwindigkeit 5 Minuten oder länger unter der Grenze bleibt, nehme an, dass die Fahrt beendet ist.
+              // Sende dem Benutzer eine Benachrichtigung.
+              console.log("Fahrt wurde beendet");
+
+              isDriving = false;
+            }
+          }
+        }
+      }
+    }
+
+    distance += getDistanceBetweenTwoPoints(previousCoordinates, currentCoord)
+    console.log(distance);
+    console.log(previousCoordinates.lat + ' ' + previousCoordinates.lon);
+
+
+    console.log("------------------------------");
+    previousCoordinates = currentCoord
+    return;
+
+  }
+).then(function after_the_watcher_has_been_added(watcher_id) {
+  // BackgroundGeolocation.removeWatcher({
+  //   id: watcher_id
+  // });
+  console.log("watcher added");
+
+});

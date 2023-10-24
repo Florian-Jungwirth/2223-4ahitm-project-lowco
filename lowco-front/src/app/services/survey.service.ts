@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { API_URL } from '../constants';
-import { SurveyModel } from '../admin-page/survey/survey.model';
+import { SurveyModel } from '../models/survey.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class SurveyService {
       });
     });
   }
-  
+
   updateSurvey(surveyId: string, survey: SurveyModel) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient.patch(`${API_URL}survey/${surveyId}`, survey).subscribe({
