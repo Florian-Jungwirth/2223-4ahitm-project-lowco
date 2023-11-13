@@ -33,7 +33,18 @@ export class PagesPage {
     this.modalService.modalState.subscribe((obj) => {
       this.isModalOpen = true;
       this.obj = obj;
-      this.obj.value = this.obj.value != null ? this.obj.value.toFixed(2) : '';
+      if(this.obj.value != null){
+        if(this.obj.value % 1 !== 0){
+          this.obj.value = this.obj.value.toFixed(2).replace('.', ',');
+        }
+        else{
+          this.obj.value = this.obj.value.toFixed(0).replace('.', ',');
+        }
+      }
+      else{
+        this.obj.value = '';
+      }
+      //this.obj.value = this.obj.value != null ? this.obj.value.toFixed(2).replace('.', ',') : '';
       this.units = Object.keys(obj.relevantMeasures);
       this.unitBefore = obj.unit
       this.valueBefore = obj.value
