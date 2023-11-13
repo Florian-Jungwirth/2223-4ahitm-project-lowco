@@ -14,6 +14,7 @@ import {
 } from "@capacitor-firebase/messaging";
 import { environment } from 'src/environments/environment';
 import { Coordinate } from '../models/coordinate.model';
+import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
 
 @Component({
   selector: 'app-pages',
@@ -22,15 +23,13 @@ import { Coordinate } from '../models/coordinate.model';
 })
 export class PagesPage {
   isModalOpen = false;
+  isLocationModalOpen = false;
   unitBefore: any;
   valueBefore: any
   obj: any;
   @ViewChild('modal') modal: IonModal;
   units: any;
   title = "";
-  token = "";
-  // selectedBefore = null;
-  //showNum = 0;
 
   constructor(
     private animationCtrl: AnimationController,
@@ -83,8 +82,21 @@ export class PagesPage {
         });
       }
     })
-    
+
     this.getToken().then(this.requestPermissions)
+
+    LocalNotifications.addListener('localNotificationActionPerformed', (payload) => {
+      if (payload.notification.id == 1 && payload.actionId == 'tap') {
+        this.isLocationModalOpen = true;
+        console.log("openModal");
+        
+      }
+      console.log(JSON.stringify(payload));
+    })
+  }
+
+  templateNotification() {
+    sendNotification('Hi', 'Test', 3)
   }
 
   enterAnimation = (baseEl: HTMLElement) => {
@@ -155,10 +167,6 @@ export class PagesPage {
     //   this.selectedBefore = e.target.value
   }
 
-  dismiss() {
-    this.isModalOpen = false;
-  }
-
   public async requestPermissions(): Promise<void> {
     await FirebaseMessaging.requestPermissions();
   }
@@ -173,8 +181,6 @@ export class PagesPage {
     }
     const { token } = await FirebaseMessaging.getToken(options);
     console.log(token);
-
-    this.token = token;
   }
 
 }
@@ -206,6 +212,23 @@ function getDistanceBetweenTwoPoints(previousCoord: Coordinate, currentCoord: Co
   return dist;
 }
 
+async function sendNotification(title: string, body: string, distance: number) {
+  let options: ScheduleOptions = {
+    notifications: [
+      {
+        title,
+        body,
+        extra: distance,
+        id: 1
+      }
+    ]
+  }
+
+  await LocalNotifications.schedule(options)
+  console.log("hi");
+  console.log(JSON.stringify(options));
+}
+
 let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
 let distance = 0;
 let isDriving = false;
@@ -215,9 +238,9 @@ const speedLimit = 25;
 
 BackgroundGeolocation.addWatcher(
   {
-    backgroundMessage: "Cancel to prevent battery drain.",
+    backgroundMessage: "Stoppe die App um Akku zu sparen.",
 
-    backgroundTitle: "Tracking You.",
+    backgroundTitle: "LowCO2 greift auf deinen Standort zu",
 
     requestPermissions: true,
 
@@ -229,9 +252,9 @@ BackgroundGeolocation.addWatcher(
     if (error) {
       if (error.code === "NOT_AUTHORIZED") {
         if (window.confirm(
-          "This app needs your location, " +
-          "but does not have permission.\n\n" +
-          "Open settings now?"
+          "Diese App braucht deinen Standort, " +
+          "hat aber keine Erlaubnis darauf zuzugreifen.\n\n" +
+          "Einstellungen öffnen?"
         )) {
           BackgroundGeolocation.openSettings();
         }
@@ -251,9 +274,7 @@ BackgroundGeolocation.addWatcher(
       console.log("speed: " + (location.speed * 3.6))
 
       if (speedInKMH > speedLimit) {
-        // Die Geschwindigkeitsgrenze ist überschritten, Benutzer ist in Bewegung.
         if (!isDriving) {
-          // Neue Fahrt beginnt.
           isDriving = true;
           drivingStartTime = new Date();
           console.log("Fahrt wurde gestartet");
@@ -261,19 +282,17 @@ BackgroundGeolocation.addWatcher(
         lastSpeedUpdate = new Date();
         console.log("Fährt noch immer");
       } else {
-        // Die Geschwindigkeit ist unter der Grenze.
         if (isDriving) {
-          // Der Benutzer war vorher in Bewegung.
           const currentTime = new Date();
           if (lastSpeedUpdate) {
             const timeDifference = currentTime.getTime() - lastSpeedUpdate.getTime();
 
             if (timeDifference >= 5 * 60 * 1000) {
-              // Wenn die Geschwindigkeit 5 Minuten oder länger unter der Grenze bleibt, nehme an, dass die Fahrt beendet ist.
-              // Sende dem Benutzer eine Benachrichtigung.
               console.log("Fahrt wurde beendet");
+              sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
 
               isDriving = false;
+              distance = 0;
             }
           }
         }
