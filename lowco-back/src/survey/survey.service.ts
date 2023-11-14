@@ -88,6 +88,6 @@ export class SurveyService {
   }
 
   getAllAdmin() {
-    return this.surveyModel.find().populate({path: 'category'})
+    return this.surveyModel.find().populate({path: 'category', select: '_id'})
   }
 }

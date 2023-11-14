@@ -32,7 +32,7 @@ export class CategoryController {
     return this.categoryService.remove(id);
   }
 
-  @Get('fortbewegung')
+  @Get('specific/fortbewegung')
   getFortbewegung() {
     return this.categoryService.getFortbewegung();
   }
