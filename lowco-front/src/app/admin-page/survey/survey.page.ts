@@ -30,6 +30,7 @@ export class SurveyPage implements OnInit {
 
   async ngOnInit() {
     this.setSurveys = await this.surveyService.getAllSurveysAdmin();
+
     console.log(this.setSurveys);
 
     this.allSurveys = this.setSurveys;
@@ -69,13 +70,14 @@ export class SurveyPage implements OnInit {
 
   async editModal(survey: SurveyModel) {
     this.surveyId = survey._id
+    
 
     this.surveyForm.setValue({
       surveyTitle: survey.title,
       surveyStandard: survey.standardValue,
       surveyMeasurements: survey.measurement,
       surveyType: survey.type,
-      surveyCat: survey.category
+      surveyCat: survey.category._id
     })
     this.selectedIcon = survey.iconName;
     this.edit = true

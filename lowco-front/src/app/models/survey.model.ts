@@ -1,3 +1,5 @@
+import { CategoryModel } from "./category.model";
+
 export interface SurveyModel {
     _id: string;
     iconName: string;
@@ -5,5 +7,5 @@ export interface SurveyModel {
     measurement: string;
     standardValue: number;
     type: string;
-    category: string;
+    category: CategoryModel;
 }

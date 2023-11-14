@@ -9,7 +9,7 @@
       <ng-container *ngFor="let survey of setSurveys">
         <div [class.categoryActive]="survey.category" *ngIf="survey.activated == 1">
           <div class="left"><ion-icon name="{{survey.iconName}}"></ion-icon>
-            <p>{{survey.title}}</p><p *ngIf="survey.category" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
+            <p>{{survey.title}}</p><p *ngIf="survey.category.activated == 0" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
           </div>
           <div class="right">
             <div (click)="editModal(survey)"><ion-icon name="create-outline"></ion-icon></div>
