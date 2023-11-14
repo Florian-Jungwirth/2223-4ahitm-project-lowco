@@ -15,6 +15,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { Coordinate } from '../models/coordinate.model';
 import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-pages',
@@ -38,7 +39,9 @@ export class PagesPage {
     private navCtrl: NavController,
     private surveyService: SurveyService,
     private titleService: TitleService,
+    private categoryService: CategoryService
   ) {
+    this.getSurveysOfFortbewegung()
     this.modalService.modalState.subscribe((obj) => {
       this.isModalOpen = true;
       this.obj = obj;
@@ -92,6 +95,13 @@ export class PagesPage {
         
       }
       console.log(JSON.stringify(payload));
+    })
+  }
+
+  getSurveysOfFortbewegung(){
+    this.categoryService.getFortbewegung().subscribe(async (element)=> {
+      let surveys = await this.surveyService.getSurveysOfCategory(element._id)
+      console.log(surveys);
     })
   }
 

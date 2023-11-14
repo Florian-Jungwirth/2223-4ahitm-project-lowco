@@ -47,6 +47,11 @@ export class CategoryService {
     return this.httpClient.get<CategoryModel>(`${API_URL}category/${id}`);
   }
 
+  getFortbewegung(): Observable<CategoryModel> {
+    return this.httpClient.get<CategoryModel>(`${API_URL}category/specific/fortbewegung`);
+  }
+
+
   setActivateCategory(category: CategoryModel, state: number) {
     this.httpClient
       .patch(
