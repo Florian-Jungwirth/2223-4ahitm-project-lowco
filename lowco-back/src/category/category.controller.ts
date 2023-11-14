@@ -32,6 +32,11 @@ export class CategoryController {
     return this.categoryService.remove(id);
   }
 
+  @Get('fortbewegung')
+  getFortbewegung() {
+    return this.categoryService.getFortbewegung();
+  }
+
   // @Patch('activated/all')
   // activateAll() {
   //   return this.categoryService.setAllActivated();

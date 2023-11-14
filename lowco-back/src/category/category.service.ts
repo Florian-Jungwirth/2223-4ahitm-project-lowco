@@ -48,4 +48,8 @@ export class CategoryService {
   getAllActivated() {
     return this.categoryModel.find({activated: 1});
   }
+
+  getFortbewegung() {
+    return this.categoryModel.findOne({title: 'Fortbewegung'});
+  }
 }
