@@ -51,18 +51,18 @@ jobs:
       steps:
         - name: Checkout Repo
           uses: actions/checkout@v3
-  
-        - name: Use Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
-            cache: 'npm'
 
         - name: Cache Node Packages
           uses: actions/cache@v2
           with:
             path: lowco-front/node_modules
             key: ${{ runner.os }}-npm-${{ hashFiles('lowco-front/package-lock.json') }}
+  
+        - name: Use Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20
+            cache: 'npm'
 
         - name: Run electron on windows  
           if: startsWith(matrix.os, 'windows-latest')
@@ -109,6 +109,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Cache Node Packages
+        uses: actions/cache@v2
+        with:
+          path: lowco-front/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('lowco-front/package-lock.json') }}
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -120,7 +126,6 @@ jobs:
         with:
           path: lowco-front/node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('lowco-front/package-lock.json') }}
-
 
       - name: Install Dependencies
         run: |
