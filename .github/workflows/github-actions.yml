@@ -59,7 +59,6 @@ jobs:
             cache: 'npm'
 
         - name: Cache Node Packages
-          id: cache-node-modules
           uses: actions/cache@v3
           with:
             path: |
@@ -67,8 +66,7 @@ jobs:
               lowco-back/package-lock.json
               lowco-front/node_modules
               lowco-front/package-lock.json
-          key: ${{ runner.os }}-npm-${{ hashFiles('lowco-back/package-lock.json', 'lowco-front/package-lock.json') }}
-        
+
 
 
 
