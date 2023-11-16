@@ -58,6 +58,14 @@ jobs:
             node-version: 20
             cache: 'npm'
 
+        - name: Cache Node Packages
+          uses: actions/cache@v3
+          with:
+              path: |
+                lowco-front/node_modules
+              key: ${{ runner.os }}-npm-${{'lowco-front/package-lock.json'}}
+
+
           
         - name: Run electron on windows  
           if: startsWith(matrix.os, 'windows-latest')
