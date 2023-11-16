@@ -116,6 +116,8 @@ jobs:
           path: |
             lowco-back/node_modules
             lowco-front/node_modules
+            lowco-back/package-lock.json
+            lowco-front/package-lock.json
 
       - name: Install Dependencies
         run: |
