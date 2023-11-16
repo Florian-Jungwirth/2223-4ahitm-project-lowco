@@ -86,6 +86,7 @@ export class PagesPage {
         .addAnimation([backdropAnimation, wrapperAnimation]);
     } else {
       return null;
+      
     }
   };
 
