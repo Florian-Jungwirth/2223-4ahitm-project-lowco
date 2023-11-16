@@ -57,7 +57,7 @@ jobs:
           with:
             node-version: 20
             cache: 'npm'
-            cache-dependency-path: 'lowco-front/package-lock.json', 'lowco-back/package-lock.json'
+
           
         - name: Run electron on windows  
           if: startsWith(matrix.os, 'windows-latest')
@@ -109,6 +109,13 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+
+      - name: Cache Node Packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            lowco-back/node_modules
+            lowco-front/node_modules
 
       - name: Install Dependencies
         run: |
