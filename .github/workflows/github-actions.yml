@@ -62,7 +62,7 @@ jobs:
           uses: actions/cache@v3
           with:
             path: './lowco-front/package-lock.json'
-            key: ${{ runner.os }}-modules-${{ hashFiles('./lowco-front/package-lock.json') }}
+            
 
 
 
@@ -118,15 +118,6 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
-
-      - name: Cache Node Packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            lowco-back/node_modules
-            lowco-front/node_modules
-            lowco-back/package-lock.json
-            lowco-front/package-lock.json
 
       - name: Install Dependencies
         run: |
