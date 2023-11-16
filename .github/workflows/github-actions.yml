@@ -9,21 +9,21 @@ env:
   IMAGE_NAME: floaterd2201/lowco2
 
 jobs:
-  release: 
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        - name: Create Release
-          uses: svenstaro/upload-release-action@v2
-          with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-back/lowco2.yml
-            tag: v0.0.${{github.run_number}}
-            release_name: Release v0.0.${{github.run_number}}
-            overwrite: true
- 
+      - name: Create Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: lowco-back/lowco2.yml
+          tag: v0.0.${{github.run_number}}
+          release_name: Release v0.0.${{github.run_number}}
+          overwrite: true
+
   build-push:
     runs-on: ubuntu-latest
     steps:
@@ -39,68 +39,61 @@ jobs:
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push latest to Docker
-        run: docker push floaterd2201/lowco2:latest     
+        run: docker push floaterd2201/lowco2:latest
 
   electron:
-      runs-on: ${{ matrix.os }}
-  
-      strategy:
-        matrix:
-          os: [windows-latest, macos-latest] 
-        
-      steps:
-        - name: Checkout Repo
-          uses: actions/checkout@v3
+    runs-on: ${{ matrix.os }}
 
-        - name: Cache Node Packages
-          uses: actions/cache@v2
-          with:
-            path: lowco-front/node_modules
-            key: ${{ runner.os }}-npm-${{ hashFiles('lowco-front/package-lock.json') }}
-  
-        - name: Use Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
-            cache: 'npm'
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
 
-        - name: Run electron on windows  
-          if: startsWith(matrix.os, 'windows-latest')
-          run: |
-              cd lowco-front
-              npm i
-              npm run build
-              npm run electron:make-windows
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-        - name: Upload Windows file
-          if: startsWith(matrix.os, 'windows-latest')
-          uses: svenstaro/upload-release-action@v2
-          with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-front/out/make/squirrel.windows/x64/lowco2-0.0.1 Setup.exe
-            tag: v0.0.${{github.run_number}}
-            asset_name: lowco2-windows-setup.exe
-            overwrite: true
-            prerelease: true
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-        - name: Run electron on mac  
-          if: startsWith(matrix.os, 'macos-latest')
-          run: |
-              cd lowco-front
-              npm i
-              npm run build
-              npm run electron:make-mac
+      - name: Run electron on windows
+        if: startsWith(matrix.os, 'windows-latest')
+        run: |
+          cd lowco-front
+          npm i
+          npm run build
+          npm run electron:make-windows
 
-        - name: Upload Mac file
-          if: startsWith(matrix.os, 'macos-latest')
-          uses: svenstaro/upload-release-action@v2
-          with:
-            repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
-            tag: v0.0.${{github.run_number}}
-            asset_name: lowco2-mac.zip
-            overwrite: true
-            prerelease: true
+      - name: Upload Windows file
+        if: startsWith(matrix.os, 'windows-latest')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: lowco-front/out/make/squirrel.windows/x64/lowco2-0.0.1 Setup.exe
+          tag: v0.0.${{github.run_number}}
+          asset_name: lowco2-windows-setup.exe
+          overwrite: true
+          prerelease: true
+
+      - name: Run electron on mac
+        if: startsWith(matrix.os, 'macos-latest')
+        run: |
+          cd lowco-front
+          npm i
+          npm run build
+          npm run electron:make-mac
+
+      - name: Upload Mac file
+        if: startsWith(matrix.os, 'macos-latest')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
+          tag: v0.0.${{github.run_number}}
+          asset_name: lowco2-mac.zip
+          overwrite: true
+          prerelease: true
 
   apk:
     runs-on: ubuntu-latest
@@ -109,47 +102,40 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Cache Node Packages
-        uses: actions/cache@v2
-        with:
-          path: lowco-front/node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('lowco-front/package-lock.json') }}
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: 'npm'
 
       - name: Install Dependencies
         run: |
-         cd lowco-front
-         npm install
+          cd lowco-front
+          npm install
 
       - name: Build Angular Ionic Project
         run: |
-         cd lowco-front
-         npm install -g @angular/cli  
-         npm run build
+          cd lowco-front
+          npm install -g @angular/cli  
+          npm run build
 
       - name: Build APK
         run: |
-         cd lowco-front
-          npm install -g @ionic/cli  
-
-          npm install -g @capacitor/cli 
+          cd lowco-front
+           npm install -g @ionic/cli  
           
-          npm i @capacitor/core
-
-          ionic capacitor build android
-        
-          ionic capacitor copy android
-
-          cd android
-
-          chmod +x ./gradlew
-
-          ./gradlew assembleDebug
+           npm install -g @capacitor/cli 
+          
+           npm i @capacitor/core
+          
+           ionic capacitor build android
+          
+           ionic capacitor copy android
+          
+           cd android
+          
+           chmod +x ./gradlew
+          
+           ./gradlew assembleDebug
 
       - name: Upload APK file
         uses: svenstaro/upload-release-action@v2
