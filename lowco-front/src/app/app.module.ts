@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AuthModule } from './auth/auth.module';
+import { BackgroundGeolocationPlugin } from "@capacitor-community/background-geolocation";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';

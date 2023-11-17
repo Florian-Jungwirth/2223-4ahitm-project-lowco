@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "825860913033",
+    "project_id": "lowco2",
+    "storage_bucket": "lowco2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825860913033:android:986af10dbb579e5dcd5358",
+        "android_client_info": {
+          "package_name": "com.game.lowco2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFGToV5YpzAS9-bPfkkFPyD-Ljphm6imQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

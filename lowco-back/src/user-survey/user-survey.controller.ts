@@ -26,6 +26,11 @@ export class UserSurveyController {
     return this.userSurveyService.findByUser(userId);
   }
 
+  @Patch('addValue/:userId/:surveyId/:value')
+  addValue(@Param('userId') userId: string, @Param('surveyId') surveyId: string, @Param('value') value: number) {
+    return this.userSurveyService.addValue(userId, surveyId, value);
+  }
+
   @Patch(':userId/:surveyId/:value/:unit')
   update(@Param('userId') userId: string, @Param('surveyId') surveyId: string, @Param('value') value: number, @Param('unit') unit: string) {
     return this.userSurveyService.update(userId, surveyId, value, unit);

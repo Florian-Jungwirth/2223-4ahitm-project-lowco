@@ -7,6 +7,11 @@ on:
 
 env:
   IMAGE_NAME: floaterd2201/lowco2
+  REGISTRY: ghcr.io
+  PROJECT_VERSION: latest
+  ORG_ACTOR: 2223-4ahitm-project-lowco
+  USER: florian-jungwirth
+  PROJECT_NAME: lowco2
 
 jobs:
   release:
@@ -30,10 +35,30 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUBTOKEN }}
+
       - name: Build
         run: |
           cd lowco-back
           docker build -t floaterd2201/lowco2 .
+          docker image tag floaterd2201/lowco2 ghcr.io/florian-jungwirth/lowco2:latest
+          docker image ls
+
+      - name: Push latest to packages
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+
+      - name: Tag latest to date
+        run: |
+          docker tag ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
+          docker image ls
+
+      - name: Push tagged version to packages
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
       - name: Login into Docker
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}

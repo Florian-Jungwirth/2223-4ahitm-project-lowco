@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { TitleService } from 'src/app/services/title.service';
+import { PagesPage } from '../pages.page';
 
 @Component({
   selector: 'app-settings',
@@ -13,7 +14,8 @@ export class SettingsPage implements OnInit {
   user: any;
   metric: number;
 
-  constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {}
+  constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {
+  }
 
   async ngOnInit() {
     this.isAdmin = await this.authService.isUserAdmin();

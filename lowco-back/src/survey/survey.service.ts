@@ -5,7 +5,6 @@ import { SurveyDocument } from 'src/schema/survey.schema';
 import { CreateSurveyDto } from './dto/create-survey.dto';
 import { UpdateSurveyDto } from './dto/update-survey.dto';
 import { Survey } from './entities/survey.entity';
-import { title } from 'process';
 //import { ObjectID } from 'typeorm';
 
 @Injectable()
@@ -89,9 +88,6 @@ export class SurveyService {
   }
 
   getAllAdmin() {
-    return this.surveyModel.find().populate({
-      path: 'category',
-      match: { activated: 0 }
-    })
+    return this.surveyModel.find().populate({path: 'category', select: '_id'})
   }
 }
