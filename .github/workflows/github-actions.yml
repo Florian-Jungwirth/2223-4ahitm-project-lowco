@@ -43,6 +43,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUBTOKEN }}
 
+      - name: Build
+        run: |
+          cd lowco-back
+          docker build -t floaterd2201/lowco2 .
+
       - name: Push latest to packages
         run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
@@ -51,13 +56,8 @@ jobs:
           docker tag ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
           docker image ls
 
-      - name: Push latest to packages
+      - name: Push tagged version to packages
         run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
-
-      - name: Build
-        run: |
-          cd lowco-back
-          docker build -t floaterd2201/lowco2 .
 
       - name: Login into Docker
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
