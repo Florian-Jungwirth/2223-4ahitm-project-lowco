@@ -250,15 +250,12 @@ async function sendNotification(title: string, body: string, distance: number) {
   }
 
   await LocalNotifications.schedule(options)
-  console.log("hi");
-  console.log(JSON.stringify(options));
 }
 
 let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
 let distance = 0;
 let isDriving = false;
-let drivingStartTime: Date | null = null;
-let lastSpeedUpdate: Date | null = null;
+let timeout: any = undefined;
 const speedLimit = 25;
 
 BackgroundGeolocation.addWatcher(
@@ -301,38 +298,31 @@ BackgroundGeolocation.addWatcher(
       if (speedInKMH > speedLimit) {
         if (!isDriving) {
           isDriving = true;
-          drivingStartTime = new Date();
           console.log("Fahrt wurde gestartet");
-        }
-        lastSpeedUpdate = new Date();
-        console.log("Fährt noch immer");
-      } else {
-        if (isDriving) {
-          const currentTime = new Date();
-          if (lastSpeedUpdate) {
-            const timeDifference = currentTime.getTime() - lastSpeedUpdate.getTime();
+        } else {
+          clearTimeout(timeout)
+          timeout = setTimeout(() => {
+            console.log("Fahrt wurde beendet");
+            sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
 
-            if (timeDifference >= 5 * 60 * 1000) {
-              console.log("Fahrt wurde beendet");
-              sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
-
-              isDriving = false;
-              distance = 0;
-            }
-          }
+            isDriving = false;
+            distance = 0;
+          }, 1000 * 30)
+          console.log("Fährt noch immer");
         }
       }
     }
 
-    distance += getDistanceBetweenTwoPoints(previousCoordinates, currentCoord)
-    console.log(distance);
-    console.log(previousCoordinates.lat + ' ' + previousCoordinates.lon);
-
-
-    console.log("------------------------------");
-    previousCoordinates = currentCoord
+    if (isDriving) {
+      
+      distance += getDistanceBetweenTwoPoints(previousCoordinates, currentCoord)
+      console.log(distance);
+      console.log(previousCoordinates.lat + ' ' + previousCoordinates.lon);
+      
+      console.log("------------------------------");
+      previousCoordinates = currentCoord
+    }
     return;
-
   }
 ).then(function after_the_watcher_has_been_added(watcher_id) {
   // BackgroundGeolocation.removeWatcher({
