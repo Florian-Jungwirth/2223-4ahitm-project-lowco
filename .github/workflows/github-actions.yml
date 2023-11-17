@@ -46,7 +46,7 @@ jobs:
         run: |
           cd lowco-back
           docker build -t floaterd2201/lowco2 .
-          docker image tag floaterd2201/lowco2 ghcr.io/Florian-Jungwirth/lowco2:latest
+          docker image tag floaterd2201/lowco2 Florian-Jungwirth/lowco2:latest
           docker image ls
 
       - name: Push latest to packages
