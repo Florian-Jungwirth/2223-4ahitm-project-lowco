@@ -7,9 +7,9 @@
     <ion-icon name="settings-outline" class="navIcons" routerLink="/lowco/settings"></ion-icon>
   </nav>
 </ion-header>
-<ion-router-outlet></ion-router-outlet>
+<ion-router-outlet *ngIf="!reload"></ion-router-outlet>
 
-<ion-modal id="example-modal" #modal [isOpen]="isModalOpen" [enterAnimation]="enterAnimation"
+<ion-modal class="modal" #modal [isOpen]="isModalOpen" [enterAnimation]="enterAnimation"
   (ionModalDidDismiss)="isModalOpen = false" [leaveAnimation]="leaveAnimation" [backdropDismiss]="true">
   <ng-template>
     <div id="innerBox">
@@ -38,25 +38,27 @@
   </ng-template>
 </ion-modal>
 
-<ion-modal id="example-modal" #locatonModal [isOpen]="isLocationModalOpen" [enterAnimation]="enterAnimation"
+<ion-modal class="modal locationModal" #locatonModal [isOpen]="isLocationModalOpen" [enterAnimation]="enterAnimation"
   (ionModalDidDismiss)="isLocationModalOpen = false" [leaveAnimation]="leaveAnimation" [backdropDismiss]="true">
   <ng-template>
     <div class="wrapper">
       <h1>Fortbewegungsmittel auswählen</h1>
 
       <ion-list lines="none">
-        <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
-          <ion-label>Item 1</ion-label>
-          <ion-icon name="person-circle"></ion-icon>
-        </ion-item>
-        <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
+        <div *ngFor="let survey of locomotionSurveys">
+          <ion-item button="true" detail="false" (click)="saveLocationModalValue(survey._id)">
+            <ion-label>{{survey.title}}</ion-label>
+            <ion-icon name="{{survey.iconName}}"></ion-icon>
+          </ion-item>
+        </div>
+        <!-- <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
           <ion-label>Item 2</ion-label>
           <ion-icon name="person-circle"></ion-icon>
         </ion-item>
         <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
           <ion-label>Item 3</ion-label>
           <ion-icon name="person-circle"></ion-icon>
-        </ion-item>
+        </ion-item> -->
       </ion-list>
     </div>
   </ng-template>

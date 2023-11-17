@@ -67,7 +67,7 @@ export class SurveyService {
     });
   }
 
-  getSurveysOfCategory(id: any): Promise<any> {
+  getSurveysOfCategory(id: any): Promise<SurveyModel[]> {
     return new Promise<any>((resolve) => {
       this.authService.getUser().then((user) => {
         this.httpClient
@@ -123,6 +123,26 @@ export class SurveyService {
         this.httpClient
           .patch(
             `${API_URL}user-survey/${user.id}/${surveyId}/${value}/${unit}`,
+            {}
+          )
+          .subscribe({
+            next: (data) => {
+              resolve(data);
+            },
+            error: (error) => {
+              reject(error);
+            },
+          });
+      });
+    });
+  }
+
+  addValueToUserSurvey(surveyId: string, value: number) {
+    return new Promise<any>((resolve, reject) => {
+      this.authService.getUser().then((user) => {
+        this.httpClient
+          .patch(
+            `${API_URL}user-survey/addValue/${user.id}/${surveyId}/${value}`,
             {}
           )
           .subscribe({

@@ -9,7 +9,7 @@ export class UserSurveyService {
   constructor(
     @InjectModel(UserSurvey.name)
     private readonly userSurveyModel: Model<UserSurveyDocument>,
-  ) {}
+  ) { }
 
   async create(
     value: number,
@@ -33,14 +33,22 @@ export class UserSurveyService {
   findOne(id: string) {
     return this.userSurveyModel.findOne({ _id: id }).populate('survey');
   }
-  
+
   findByUser(userId: string) {
-    return this.userSurveyModel.find({user: userId}).populate('survey');
+    return this.userSurveyModel.find({ user: userId }).populate('survey');
   }
 
   update(userId: string, surveyId: string, value: number, unit: string) {
     return this.userSurveyModel.findOneAndUpdate({ user: userId, survey: surveyId }, { $set: { value: value, time: Date.now(), unit: unit } },
-    { upsert: true, returnOriginal: false })
+      { upsert: true, returnOriginal: false })
+  }
+
+
+  addValue(userId: string, surveyId: string, value: number) {
+    return this.userSurveyModel.findOneAndUpdate(
+      { user: userId, survey: surveyId },
+      { $inc: { value: value } }
+    );
   }
 
   remove(id: string) {

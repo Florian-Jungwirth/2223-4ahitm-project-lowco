@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { Coordinate } from '../models/coordinate.model';
 import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
 import { CategoryService } from '../services/category.service';
+import { SurveyModel } from '../models/survey.model';
 
 @Component({
   selector: 'app-pages',
@@ -31,6 +32,9 @@ export class PagesPage {
   @ViewChild('modal') modal: IonModal;
   units: any;
   title = "";
+  locomotionSurveys: SurveyModel[] = []
+  locomotionValue: number = 0
+  reload = false
 
   constructor(
     private animationCtrl: AnimationController,
@@ -41,7 +45,6 @@ export class PagesPage {
     private titleService: TitleService,
     private categoryService: CategoryService
   ) {
-    this.getSurveysOfFortbewegung()
     this.modalService.modalState.subscribe((obj) => {
       this.isModalOpen = true;
       this.obj = obj;
@@ -90,23 +93,36 @@ export class PagesPage {
 
     LocalNotifications.addListener('localNotificationActionPerformed', (payload) => {
       if (payload.notification.id == 1 && payload.actionId == 'tap') {
+        this.getSurveysOfFortbewegung();
         this.isLocationModalOpen = true;
-        console.log("openModal");
-        
+        this.locomotionValue = payload.notification.extra
       }
       console.log(JSON.stringify(payload));
     })
+
+    this.getSurveysOfFortbewegung()
   }
 
   getSurveysOfFortbewegung(){
     this.categoryService.getFortbewegung().subscribe(async (element)=> {
-      let surveys = await this.surveyService.getSurveysOfCategory(element._id)
-      console.log(surveys);
+      this.locomotionSurveys = await this.surveyService.getSurveysOfCategory(element._id)
     })
   }
 
+  saveLocationModalValue(id: string) {
+    console.log(id + ' ' + this.locomotionValue);
+    if (this.locomotionValue != 0) {
+      this.reload = true;
+      this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).then(() => {
+        this.reload = false;
+      })
+    }
+    this.isLocationModalOpen = false;
+  }
+
   templateNotification() {
-    sendNotification('Hi', 'Test', 3)
+    let distance = 3;
+    sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
   }
 
   enterAnimation = (baseEl: HTMLElement) => {
@@ -192,7 +208,6 @@ export class PagesPage {
     const { token } = await FirebaseMessaging.getToken(options);
     console.log(token);
   }
-
 }
 
 function getDistanceBetweenTwoPoints(previousCoord: Coordinate, currentCoord: Coordinate) {
