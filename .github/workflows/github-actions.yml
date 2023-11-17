@@ -47,6 +47,7 @@ jobs:
         run: |
           cd lowco-back
           docker build -t floaterd2201/lowco2 .
+          docker image ls
 
       - name: Push latest to packages
         run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
