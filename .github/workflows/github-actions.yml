@@ -60,13 +60,9 @@ jobs:
       - name: Push tagged version to packages
         run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
-      - name: Login into Docker
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Push latest to Docker
-        run: docker push floaterd2201/lowco2:latest
-
   electron:
+    needs:
+      - build-push
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -121,6 +117,8 @@ jobs:
           prerelease: true
 
   apk:
+    needs:
+      - electron
     runs-on: ubuntu-latest
 
     steps:
