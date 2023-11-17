@@ -110,8 +110,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          path: 'lowco-front'
 
       - name: Cache node_modules
         uses: actions/cache@v3.3.2
