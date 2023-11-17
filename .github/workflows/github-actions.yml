@@ -11,7 +11,7 @@ env:
   PROJECT_VERSION: latest
   ORG_ACTOR: 2223-4ahitm-project-lowco
   USER: Florian-Jungwirth
-  PROJECT_NAME: LowCo2
+  PROJECT_NAME: lowco2
 
 
 jobs:
