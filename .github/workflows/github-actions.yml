@@ -10,7 +10,7 @@ env:
   REGISTRY: ghcr.io
   PROJECT_VERSION: latest
   ORG_ACTOR: 2223-4ahitm-project-lowco
-  USER: Florian-Jungwirth
+  USER: florian-jungwirth
   PROJECT_NAME: lowco2
 
 jobs:
@@ -50,15 +50,15 @@ jobs:
           docker image ls
 
       - name: Push latest to packages
-        run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
       - name: Tag latest to date
         run: |
-          docker tag ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
+          docker tag ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
           docker image ls
 
       - name: Push tagged version to packages
-        run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
       - name: Login into Docker
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
