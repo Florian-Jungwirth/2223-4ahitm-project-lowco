@@ -7,6 +7,12 @@ on:
 
 env:
   IMAGE_NAME: floaterd2201/lowco2
+  REGISTRY: ghcr.io
+  PROJECT_VERSION: latest
+  ORG_ACTOR: 2223-4ahitm-project-lowco
+  USER: Florian-Jungwirth
+  PROJECT_NAME: LowCo2
+
 
 jobs:
   release:
@@ -29,6 +35,24 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUBTOKEN }}
+
+      - name: Push latest to packages
+        run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+
+      - name: Tag latest to date
+        run: |
+          docker tag ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
+          docker image ls
+
+      - name: Push latest to packages
+        run: docker push ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
 
       - name: Build
         run: |
