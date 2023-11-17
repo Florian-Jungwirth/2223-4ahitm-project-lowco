@@ -5,6 +5,7 @@ const config: CapacitorConfig = {
   appName: 'lowco2',
   webDir: 'www',
   bundledWebRuntime: false,
+  android: { useLegacyBridge: true },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,

@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">lowco2</string>
     <string name="title_activity_main">lowco2</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">com.game.lowco2</string>
+    <string name="custom_url_scheme">com.game.lowco2</string>
+    <string name="capacitor_background_geolocation_notification_icon">
+        mipmap/notification_icon
+    </string>
 </resources>

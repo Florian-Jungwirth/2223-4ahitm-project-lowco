@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { API_URL } from '../constants';
-import { SurveyModel } from '../admin-page/survey/survey.model';
+import { SurveyModel } from '../models/survey.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class SurveyService {
       });
     });
   }
-  
+
   updateSurvey(surveyId: string, survey: SurveyModel) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient.patch(`${API_URL}survey/${surveyId}`, survey).subscribe({
@@ -67,7 +67,7 @@ export class SurveyService {
     });
   }
 
-  getSurveysOfCategory(id: any): Promise<any> {
+  getSurveysOfCategory(id: any): Promise<SurveyModel[]> {
     return new Promise<any>((resolve) => {
       this.authService.getUser().then((user) => {
         this.httpClient
@@ -123,6 +123,26 @@ export class SurveyService {
         this.httpClient
           .patch(
             `${API_URL}user-survey/${user.id}/${surveyId}/${value}/${unit}`,
+            {}
+          )
+          .subscribe({
+            next: (data) => {
+              resolve(data);
+            },
+            error: (error) => {
+              reject(error);
+            },
+          });
+      });
+    });
+  }
+
+  addValueToUserSurvey(surveyId: string, value: number) {
+    return new Promise<any>((resolve, reject) => {
+      this.authService.getUser().then((user) => {
+        this.httpClient
+          .patch(
+            `${API_URL}user-survey/addValue/${user.id}/${surveyId}/${value}`,
             {}
           )
           .subscribe({

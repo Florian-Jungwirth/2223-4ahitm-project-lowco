@@ -372,7 +372,7 @@ export class HomePage {
   }
 
   render() {
-    this.water.material.uniforms['time'].value += 1.0 / 120.0;
+    this.water.material.uniforms['time'].value += 1.0 / 160.0;
     this.renderer.render(this.scene, this.camera);
     TWEEN.update();
     // this.directionalLightHelper.update()

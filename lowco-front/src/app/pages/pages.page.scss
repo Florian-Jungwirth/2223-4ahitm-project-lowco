@@ -37,7 +37,7 @@ ion-list {
   width: fit-content;
 }
 
-ion-modal#example-modal {
+ion-modal.modal {
   --width: 80%;
   --height: fit-content;
   --background: var(--ion-color-light);
@@ -92,4 +92,33 @@ ion-modal#example-modal {
 
 .bg-transparent {
   background: transparent;
+}
+
+.locationModal .wrapper{
+  padding-bottom: 1vh;
+  padding-left: 0.5vh;
+  padding-right: 0.5vh;
+  background-color: var(--ion-color-light-tint);
+}
+
+.locationModal .wrapper h1{
+  text-align: center;
+  font-size: 1em;
+}
+
+.locationModal ion-list {
+  width: 100%;
+  --ion-item-background: none;
+}
+
+.locationModal ion-list ion-item{
+  width: 98%;
+  border-radius: 0.5em;
+  margin-left: 1%;
+  margin-top: 1vw;
+  --ion-item-background: var(--ion-color-light);
+}
+
+.locationModal ion-list ion-item ion-icon{
+  margin-right: 1vw;
 }
