@@ -13,7 +13,6 @@ env:
   USER: Florian-Jungwirth
   PROJECT_NAME: lowco2
 
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -47,6 +46,7 @@ jobs:
         run: |
           cd lowco-back
           docker build -t floaterd2201/lowco2 .
+          docker image tag lowco2:latest floaterd2201/lowco2
           docker image ls
 
       - name: Push latest to packages
