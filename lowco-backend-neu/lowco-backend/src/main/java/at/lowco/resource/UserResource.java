@@ -4,11 +4,10 @@ import at.lowco.model.User;
 import at.lowco.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
@@ -31,5 +30,14 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     public User getUserByID(@PathParam("id") long id){
         return userRepository.findById(id);
+    }
+
+    @PUT
+    @Path("changeUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateUser(User user){
+        userRepository.update(user);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

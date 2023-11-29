@@ -1,0 +1,62 @@
+### User getAll
+GET http://localhost:3000/user/all
+
+<> 2023-11-28T110216.200.json
+
+### get User by Id
+GET http://localhost:3000/user/1
+
+<> 2023-11-28T110243.200.json
+
+### update User
+PUT http://localhost:3000/user/changeUser
+content-type: application/json
+
+{
+  "id": 2,
+  "firstname": "Ben",
+  "lastname": "Böhmer",
+  "email": "ben.b@gmail.com",
+  "username": "b",
+  "isAdmin": true,
+  "password": "neverKnow",
+  "metric": true,
+  "quicks": null
+}
+
+### Category get All
+GET http://localhost:3000/category/all
+
+<> 2023-11-28T111556.200.json
+
+### get Category by Id
+GET http://localhost:3000/category/1
+
+<> 2023-11-28T112050.200.json
+
+### create new Category
+POST http://localhost:3000/category
+content-type: application/json
+
+{
+  "iconname": "treeicon",
+  "title": "Tree",
+  "activated": false
+}
+
+<> 2023-11-28T112821.400.json
+
+### delete Category by Id
+DELETE http://localhost:3000/category/1
+
+
+### update Category
+PUT http://localhost:3000/category/changeCategory
+content-type: application/json
+
+{
+  "id": 2,
+  "iconName": "tree-icon",
+  "title": "Tree",
+  "activated": false
+}
