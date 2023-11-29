@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
 
-import { CategoryPage } from './survey-selection.page';
+import {CategoryPage} from './survey-selection.page';
 
 const routes: Routes = [
   {
@@ -14,4 +14,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class CategoryPageRoutingModule {}
+export class CategoryPageRoutingModule {
+}

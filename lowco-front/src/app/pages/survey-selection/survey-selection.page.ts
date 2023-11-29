@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { SurveyService } from 'src/app/services/survey.service';
-import { TitleService } from 'src/app/services/title.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {SurveyService} from 'src/app/services/survey.service';
+import {TitleService} from 'src/app/services/title.service';
 
 @Component({
   selector: 'app-survey-selection',
@@ -37,14 +37,14 @@ export class CategoryPage implements OnInit {
       this.getAllVaues(),
       this.surveyService.getTypes()
     ]).then(([surveys, values, types]) => {
-      this.surveys = surveys      
+      this.surveys = surveys
       this.values = values
       this.types = types
 
       this.loading = false
       this.selectedSurveys = this.surveys;
     })
-    
+
   }
 
   async getSurveys(): Promise<any> {
@@ -57,7 +57,7 @@ export class CategoryPage implements OnInit {
 
   getValueById(survey: any) {
     for (const value of this.values) {
-      if (survey._id == value.survey._id) {      
+      if (survey._id == value.survey._id) {
         return value.value;
       }
     }

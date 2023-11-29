@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { CategoryModel, CategorySaveModel } from '../models/category.model';
-import { AuthService } from '../auth/auth.service';
-import { API_URL } from '../constants';
-import { Observable } from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {CategoryModel, CategorySaveModel} from '../models/category.model';
+import {API_URL} from '../constants';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+  }
 
   getAllCategories(): Observable<CategoryModel[]> {
     return this.httpClient.get<CategoryModel[]>(`${API_URL}category`);

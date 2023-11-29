@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
 
-import { SettingsPage } from './settings.page';
+import {SettingsPage} from './settings.page';
 
 const routes: Routes = [
   {
@@ -10,10 +10,11 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
-  },  {
+    loadChildren: () => import('./profile/profile.module').then(m => m.ProfilePageModule)
+  },
+  {
     path: 'quickselection',
-    loadChildren: () => import('./quickselection/quickselection.module').then( m => m.QuickselectionPageModule)
+    loadChildren: () => import('./quickselection/quickselection.module').then(m => m.QuickselectionPageModule)
   }
 
 ];
@@ -22,4 +23,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SettingsPageRoutingModule {}
+export class SettingsPageRoutingModule {
+}

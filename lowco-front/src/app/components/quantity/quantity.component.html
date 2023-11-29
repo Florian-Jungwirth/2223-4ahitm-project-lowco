@@ -30,3 +30,5 @@
     <ion-icon class="edit" name="create"></ion-icon>
   </div>
 </div>
+
+<app-survey-modal *ngIf="showModal" [title]="title" [value]="value" [id]="id" (closeModalEmitter)="closeModal()" [isQuantity]="true" (valuesChanged)="changeValues($event)"></app-survey-modal>

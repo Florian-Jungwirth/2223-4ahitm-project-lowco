@@ -1,22 +1,20 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AdminGuard } from './admin-page/guard/admin.guard';
-import { LoginAndRegisterGuard } from './auth/login-and-register.guard';
+import {NgModule} from '@angular/core';
+import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
+import {AdminGuard} from './admin-page/guard/admin.guard';
 
 const routes: Routes = [
 
   {
     path: '',
-    loadChildren: () => import('./pages/pages.module').then( m => m.PagesPageModule),
-    canActivate: [LoginAndRegisterGuard]
+    loadChildren: () => import('./pages/pages.module').then(m => m.PagesPageModule),
   },
   {
     path: 'login',
-    loadChildren: () => import('./auth/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./auth/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin-page/admin.module').then( m => m.AdminPageModule),
+    loadChildren: () => import('./admin-page/admin.module').then(m => m.AdminPageModule),
     canActivate: [AdminGuard]
   },
   {
@@ -39,7 +37,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})
   ],
   exports: [RouterModule]
 })

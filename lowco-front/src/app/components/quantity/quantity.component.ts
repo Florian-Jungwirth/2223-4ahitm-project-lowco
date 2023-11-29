@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { ModalService } from 'src/app/services/modal.service';
 import { SurveyService } from 'src/app/services/survey.service';
 
 @Component({
@@ -14,17 +13,18 @@ export class QuantityComponent {
   @Input() value: any;
   @Input() id: any;
   @Input() daysLeft: number;
+  showModal = false
 
   isClickable = 'changeQuantity';
 
-  constructor(private modalService: ModalService, private surveyService: SurveyService) {
+  constructor(private surveyService: SurveyService) {
     this.showWarning = false;
-    
+
     if (this.value == 0) this.isClickable = 'notClickable';
-    this.modalService.valueChanged.subscribe((changeObj) => {
-      if (this.id == changeObj.id) this.value = changeObj.value;
-      if (this.value == 0) this.isClickable = 'notClickable';
-    });
+    // this.modalService.valueChanged.subscribe((changeObj) => {
+    //   if (this.id == changeObj.id) this.value = changeObj.value;
+    //   if (this.value == 0) this.isClickable = 'notClickable';
+    // });
   }
 
   addOne() {
@@ -43,7 +43,17 @@ export class QuantityComponent {
       this.surveyService.updateUserSurvey(this.id, this.value, '-')
     }
   }
+
   openModal() {
-    this.modalService.openModalQuantity(this.title, this.value, this.id);
+    this.showModal = true
+  }
+
+  changeValues(values: { id: string, value: number, unit: string }) {
+    this.id = values.id;
+    this.value = values.value;
+  }
+
+  closeModal() {
+    this.showModal = false
   }
 }

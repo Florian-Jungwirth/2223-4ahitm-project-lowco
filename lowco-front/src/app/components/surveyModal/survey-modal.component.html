@@ -1,0 +1,28 @@
+<ion-modal class="modal" #modal [isOpen]="true" (ionModalDidDismiss)="closeModal()"
+    [backdropDismiss]="true">
+    <ng-template>
+        <div id="innerBox">
+            <div id="closeBtnDiv">
+                <ion-icon name="close-outline" id="closeBtn" (click)="modal.dismiss()"></ion-icon>
+            </div>
+            <div class="wrapper">
+                <h1>{{ title }}</h1>
+                <div class="flexy">
+                    <input type="number" [(ngModel)]="value">
+                    <ion-list class="bg-transparent" *ngIf="!isQuantity">
+                        <ion-item color="none" lines="none">
+                            <ion-select color="none" lines="none" aria-label="Unit" interface="popover"
+                                [value]="unit" (ionChange)="changeInput($event)">
+                                <ion-select-option color="none" lines="none" *ngFor="let unit of units"
+                                    [value]="unit">{{unit}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                    </ion-list>
+                </div>
+                <div id="buttonDiv">
+                    <input type="button" id="button" (click)="okModal()" value="Save">
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</ion-modal>

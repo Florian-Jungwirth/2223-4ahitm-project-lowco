@@ -4,10 +4,9 @@ import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { Storage } from '@ionic/storage';
-import { User } from './user';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { UserLogin } from './userLogin';
 import { API_URL } from '../constants';
+import { User, UserLogin } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',

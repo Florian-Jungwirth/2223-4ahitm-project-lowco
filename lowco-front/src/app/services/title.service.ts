@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 export class TitleService {
   title = new BehaviorSubject<string>("");
 
-  constructor() { }
+  constructor() {
+  }
 
   setTitle(title: string) {
     this.title.next(title);

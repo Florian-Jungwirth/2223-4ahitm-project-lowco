@@ -6,11 +6,14 @@
     </div>
 
     <div class="categoryBox" *ngIf="!loading">
-      <div *ngFor="let category of selectedCategories">
-        <app-categoryComponent [title]="category.title" [showWarning]="false" [icon]="category.iconName"
-          (click)="navigateTo(category._id)"></app-categoryComponent>
-      </div>
+      <ng-container *ngIf="selectedCategories.length != 0">
+        <div *ngFor="let category of selectedCategories">
+          <app-categoryComponent [title]="category.title" [showWarning]="false" [icon]="category.iconName"
+                                 (click)="navigateTo(category._id)"></app-categoryComponent>
+        </div>
+      </ng-container>
     </div>
+    <p *ngIf="!loading && selectedCategories.length == 0" style="text-align: center; width: 100%">Keine Kategorien!</p>
 
     <div *ngIf="loading" id="loadingSpinner" class="loading"
       style="display: flex; align-items: center; justify-content: center;">

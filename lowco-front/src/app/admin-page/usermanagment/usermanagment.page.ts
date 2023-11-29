@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TitleService } from 'src/app/services/title.service';
-import { UserManagmentService } from 'src/app/services/userManagment.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-usermanagment',
@@ -8,7 +8,7 @@ import { UserManagmentService } from 'src/app/services/userManagment.service';
   styleUrls: ['./usermanagment.page.scss'],
 })
 export class UsermanagmentPage implements OnInit {
-  constructor(private categoryService: UserManagmentService, private titleService: TitleService) { }
+  constructor(private categoryService: UserService, private titleService: TitleService) { }
 
   ionViewWillEnter() {
     this.titleService.setTitle('Benutzer')

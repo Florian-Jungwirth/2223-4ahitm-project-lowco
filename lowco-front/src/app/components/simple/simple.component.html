@@ -14,8 +14,13 @@
       <ion-icon class="icon" name="{{ icon }}"></ion-icon>
     </div>
     <div class="valueBox">
-      <p *ngIf="loaded">{{value.toLocaleString("sv-SE", { maximumFractionDigits: 2, minimumFractionDigits: 0 })}} {{unit}}</p>
-      <p *ngIf="!loaded"><ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text></p>
+      <p *ngIf="loaded">{{value.toLocaleString("sv-SE", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 0
+      })}} {{unit}}</p>
+      <p *ngIf="!loaded">
+        <ion-skeleton-text [animated]="true" style="width: 50%;"></ion-skeleton-text>
+      </p>
     </div>
   </div>
 
@@ -28,3 +33,6 @@
     <ion-icon class="edit" name="create"></ion-icon>
   </div>
 </div>
+
+<app-survey-modal *ngIf="showModal" [title]="title" [value]="value" [unit]="unit" [id]="id" [isQuantity]="false"
+                  [relevantMeasures]="relevantMeasures" (closeModalEmitter)="closeModal()" (valuesChanged)="changeValues($event)"></app-survey-modal>

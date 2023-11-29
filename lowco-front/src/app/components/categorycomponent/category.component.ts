@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { TitleService } from 'src/app/services/title.service';
 
 @Component({
   selector: 'app-categoryComponent',

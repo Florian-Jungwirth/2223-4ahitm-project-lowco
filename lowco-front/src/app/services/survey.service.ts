@@ -1,15 +1,16 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { API_URL } from '../constants';
-import { SurveyModel } from '../models/survey.model';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AuthService} from '../auth/auth.service';
+import {API_URL} from '../constants';
+import {SurveyModel} from '../models/survey.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyService {
 
-  constructor(private httpClient: HttpClient, private authService: AuthService) { }
+  constructor(private httpClient: HttpClient, private authService: AuthService) {
+  }
 
   getAllSurveys(): Promise<any> {
     return new Promise<any>((resolve) => {

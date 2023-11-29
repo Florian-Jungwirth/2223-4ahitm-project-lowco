@@ -1,7 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AnimationController, IonModal, NavController } from '@ionic/angular';
-import { ModalService } from '../services/modal.service';
+import { NavController } from '@ionic/angular';
 import { TitleService } from '../services/title.service';
 import { SurveyService } from '../services/survey.service';
 import { Capacitor, registerPlugin } from "@capacitor/core";
@@ -24,47 +23,20 @@ import { SurveyModel } from '../models/survey.model';
   styleUrls: ['./pages.page.scss'],
 })
 export class PagesPage {
-  isModalOpen = false;
   isLocationModalOpen = false;
-  unitBefore: any;
-  valueBefore: any
-  obj: any;
-  @ViewChild('modal') modal: IonModal;
-  units: any;
   title = "";
   locomotionSurveys: SurveyModel[] = []
   locomotionValue: number = 0
   reload = false
+  showBackButton = false
 
   constructor(
-    private animationCtrl: AnimationController,
-    private modalService: ModalService,
     private router: Router,
-    private navCtrl: NavController,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private navCtrl: NavController
   ) {
-    this.modalService.modalState.subscribe((obj) => {
-      this.isModalOpen = true;
-      this.obj = obj;
-      if(this.obj.value != null){
-        if(this.obj.value % 1 !== 0){
-          this.obj.value = this.obj.value.toFixed(2).replace('.', ',');
-        }
-        else{
-          this.obj.value = this.obj.value.toFixed(0).replace('.', ',');
-        }
-      }
-      else{
-        this.obj.value = '';
-      }
-      //this.obj.value = this.obj.value != null ? this.obj.value.toFixed(2).replace('.', ',') : '';
-      this.units = Object.keys(obj.relevantMeasures);
-      this.unitBefore = obj.unit
-      this.valueBefore = obj.value
-      // this.showNum = obj.value
-    });
 
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
@@ -113,6 +85,9 @@ export class PagesPage {
 
     this.getSurveysOfFortbewegung()
   }
+  goBack() {
+    this.navCtrl.back();
+  }
 
   getSurveysOfFortbewegung(){
     this.categoryService.getFortbewegung().subscribe(async (element)=> {
@@ -134,75 +109,6 @@ export class PagesPage {
   templateNotification() {
     let distance = 3;
     sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
-  }
-
-  enterAnimation = (baseEl: HTMLElement) => {
-    const root = baseEl.shadowRoot;
-
-    if (root != null) {
-      const backdropAnimation = this.animationCtrl
-        .create()
-        .addElement(root.querySelector('ion-backdrop')!)
-        .fromTo('opacity', '0.01', 'var(--backdrop-opacity)');
-
-      const wrapperAnimation = this.animationCtrl
-        .create()
-        .addElement(root.querySelector('.modal-wrapper')!)
-        .keyframes([
-          { offset: 0, opacity: '0', transform: 'scale(0)' },
-          { offset: 1, opacity: '0.99', transform: 'scale(1)' },
-        ]);
-      return this.animationCtrl
-        .create()
-        .addElement(baseEl)
-        .easing('ease-out')
-        .duration(250)
-        .addAnimation([backdropAnimation, wrapperAnimation]);
-    } else {
-      return null;
-      
-    }
-  };
-
-  leaveAnimation = (baseEl: HTMLElement) => {
-    let ret = this.enterAnimation(baseEl);
-    if (ret != null) {
-      return ret.direction('reverse');
-    }
-    return null;
-  };
-
-  okModal() {
-
-    if (this.valueBefore != this.obj.value || this.obj.unit != this.unitBefore) {
-      this.surveyService.updateUserSurvey(
-        this.obj.id,
-        this.obj.value * this.obj.relevantMeasures[this.obj.unit],
-        this.obj.unit
-      );
-      this.modalService.updateValue(this.obj.id, this.obj.value, this.obj.unit);
-    }
-    this.isModalOpen = false;
-  }
-
-  showBackButton: boolean = false;
-
-  goBack() {
-    // this.location.back();
-    this.navCtrl.back();
-  }
-
-  changeInput(e: any) {
-    this.obj.unit = e.target.value
-    //   if(this.selectedBefore == null) {
-    //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.obj.unit]
-    //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
-    //   } else {
-    //     this.obj.value = this.obj.value*this.obj.relevantMeasures[this.selectedBefore]
-    //     this.obj.value = this.obj.value/this.obj.relevantMeasures[e.target.value]
-    //   }
-
-    //   this.selectedBefore = e.target.value
   }
 
   public async requestPermissions(): Promise<void> {
@@ -326,11 +232,11 @@ BackgroundGeolocation.addWatcher(
     }
 
     if (isDriving) {
-      
+
       distance += getDistanceBetweenTwoPoints(previousCoordinates, currentCoord)
       console.log(distance);
       console.log(previousCoordinates.lat + ' ' + previousCoordinates.lon);
-      
+
       console.log("------------------------------");
       previousCoordinates = currentCoord
     }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { CategoryService } from 'src/app/services/category.service';
+import {CategoryModel} from "../../models/category.model";
 
 @Component({
   selector: 'app-category-selection',
@@ -11,7 +12,7 @@ import { CategoryService } from 'src/app/services/category.service';
 })
 export class ActivitySelectionPage implements OnInit {
   categories: any;
-  selectedCategories: any;
+  selectedCategories: CategoryModel[];
   loading = true;
 
   constructor(

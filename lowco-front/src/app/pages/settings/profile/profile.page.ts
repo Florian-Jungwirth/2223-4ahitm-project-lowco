@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProfileService } from 'src/app/services/profile.service';
-import { ProfileModel } from '../../../models/profile.model';
+import { ProfileModel } from '../../../models/user.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';

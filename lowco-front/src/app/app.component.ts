@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Capacitor } from "@capacitor/core";
-import { initializeApp } from "firebase/app";
-import { environment } from 'src/environments/environment';
+import {Component} from '@angular/core';
+import {Router} from '@angular/router';
+import {Capacitor} from "@capacitor/core";
+import {initializeApp} from "firebase/app";
+import {environment} from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',

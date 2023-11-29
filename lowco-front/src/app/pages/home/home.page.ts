@@ -18,7 +18,6 @@ import {
 } from 'three';
 import TWEEN, { Tween } from '@tweenjs/tween.js';
 import SunCalc from 'suncalc';
-import { Observable } from 'rxjs';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
 

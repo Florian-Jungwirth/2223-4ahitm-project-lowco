@@ -1,6 +1,7 @@
 <ion-header>
   <nav>
-    <img *ngIf="!showBackButton" src="assets/icon/favicon.svg" id="logo" routerLink="/">
+    <img *ngIf="!showBackButton" ngSrc="assets/icon/favicon.svg" id="logo" routerLink="/" alt="Zurück" height="36"
+         width="36">
     <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
     <h1 (click)="templateNotification()">{{title}}</h1>
     <!-- TODO: Remove sendNotification -->
@@ -9,37 +10,8 @@
 </ion-header>
 <ion-router-outlet *ngIf="!reload"></ion-router-outlet>
 
-<ion-modal class="modal" #modal [isOpen]="isModalOpen" [enterAnimation]="enterAnimation"
-  (ionModalDidDismiss)="isModalOpen = false" [leaveAnimation]="leaveAnimation" [backdropDismiss]="true">
-  <ng-template>
-    <div id="innerBox">
-      <div id="closeBtnDiv">
-        <ion-icon name="close-outline" id="closeBtn" (click)="isModalOpen = false"></ion-icon>
-      </div>
-      <div class="wrapper">
-        <h1>{{ obj.title }}</h1>
-        <div class="flexy">
-          <input type="number" [(ngModel)]="obj.value">
-          <ion-list class="bg-transparent">
-            <ion-item color="none" lines="none">
-              <ion-select color="none" lines="none" aria-label="Unit" interface="popover" [value]="obj.unit"
-                (ionChange)="changeInput($event)">
-                <ion-select-option color="none" lines="none" *ngFor="let unit of units"
-                  [value]="unit">{{unit}}</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-list>
-        </div>
-        <div id="buttonDiv">
-          <input type="button" id="button" (click)="okModal()" value="Save">
-        </div>
-      </div>
-    </div>
-  </ng-template>
-</ion-modal>
-
-<ion-modal class="modal locationModal" #locatonModal [isOpen]="isLocationModalOpen" [enterAnimation]="enterAnimation"
-  (ionModalDidDismiss)="isLocationModalOpen = false" [leaveAnimation]="leaveAnimation" [backdropDismiss]="true">
+<ion-modal class="modal locationModal" #locatonModal [isOpen]="isLocationModalOpen"
+  (ionModalDidDismiss)="isLocationModalOpen = false" [backdropDismiss]="true">
   <ng-template>
     <div class="wrapper">
       <h1>Fortbewegungsmittel auswählen</h1>
@@ -51,14 +23,6 @@
             <ion-icon name="{{survey.iconName}}"></ion-icon>
           </ion-item>
         </div>
-        <!-- <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
-          <ion-label>Item 2</ion-label>
-          <ion-icon name="person-circle"></ion-icon>
-        </ion-item>
-        <ion-item button="true" detail="false" (click)="isLocationModalOpen = false">
-          <ion-label>Item 3</ion-label>
-          <ion-icon name="person-circle"></ion-icon>
-        </ion-item> -->
       </ion-list>
     </div>
   </ng-template>

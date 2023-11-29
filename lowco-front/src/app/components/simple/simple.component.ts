@@ -1,8 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { AuthService } from 'src/app/auth/auth.service';
-import { CategoryService } from 'src/app/services/category.service';
-import { ModalService } from 'src/app/services/modal.service';
-import { SurveyService } from 'src/app/services/survey.service';
+import {Component, Input} from '@angular/core';
+import {AuthService} from 'src/app/auth/auth.service';
+import {SurveyService} from 'src/app/services/survey.service';
 
 @Component({
   selector: 'app-simple',
@@ -12,7 +10,7 @@ import { SurveyService } from 'src/app/services/survey.service';
 export class SimpleComponent {
   @Input() title: any;
   @Input() icon: any;
-  @Input() showWarning: Boolean;
+  @Input() showWarning: boolean;
   @Input() unit: any;
   @Input() value: any;
   @Input() id: any;
@@ -20,20 +18,15 @@ export class SimpleComponent {
   @Input() daysLeft: number;
   measurements: any;
   relevantMeasures: any;
-  loaded = false
+  loaded = false;
+  showModal = false
+
 
   constructor(
-    private modalService: ModalService,
     private surveyService: SurveyService,
     private authService: AuthService
   ) {
     this.showWarning = false;
-    this.modalService.valueChanged.subscribe((changeObj) => {
-      if (this.id == changeObj.id) {
-        this.value = changeObj.value;
-        this.unit = changeObj.unit;
-      }
-    });
   }
 
   ngOnInit() {
@@ -47,15 +40,18 @@ export class SimpleComponent {
   }
 
   openModal() {
-    if (this.value != undefined) {
-      this.modalService.openModal(
-        this.title,
-        this.value,
-        this.unit,
-        this.id,
-        this.relevantMeasures
-      );
-    }
+    this.value = this.value == null ? 0 : this.value
+    this.showModal = true
+  }
+
+  closeModal() {
+    this.showModal = false
+  }
+
+  changeValues(values: { id: string, value: number, unit: string }) {
+    this.id = values.id;
+    this.value = values.value;
+    this.unit = values.unit;
   }
 
   async getMeasurement() {
