@@ -1,5 +1,5 @@
 export interface CategoryModel {
-    _id: string;
+    id: string;
     title: string;
     iconName: string;
     activated: number;

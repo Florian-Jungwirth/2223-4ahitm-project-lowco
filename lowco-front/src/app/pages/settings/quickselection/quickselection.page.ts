@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Subject } from 'rxjs';
-import { CategoryService } from 'src/app/services/category.service';
 import { SurveyService } from 'src/app/services/survey.service';
 import { TitleService } from 'src/app/services/title.service';
 
@@ -11,43 +9,30 @@ import { TitleService } from 'src/app/services/title.service';
   styleUrls: ['./quickselection.page.scss'],
 })
 export class QuickselectionPage implements OnInit {
-  surveys: any;
+  surveys: any[] = [];
   selectedSurveys: any;
-  types: any;
   loading = true;
   selectedQuicks: any[] = []
 
-  constructor(private surveyService: SurveyService, private toastController: ToastController, private titleService: TitleService) {}
+  constructor(private surveyService: SurveyService, private toastController: ToastController, private titleService: TitleService) { }
 
   ionViewWillEnter() {
     this.titleService.setTitle('Schnellauswahl')
   }
 
   ngOnInit() {
-    Promise.all([this.getSurveys(), this.surveyService.getTypes(), this.surveyService.getQuicks()]).then(
-      ([surveys, types, quicks]) => {
-        for (const survey of surveys) {
-          for (const quick of quicks) {
-            if(survey._id == quick) {
-              survey.selected = true
-              break;
-            } else {
-              survey.selected = false
-            }      
-          }
+    this.surveyService.getSurveyWithQuicks().subscribe((surveys) => {
+      for (const survey of surveys) {
+        let preparedSurvey: any = survey[0]
+        preparedSurvey.selected = survey[1]
+        this.surveys.push(preparedSurvey)
+        if(survey[1]) {
+          this.selectedQuicks.push(survey[0].id)
         }
-
-        this.surveys = surveys;
-        this.types = types;
-        this.selectedQuicks = quicks;
-        this.loading = false;
-        this.selectedSurveys = this.surveys;
       }
-    );
-  }
-
-  async getSurveys(): Promise<any> {
-    return await this.surveyService.getAllActivatedSurveys();
+      this.selectedSurveys = this.surveys;
+      this.loading = false;
+    })
   }
 
   async search(event: any) {
@@ -60,9 +45,9 @@ export class QuickselectionPage implements OnInit {
   }
 
   addToQuicks(id: any, survey: any) {
-    if(!this.selectedQuicks.includes(id)) {
-      if(this.selectedQuicks.length <= 3) {
-        this.selectedQuicks.push(id)      
+    if (!this.selectedQuicks.includes(id)) {
+      if (this.selectedQuicks.length <= 3) {
+        this.selectedQuicks.push(id)
         this.surveyService.changeQuicks(this.selectedQuicks)
         survey.classList.add('selected')
       } else {

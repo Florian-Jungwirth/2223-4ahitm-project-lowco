@@ -1,7 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {SurveyService} from 'src/app/services/survey.service';
-import {TitleService} from 'src/app/services/title.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { SurveyService } from 'src/app/services/survey.service';
+import { TitleService } from 'src/app/services/title.service';
+import {UserSurveyModel} from "../../models/userSurvey.model";
+import {Types} from "../../constants";
+import {SurveyModel} from "../../models/survey.model";
 
 @Component({
   selector: 'app-survey-selection',
@@ -10,8 +13,8 @@ import {TitleService} from 'src/app/services/title.service';
 })
 export class CategoryPage implements OnInit {
   id: string = '';
-  surveys: any;
-  selectedSurveys: any;
+  surveys: [SurveyModel, any][];
+  selectedSurveys: [SurveyModel, any][];
   values: any;
   types: any;
   loading = true
@@ -32,45 +35,17 @@ export class CategoryPage implements OnInit {
       this.id = params['id'];
     });
 
-    Promise.all([
-      this.getSurveys(),
-      this.getAllVaues(),
-      this.surveyService.getTypes()
-    ]).then(([surveys, values, types]) => {
-      this.surveys = surveys
-      this.values = values
-      this.types = types
-
-      this.loading = false
-      this.selectedSurveys = this.surveys;
+    this.surveyService.getUserSurveysOfCategory(this.id).subscribe(surveys => {
+      for (const survey of surveys) {
+        if(survey[1] == null) {
+          survey[1] = {value: survey[0].standardValue, unit: 'km'}
+        }
+      }
+      this.surveys = surveys;
+      this.selectedSurveys = surveys;
+      this.loading = false;
+      this.types = Types;
     })
-
-  }
-
-  async getSurveys(): Promise<any> {
-    return await this.surveyService.getSurveysOfCategory(this.id);
-  }
-
-  async getAllVaues(): Promise<any> {
-    return await this.surveyService.getAllValuesByUser();
-  }
-
-  getValueById(survey: any) {
-    for (const value of this.values) {
-      if (survey._id == value.survey._id) {
-        return value.value;
-      }
-    }
-    return survey.standardValue;
-  }
-
-  getUnitById(survey: any) {
-    for (const value of this.values) {
-      if (survey._id == value.survey._id) {
-        return value.unit;
-      }
-    }
-    return null;
   }
 
   async search(event: any) {

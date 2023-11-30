@@ -78,21 +78,21 @@ export class PagesPage {
       if (payload.notification.id == 1 && payload.actionId == 'tap') {
         this.getSurveysOfFortbewegung();
         this.isLocationModalOpen = true;
-        this.locomotionValue = payload.notification.extra
+        this.locomotionValue = payload.notification.extra;
       }
       console.log(JSON.stringify(payload));
     })
-
-    this.getSurveysOfFortbewegung()
   }
   goBack() {
     this.navCtrl.back();
   }
 
   getSurveysOfFortbewegung(){
-    this.categoryService.getFortbewegung().subscribe(async (element)=> {
-      this.locomotionSurveys = await this.surveyService.getSurveysOfCategory(element._id)
-    })
+    // this.categoryService.getFortbewegung().subscribe((element)=> {
+    //   this.surveyService.getSdurveysOfCategory(element._id).subscribe(data => {
+    //
+    //   })
+    // })
   }
 
   saveLocationModalValue(id: string) {

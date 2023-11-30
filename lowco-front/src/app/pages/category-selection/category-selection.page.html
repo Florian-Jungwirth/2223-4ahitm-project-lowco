@@ -9,7 +9,7 @@
       <ng-container *ngIf="selectedCategories.length != 0">
         <div *ngFor="let category of selectedCategories">
           <app-categoryComponent [title]="category.title" [showWarning]="false" [icon]="category.iconName"
-                                 (click)="navigateTo(category._id)"></app-categoryComponent>
+                                 (click)="navigateTo(category.id)"></app-categoryComponent>
         </div>
       </ng-container>
     </div>

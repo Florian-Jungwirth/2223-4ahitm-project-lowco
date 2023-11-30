@@ -20,6 +20,8 @@ import TWEEN, { Tween } from '@tweenjs/tween.js';
 import SunCalc from 'suncalc';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
+import { UserSurveyModel } from "../../models/userSurvey.model";
+import { Types } from "../../constants";
 
 @Component({
   selector: 'app-home',
@@ -58,7 +60,7 @@ export class HomePage {
   waterColor = '#259e9a';
   previousTheta: any;
   previousPhi: any;
-  quickSelection: any[];
+  quickSelection: UserSurveyModel[];
   values: any;
   time = new Date();
   types: any;
@@ -87,31 +89,8 @@ export class HomePage {
   ionViewWillEnter() {
     this.titleService.setTitle('LowCo2');
 
-    Promise.all([
-      this.getAllVaues(),
-      this.surveyService.getTypes(),
-      this.surveyService.getAmountOfSurveys(4),
-      this.surveyService.getQuicks(),
-      this.surveyService.getAllActivatedSurveys(),
-    ]).then(([values, types, quickSelection, quicks, surveys]) => {
-      if (quicks.length == 0) {
-        this.quickSelection = quickSelection;
-      } else {
-        let qs = [];
-
-        for (const survey of surveys) {
-          for (const quick of quicks) {
-            if (survey._id == quick) {
-              qs.push(survey);
-              break;
-            }
-          }
-        }
-
-        this.quickSelection = qs;
-      }
-      this.values = values;
-      this.types = types;
+    this.surveyService.getQuicks().subscribe((quicks: UserSurveyModel[]) => {
+      this.quickSelection = quicks;
 
       switch (this.quickSelection.length) {
         case 1:
@@ -134,12 +113,90 @@ export class HomePage {
           break;
       }
 
+      this.types = Types;
+
       setTimeout(() => {
         this.height = this.surveys.nativeElement.offsetHeight;
         this.surveys.nativeElement.style.height = this.height + 'px';
         this.setHeight(window.innerHeight - this.height, true);
       }, 200);
-    });
+    })
+
+    // Promise.all([
+    //   this.getAllVaues(),
+    //   this.surveyService.getTypes(),
+    //   this.surveyService.getAmountOfSurveys(4),
+    //   this.surveyService.getQuicks(),
+    //   this.surveyService.getAllActivatedSurveys(),
+    // ]).then(([values, types, quickSelection, quicks, surveys]) => {
+    //   if (quicks.length == 0) {
+    //     this.quickSelection = quickSelection;
+    //   } else {
+    //     let qs = [];
+    //
+    //     for (const survey of surveys) {
+    //       for (const quick of quicks) {
+    //         if (survey.id == quick) {
+    //           qs.push(survey);
+    //           break;
+    //         }
+    //       }
+    //     }
+    //
+    //     this.quickSelection = qs;
+    //   }
+    //   this.values = values;
+    //   this.types = types;
+    //
+    //   switch (this.quickSelection.length) {
+    //     case 1:
+    //       this.quickSelection[0].style = 'grid-column: 1/3';
+    //       break;
+    //     case 2:
+    //       this.quickSelection[0].style = 'grid-column: 1/3';
+    //       this.quickSelection[1].style = 'grid-column: 1/3';
+    //       break;
+    //     case 3:
+    //       this.quickSelection[0].style = 'grid-column: 1/2';
+    //       this.quickSelection[1].style = 'grid-column: 2/3';
+    //       this.quickSelection[2].style = 'grid-column: 1/3';
+    //       break;
+    //     case 4:
+    //       this.quickSelection[0].style = 'grid-column: 1/2';
+    //       this.quickSelection[1].style = 'grid-column: 2/3';
+    //       this.quickSelection[2].style = 'grid-column: 1/2';
+    //       this.quickSelection[3].style = 'grid-column: 2/3';
+    //       break;
+    //   }
+    //
+    //   setTimeout(() => {
+    //     this.height = this.surveys.nativeElement.offsetHeight;
+    //     this.surveys.nativeElement.style.height = this.height + 'px';
+    //     this.setHeight(window.innerHeight - this.height, true);
+    //   }, 200);
+    // });
+  }
+
+  getValueById(survey: any) {
+    for (const value of this.values) {
+      if (survey.id == value.survey.id) {
+        return value.value;
+      }
+    }
+    return survey.standardValue;
+  }
+
+  getUnitById(survey: any) {
+    for (const value of this.values) {
+      if (survey.id == value.survey.id) {
+        return value.unit;
+      }
+    }
+    return null;
+  }
+
+  async getAllVaues(): Promise<any> {
+    return await this.surveyService.getAllValuesByUser();
   }
 
   ngAfterViewInit() {
@@ -749,28 +806,6 @@ export class HomePage {
   async glbLoader(pathInAssets: string) {
     let loader = new GLTFLoader();
     return await loader.loadAsync('../../../assets/' + pathInAssets);
-  }
-
-  getValueById(survey: any) {
-    for (const value of this.values) {
-      if (survey._id == value.survey._id) {
-        return value.value;
-      }
-    }
-    return survey.standardValue;
-  }
-
-  getUnitById(survey: any) {
-    for (const value of this.values) {
-      if (survey._id == value.survey._id) {
-        return value.unit;
-      }
-    }
-    return null;
-  }
-
-  async getAllVaues(): Promise<any> {
-    return await this.surveyService.getAllValuesByUser();
   }
 
   waterChange() {

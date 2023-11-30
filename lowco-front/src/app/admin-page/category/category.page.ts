@@ -48,7 +48,7 @@ export class CategoryPage {
   });
 
   async editModal(category: CategoryModel) {
-    this.categoryId = category._id;
+    this.categoryId = category.id;
     this.selectedIcon = category.iconName;
 
     this.categoryForm.setValue({
@@ -74,7 +74,7 @@ export class CategoryPage {
       });
 
     for (const category of this.setCategories) {
-      if (category._id == this.categoryId) {
+      if (category.id == this.categoryId) {
         category.title = updatedCategory.title;
         category.iconName = updatedCategory.iconName;
         break;
@@ -131,7 +131,7 @@ export class CategoryPage {
           text: 'Ja',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.categoryService.deleteCategory(category._id).subscribe();
+            this.categoryService.deleteCategory(category.id).subscribe();
             this.setCategories.splice(this.setCategories.indexOf(category), 1);
           },
         },

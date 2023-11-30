@@ -25,6 +25,20 @@ public class UserSurveyRessource {
         return userSurveyRepository.listAll();
     }
 
+    @Path("getAllActivatedJoinedByUserID/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Object[]> getAllActivatedJoinedByUserID(@PathParam("id") long id){
+        return userSurveyRepository.getAllActivatedJoinedByUserID(id);
+    }
+
+    @Path("getAllActivatedByUserAndCategory/{id}/{userid}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Object[]> getAllActivatedByUserAndCategory(@PathParam("id") long id, @PathParam("userid") long userid){
+        return userSurveyRepository.getAllActivatedByUserAndCategory(id, userid);
+    }
+
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,11 +46,18 @@ public class UserSurveyRessource {
         return userSurveyRepository.findById(id);
     }
 
-    @Path("getByUserId/{id}")
+    @Path("getJoinedUserSurveyByUserID/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserSurvey> getUserSurveyByUserID(@PathParam("id") long id){
-        return userSurveyRepository.getByUserId(id);
+    public List<UserSurvey> getJoinedUserSurveyByUserID(@PathParam("id") long id){
+        return userSurveyRepository.getJoinedUserSurveyByUserID(id);
+    }
+
+    @Path("getJoinedQuicksByUserID/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<UserSurvey> getJoinedQuicks(@PathParam("id") long id){
+        return userSurveyRepository.getJoinedQuicks(id);
     }
 
     @PUT

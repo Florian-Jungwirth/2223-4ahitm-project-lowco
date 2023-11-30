@@ -6,12 +6,12 @@ export interface ProfileModel {
     username: string;
 }
 
-export interface UserLogin {
+export interface UserLoginModel {
     email: string;
     password: string;
 }
 
-export interface User {
+export interface UserModel {
     id: string;
     firstname: string;
     lastname: string;

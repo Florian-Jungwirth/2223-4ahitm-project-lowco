@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {CategoryModel, CategorySaveModel} from '../models/category.model';
-import {API_URL} from '../constants';
+import {API_URL, SERVER_URL_NEU} from '../constants';
 import {Observable} from 'rxjs';
 
 @Injectable({
@@ -12,12 +12,12 @@ export class CategoryService {
   }
 
   getAllCategories(): Observable<CategoryModel[]> {
-    return this.httpClient.get<CategoryModel[]>(`${API_URL}category`);
+    return this.httpClient.get<CategoryModel[]>(`${SERVER_URL_NEU}category/all`);
   }
 
   getAllActivatedCategories(): Observable<CategoryModel[]> {
     return this.httpClient.get<CategoryModel[]>(
-      `${API_URL}category/activated/all`
+      `${SERVER_URL_NEU}category/allActivated`
     );
   }
 
@@ -55,7 +55,7 @@ export class CategoryService {
   setActivateCategory(category: CategoryModel, state: number) {
     this.httpClient
       .patch(
-        `${API_URL}category/activated/setOneActivated/${category._id}/${state}`,
+        `${API_URL}category/activated/setOneActivated/${category.id}/${state}`,
         {}
       )
       .subscribe();

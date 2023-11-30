@@ -18,7 +18,7 @@
 
       <ion-list lines="none">
         <div *ngFor="let survey of locomotionSurveys">
-          <ion-item button="true" detail="false" (click)="saveLocationModalValue(survey._id)">
+          <ion-item button="true" detail="false" (click)="saveLocationModalValue(survey.id)">
             <ion-label>{{survey.title}}</ion-label>
             <ion-icon name="{{survey.iconName}}"></ion-icon>
           </ion-item>

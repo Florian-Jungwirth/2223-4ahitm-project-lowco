@@ -2,32 +2,32 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Category } from './category.schema';
 
-const Measurements = {
-  Distanz: {
-    name: 'd',
-    units: {
-      metrisch: {
-        m: 1,
-        km: 1000
-      },
-      imperial: {
-        mi: 1609.344,
-        ft: 0.3048
+  const Measurements = {
+    Distanz: {
+      name: 'd',
+      units: {
+        metrisch: {
+          m: 1,
+          km: 1000
+        },
+        imperial: {
+          mi: 1609.344,
+          ft: 0.3048
+        }
+      }
+    },
+    Anzahl: {
+      name: 'a'
+    },
+    Zeit: {
+      name: 'z',
+      units: {
+        h: 3600,
+        min: 60,
+        s: 1
       }
     }
-  },
-  Anzahl: {
-    name: 'a'
-  },
-  Zeit: {
-    name: 'z',
-    units: {
-      h: 3600,
-      min: 60,
-      s: 1
-    }
   }
-}
 
 enum Types {
   Einfach = 'e',

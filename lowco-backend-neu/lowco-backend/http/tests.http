@@ -59,3 +59,6 @@ content-type: application/json
   "title": "Tree",
   "activated": false
 }
+
+### getJoinedUserSurveyByUserID
+GET http://localhost:3000/userSurvey/getJoinedUserSurveyByUserID/1

@@ -1,8 +1,9 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
-import {API_URL} from '../constants';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
+import {API_URL, SERVER_URL_NEU, USER_ID} from '../constants';
 import {SurveyModel} from '../models/survey.model';
+import { UserSurveyModel } from "../models/userSurvey.model";
 
 @Injectable({
   providedIn: 'root'
@@ -68,24 +69,17 @@ export class SurveyService {
     });
   }
 
-  getSurveysOfCategory(id: any): Promise<SurveyModel[]> {
-    return new Promise<any>((resolve) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .get(`${API_URL}survey/getByCategory/${id}/${user.id}`)
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-          });
-      });
-    });
+  getUserSurveysOfCategory(id: any)  {
+      return this.httpClient
+          .get<[SurveyModel, any][]>(`${SERVER_URL_NEU}userSurvey/getAllActivatedByUserAndCategory/${id}/${USER_ID}`)
   }
 
-  getSurveysByName(surveys: any, search: string): SurveyModel[] {
+
+
+  getSurveysByName(surveys: [SurveyModel, any][], search: string): [SurveyModel, any][] {
     let selectedSurveys = [];
     for (const survey of surveys) {
-      if (survey.title.toLowerCase().includes(search.toLowerCase())) {
+      if (survey[0].title.toLowerCase().includes(search.toLowerCase())) {
         selectedSurveys.push(survey);
       }
     }
@@ -217,41 +211,22 @@ export class SurveyService {
   }
 
   changeQuicks(quicks: any[]) {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .patch(`${API_URL}user/changeQuicks/${user.id}`, quicks)
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-            error: (error) => {
-              reject(error);
-            },
-          });
-      });
-    });
+    //TODO
+    console.log(quicks)
   }
 
-  getQuicks(): any {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient.get(`${API_URL}user/getQuicks/${user.id}`).subscribe({
-          next: (data: any) => {
-            resolve(data[0].quicks);
-          },
-          error: (error) => {
-            reject(error);
-          },
-        });
-      });
-    });
+  getQuicks() {
+    return this.httpClient.get<UserSurveyModel[]>(SERVER_URL_NEU + "userSurvey/getJoinedUserSurveyByUserID/" +USER_ID);
+  }
+
+  getSurveyWithQuicks() {
+    return this.httpClient.get<[SurveyModel, boolean][]>(SERVER_URL_NEU + "userSurvey/getAllActivatedJoinedByUserID/" +USER_ID);
   }
 
   setActivateSurvey(survey: SurveyModel, state: number) {
     this.httpClient
       .patch(
-        `${API_URL}survey/activated/setOneActivated/${survey._id}/${state}`,
+        `${API_URL}survey/activated/setOneActivated/${survey.id}/${state}`,
         {}
       )
       .subscribe((data) => {
