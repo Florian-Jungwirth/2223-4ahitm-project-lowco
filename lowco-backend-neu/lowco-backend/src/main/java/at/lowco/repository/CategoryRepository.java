@@ -10,15 +10,8 @@ import jakarta.persistence.EntityManager;
 @ApplicationScoped
 public class CategoryRepository implements PanacheRepository<Category> {
 
-    @Inject
-    EntityManager em;
-
     public void update(Category category) {
-        Category cat = Category.findById(category.id);
-        cat.iconName = category.iconName;
-        cat.title = category.title;
-        cat.activated = category.activated;
-        cat.persist();
+        getEntityManager().merge(category);
     }
 
 }

@@ -1,7 +1,7 @@
 package at.lowco.resource;
 
-import at.lowco.model.User;
-import at.lowco.repository.UserRepository;
+import at.lowco.model.Survey;
+import at.lowco.repository.SurveyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -12,32 +12,31 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @ApplicationScoped
-
-@Path("/user")
-public class UserResource {
+@Path("/survey")
+public class SurveyResource {
     @Inject
-    UserRepository userRepository;
+    SurveyRepository surveyRepository;
 
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> allUsers(){
-        return userRepository.listAll();
+    public List<Survey> allSurveys(){
+        return surveyRepository.listAll();
     }
 
-    @GET
     @Path("{id}")
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUserByID(@PathParam("id") long id){
-        return userRepository.findById(id);
+    public Survey getUserByID(@PathParam("id") long id){
+        return surveyRepository.findById(id);
     }
 
     @PUT
-    @Path("updateUser")
+    @Path("updateSurvey")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Response updateUser(User user){
-        userRepository.update(user);
+    public Response updateSurvey(Survey survey){
+        surveyRepository.update(survey);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

@@ -1,14 +1,12 @@
 package at.lowco.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-import java.sql.Array;
+import java.util.List;
 
 @Entity
-@Table(name = "UserTest")
+@Table(name = "Users")
 public class User extends PanacheEntity {
     public String firstname;
 
@@ -23,7 +21,4 @@ public class User extends PanacheEntity {
     public String password;
 
     public Boolean metric;
-
-    @Column(nullable = true)
-    public int[] quicks = new int[20]; //TODO
 }

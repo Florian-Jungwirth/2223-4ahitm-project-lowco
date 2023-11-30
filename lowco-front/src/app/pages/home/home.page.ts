@@ -29,7 +29,7 @@ import { SurveyService } from 'src/app/services/survey.service';
 export class HomePage {
   isOpen() {
     if (
-      this.surveys.nativeElement./*parentElement.*/ classList.contains('transe')
+      this.surveys.nativeElement.classList.contains('transe')
     ) {
       this.setHeight(window.innerHeight - this.height, true);
       this.surveys.nativeElement.style.height = this.height + 'px';
@@ -37,8 +37,7 @@ export class HomePage {
       this.setHeight(window.innerHeight);
       this.surveys.nativeElement.style.height = 0 + 'px';
     }
-    this.surveys.nativeElement./*parentElement.*/ classList.toggle('transe');
-    // this.surveys.nativeElement.parentElement.classList.toggle('notTranse');
+    this.surveys.nativeElement.classList.toggle('transe');
   }
 
   @ViewChild('canvas') container!: ElementRef;
@@ -81,12 +80,13 @@ export class HomePage {
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
-      this.latitude = position.coords.latitude;    
+      this.latitude = position.coords.latitude;
     });
   }
 
   ionViewWillEnter() {
     this.titleService.setTitle('LowCo2');
+
     Promise.all([
       this.getAllVaues(),
       this.surveyService.getTypes(),
@@ -704,7 +704,7 @@ export class HomePage {
     //     .easing(TWEEN.Easing.Sinusoidal.In)
     //     .onUpdate(() => {
     //       console.log(yVec);
-          
+
     //       bag.position.set(bag.position.x, yVec.y, bag.position.z);
     //     })
     //     .repeat(Infinity)
@@ -716,7 +716,7 @@ export class HomePage {
     //     this.meshTweens[bag.uuid] = tween;
 
     //     console.log(this.meshTweens);
-        
+
 
     //     bag.traverse((child) => {
     //       if ((child as THREE.Mesh).isMesh) {

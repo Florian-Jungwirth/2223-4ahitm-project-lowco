@@ -55,7 +55,7 @@ public class CategoryResource {
     }
 
     @PUT
-    @Path("changeCategory")
+    @Path("updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response updateCategory(Category category){

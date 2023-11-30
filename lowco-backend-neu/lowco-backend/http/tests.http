@@ -9,7 +9,7 @@ GET http://localhost:3000/user/1
 <> 2023-11-28T110243.200.json
 
 ### update User
-PUT http://localhost:3000/user/changeUser
+PUT http://localhost:3000/user/updateUser
 content-type: application/json
 
 {
@@ -20,8 +20,7 @@ content-type: application/json
   "username": "b",
   "isAdmin": true,
   "password": "neverKnow",
-  "metric": true,
-  "quicks": null
+  "metric": true
 }
 
 ### Category get All
