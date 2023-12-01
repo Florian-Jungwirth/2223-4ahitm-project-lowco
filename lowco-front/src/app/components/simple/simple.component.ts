@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
+import {MEASUREMENTS, USER} from "../../constants";
 
 @Component({
   selector: 'app-simple',
@@ -10,33 +11,22 @@ import {SurveyService} from 'src/app/services/survey.service';
 export class SimpleComponent {
   @Input() title: any;
   @Input() icon: any;
-  @Input() showWarning: boolean;
+  @Input() showWarning: boolean = false;
   @Input() unit: any;
   @Input() value: any;
-  @Input() id: any;
+  @Input() id: number;
   @Input() measurement: any;
   @Input() daysLeft: number;
-  measurements: any;
+  @Input() standardValue: number;
+  measurements: any = MEASUREMENTS;
   relevantMeasures: any;
-  loaded = false;
   showModal = false
 
-
-  constructor(
-    private surveyService: SurveyService,
-    private authService: AuthService
-  ) {
-    this.showWarning = false;
-  }
-
   ngOnInit() {
-    this.surveyService.getMeasurements().then(async data => {
-      this.measurements = data
-      if (this.value != undefined) {
-        this.value = this.value / (await this.getMeasurement());
-      }
-      this.loaded = true;
-    });
+    if (this.value == null) {
+      this.value = this.standardValue
+    }
+    this.value = this.value / this.getMeasurement();
   }
 
   openModal() {
@@ -48,37 +38,29 @@ export class SimpleComponent {
     this.showModal = false
   }
 
-  changeValues(values: { id: string, value: number, unit: string }) {
+  changeValues(values: { id: number, value: number, unit: string }) {
     this.id = values.id;
     this.value = values.value;
     this.unit = values.unit;
   }
 
-  async getMeasurement() {
-
-    for (let key in this.measurements) {
-      if (this.measurements[key].name === this.measurement) {
+  getMeasurement() {
+    for (const measurement of this.measurements) {
+      if (measurement.name == this.measurement) {
         if (this.measurement == 'd') {
-          const user = await this.authService.getUser();
-
-          if (user.metrisch) {
-            if (this.unit == null || !Object.keys(this.measurements[key].units['metrisch']).includes(this.unit)) {
-              // this.unit = 'm';
+          if (USER.metric) {
+            if (this.unit == null || !Object.keys(measurement.units.metrisch).includes(this.unit)) {
               if (this.unit == 'mi') {
                 this.unit = 'km'
               } else {
                 this.unit = 'm'
               }
-
             }
 
-            this.relevantMeasures = this.measurements[key].units['metrisch'];
-            return Promise.resolve(
-              this.measurements[key].units['metrisch'][this.unit]
-            );
+            this.relevantMeasures = measurement.units.metrisch;
+            return measurement.units.metrisch[this.unit]
           } else {
-            if (this.unit == null || !Object.keys(this.measurements[key].units['imperial']).includes(this.unit)) {
-              // this.unit = 'ft';
+            if (this.unit == null || !Object.keys(measurement.units['imperial']).includes(this.unit)) {
 
               if (this.unit == 'm') {
                 this.unit = 'ft'
@@ -87,43 +69,16 @@ export class SimpleComponent {
               }
             }
 
-            this.relevantMeasures = this.measurements[key].units['imperial'];
-            return Promise.resolve(
-              this.measurements[key].units['imperial'][this.unit]
-            );
+            this.relevantMeasures = measurement.units['imperial'];
+            return measurement.units['imperial'][this.unit]
           }
         } else if (this.measurement == 'z') {
           if (this.unit == null) {
             this.unit = 'min';
           }
-          this.relevantMeasures = this.measurements[key].units
-          return this.measurements[key].units[this.unit];
+          this.relevantMeasures = measurement.units
+          return measurement.units[this.unit];
         }
-        // this.relevantMeasures = this.measurements[key].units;
-        // console.log(Object.keys(this.measurements[key].units));
-
-        // if (Object.keys(this.measurements[key].units).includes(this.unit)) {
-        //   return this.measurements[key].units[this.unit];
-        // } else {
-        //   if (this.measurement == 'z') {
-        //     this.unit = 'min';
-        //     return this.measurements[key].units['min'];
-        //   } else if (this.measurement == 'd') {
-        //     this.unit = 'm';
-        //     const user = await this.authService.getUser();
-        //     if (user.metrisch) {
-        //       this.relevantMeasures = this.measurements[key].units['metrisch'];
-        //       return Promise.resolve(
-        //         this.measurements[key].units['metrisch']['m']
-        //       );
-        //     } else {
-        //       this.relevantMeasures = this.measurements[key].units['imperisch'];
-        //       return Promise.resolve(
-        //         this.measurements[key].units['imperisch']['m']
-        //       );
-        //     }
-        //   }
-        // }
       }
     }
     return 1;

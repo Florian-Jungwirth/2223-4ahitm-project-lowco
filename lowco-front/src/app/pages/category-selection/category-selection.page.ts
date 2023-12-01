@@ -33,7 +33,7 @@ export class ActivitySelectionPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.categoryService.getAllActivatedCategories().subscribe({
+    this.categoryService.getAllActiveCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
         this.selectedCategories = categories;

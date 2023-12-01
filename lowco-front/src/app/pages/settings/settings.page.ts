@@ -20,7 +20,7 @@ export class SettingsPage implements OnInit {
   async ngOnInit() {
     this.isAdmin = await this.authService.isUserAdmin();
     this.user = await this.authService.getUser();
-    this.metric = this.user.metrisch;
+    this.metric = this.user.metric;
   }
 
   ionViewWillEnter() {

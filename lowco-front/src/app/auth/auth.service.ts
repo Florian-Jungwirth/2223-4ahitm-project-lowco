@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { API_URL } from '../constants';
-import { User, UserLogin } from '../models/user.model';
+import { UserModel, UserLoginModel } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +47,7 @@ export class AuthService {
       return await this.storage.get('ACCESS_TOKEN');
     }
   }
-  
+
   authSubject = new BehaviorSubject(false);
   jwtHelper = new JwtHelperService();
 
@@ -59,13 +59,13 @@ export class AuthService {
     await this.storage.create();
   }
 
-  register(user: User): Observable<any> {
+  register(user: UserModel): Observable<any> {
     return this.httpClient
       .post(`${API_URL}auth/register`, user)
       .pipe(tap(async (res: any) => {}));
   }
 
-  login(user: UserLogin): Observable<any> {
+  login(user: UserLoginModel): Observable<any> {
     return this.httpClient
       .post(`${API_URL}auth/login`, user)
       .pipe(
@@ -97,7 +97,7 @@ export class AuthService {
     return profile;
   }
 
-  async updateUserEmail(userId: string, email: string) {
+  async updateUserEmail(userId: number, email: string) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient
         .patch(`${API_URL}user/changeEmail/${userId}`, {email: email})
@@ -112,7 +112,7 @@ export class AuthService {
     });
   }
 
-  async updateName(userId: string, firstname: string, lastname: string) {
+  async updateName(userId: number, firstname: string, lastname: string) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient
         .patch(`${API_URL}user/changeName/${userId}`, {firstname: firstname, lastname: lastname})
@@ -127,7 +127,7 @@ export class AuthService {
     });
   }
 
-  async updateUserPassword(userId: string, password: string) {
+  async updateUserPassword(userId: number, password: string) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient
         .patch(`${API_URL}user/changePW/${userId}`, {pw: password})

@@ -28,6 +28,13 @@ public class CategoryResource {
         return categoryRepository.listAll();
     }
 
+    @Path("allActive")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Category> allActive(){
+        return categoryRepository.list("activated", true);
+    }
+
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -10,7 +10,7 @@ import {IonModal} from "@ionic/angular";
 })
 export class SurveyModalComponent {
   @ViewChild('modal') modal: IonModal;
-  @Input() id: string
+  @Input() id: number
   @Input() title: string
   @Input() value: number | null
   @Input() unit: string
@@ -19,7 +19,7 @@ export class SurveyModalComponent {
   units: any
   unitBefore: string;
   valueBefore: number;
-  @Output() valuesChanged = new EventEmitter<{ id: string, value: number, unit: string }>
+  @Output() valuesChanged = new EventEmitter<{ id: number, value: number, unit: string }>
   @Output() closeModalEmitter = new EventEmitter<void>()
 
   constructor(private surveyService: SurveyService) {
@@ -71,7 +71,6 @@ export class SurveyModalComponent {
   }
 
   closeModal() {
-    console.log('asdsödklflskdjfas')
     this.closeModalEmitter.emit()
   }
 }

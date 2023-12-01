@@ -5,6 +5,7 @@ import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
 import { CategoryService } from 'src/app/services/category.service';
+import {MEASUREMENTS} from "../../constants";
 
 @Component({
   selector: 'app-survey',
@@ -21,10 +22,10 @@ export class SurveyPage implements OnInit {
   setSurveys: any[] = new Array();
   allSurveys: any[] = new Array();
   edit = false;
-  surveyId = ""
+  surveyId = 0
   categories: any;
   collapsed = true;
-  measurements: any;
+  measurements = MEASUREMENTS;
   types: any;
   @ViewChild('modal') modal!: IonModal
 
@@ -42,8 +43,6 @@ export class SurveyPage implements OnInit {
       }
     })
 
-    this.measurements = this.toArray(await this.surveyService.getMeasurements());
-    
     this.types = this.toArray(await this.surveyService.getTypes());
   }
 
@@ -64,18 +63,18 @@ export class SurveyPage implements OnInit {
     surveyMeasurements: new FormControl('', [Validators.required]),
     surveyStandard: new FormControl(0, [Validators.required]),
     surveyType: new FormControl('', [Validators.required]),
-    surveyCat: new FormControl('', [Validators.required])
+    surveyCat: new FormControl(0, [Validators.required])
   });
 
   async editModal(survey: SurveyModel) {
-    this.surveyId = survey._id    
+    this.surveyId = survey.id
 
     this.surveyForm.setValue({
       surveyTitle: survey.title,
       surveyStandard: survey.standardValue,
       surveyMeasurements: survey.measurement,
       surveyType: survey.type,
-      surveyCat: survey.category._id
+      surveyCat: survey.category.id
     })
     this.selectedIcon = survey.iconName;
     this.edit = true
@@ -85,26 +84,22 @@ export class SurveyPage implements OnInit {
   async updateSurvey() {
     let formValues = this.surveyForm.value;
     console.log(formValues);
-    
+
     //@ts-ignore
     let updatedSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat }
     this.surveyService.updateSurvey(this.surveyId, updatedSurvey)
-    
+
 
     for (const survey of this.setSurveys) {
-      console.log(survey);
-      
-      
-      if (survey._id == this.surveyId) {
+      if (survey.id == this.surveyId) {
         survey.title = updatedSurvey.title
         survey.iconName = updatedSurvey.iconName
         survey.standardValue = updatedSurvey.standardValue
         survey.measurement = updatedSurvey.measurement
         survey.dataType = updatedSurvey.type
-        survey.category._id = updatedSurvey.category
+        survey.category.id = updatedSurvey.category
         break;
       }
-
     }
 
     this.modal.dismiss();
@@ -141,7 +136,7 @@ export class SurveyPage implements OnInit {
           text: 'Ja',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.surveyService.deleteSurvey(survey._id);
+            this.surveyService.deleteSurvey(survey.id);
             this.setSurveys.splice(this.setSurveys.indexOf(survey), 1)
           }
         },

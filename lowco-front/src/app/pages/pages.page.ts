@@ -12,10 +12,11 @@ import {
   GetTokenOptions,
 } from "@capacitor-firebase/messaging";
 import { environment } from 'src/environments/environment';
-import { Coordinate } from '../models/coordinate.model';
+import { CoordinateModel } from '../models/coordinate.model';
 import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
 import { CategoryService } from '../services/category.service';
 import { SurveyModel } from '../models/survey.model';
+import {JoinedUserSurveyModel} from "../models/userSurvey.model";
 
 @Component({
   selector: 'app-pages',
@@ -25,7 +26,7 @@ import { SurveyModel } from '../models/survey.model';
 export class PagesPage {
   isLocationModalOpen = false;
   title = "";
-  locomotionSurveys: SurveyModel[] = []
+  locomotionSurveys: JoinedUserSurveyModel[] = []
   locomotionValue: number = 0
   reload = false
   showBackButton = false
@@ -80,10 +81,7 @@ export class PagesPage {
         this.isLocationModalOpen = true;
         this.locomotionValue = payload.notification.extra
       }
-      console.log(JSON.stringify(payload));
     })
-
-    this.getSurveysOfFortbewegung()
   }
   goBack() {
     this.navCtrl.back();
@@ -91,12 +89,13 @@ export class PagesPage {
 
   getSurveysOfFortbewegung(){
     this.categoryService.getFortbewegung().subscribe(async (element)=> {
-      this.locomotionSurveys = await this.surveyService.getSurveysOfCategory(element._id)
+      this.surveyService.getSurveysOfCategory(element.id).subscribe((userSurveys) => {
+        this.locomotionSurveys = userSurveys;
+      })
     })
   }
 
-  saveLocationModalValue(id: string) {
-    console.log(id + ' ' + this.locomotionValue);
+  saveLocationModalValue(id: number) {
     if (this.locomotionValue != 0) {
       this.reload = true;
       this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).then(() => {
@@ -128,7 +127,7 @@ export class PagesPage {
   }
 }
 
-function getDistanceBetweenTwoPoints(previousCoord: Coordinate, currentCoord: Coordinate) {
+function getDistanceBetweenTwoPoints(previousCoord: CoordinateModel, currentCoord: CoordinateModel) {
   if (previousCoord.lat == currentCoord.lat && previousCoord.lon == currentCoord.lon || previousCoord.lat == -1) {
     return 0;
   }
@@ -170,7 +169,7 @@ async function sendNotification(title: string, body: string, distance: number) {
   await LocalNotifications.schedule(options)
 }
 
-let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
+let previousCoordinates: CoordinateModel = { lat: -1, lon: -1 }
 let distance = 0;
 let isDriving = false;
 let timeout: any = undefined;

@@ -1,23 +1,22 @@
 export interface ProfileModel {
-    id: string;
+    id: number;
     email: string;
     firstname: string;
     lastname: string;
     username: string;
 }
 
-export interface UserLogin {
+export interface UserLoginModel {
     email: string;
     password: string;
 }
 
-export interface User {
-    id: string;
+export interface UserModel {
+    id: number;
     firstname: string;
     lastname: string;
     email: string;
     username: string;
-    isAdmin: number;
-    metrisch: number;
-    quicks: Array<any>;
+    isAdmin: boolean;
+    metric: boolean;
 }

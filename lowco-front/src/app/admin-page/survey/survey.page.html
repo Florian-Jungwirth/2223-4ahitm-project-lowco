@@ -73,7 +73,7 @@
             <ion-select formControlName="surveyMeasurements">
               <ion-label position="floating">Maß</ion-label>
               <ion-select-option *ngFor="let measurement of measurements"
-                [value]="measurement.value.name">{{measurement.key}}</ion-select-option>
+                [value]="measurement.name">{{measurement.fullName}}</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-item>
@@ -85,7 +85,7 @@
             <ion-select formControlName="surveyCat">
               <ion-label position="floating">Kategorie</ion-label>
               <ion-select-option *ngFor="let category of categories"
-                [value]="category._id">{{category.title}}</ion-select-option>
+                [value]="category.id">{{category.title}}</ion-select-option>
             </ion-select>
           </ion-item>
 

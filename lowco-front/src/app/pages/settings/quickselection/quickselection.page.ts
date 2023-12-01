@@ -17,33 +17,33 @@ export class QuickselectionPage implements OnInit {
   loading = true;
   selectedQuicks: any[] = []
 
-  constructor(private surveyService: SurveyService, private toastController: ToastController, private titleService: TitleService) {}
+  constructor(private surveyService: SurveyService, private toastController: ToastController, private titleService: TitleService) { }
 
   ionViewWillEnter() {
     this.titleService.setTitle('Schnellauswahl')
   }
 
   ngOnInit() {
-    Promise.all([this.getSurveys(), this.surveyService.getTypes(), this.surveyService.getQuicks()]).then(
-      ([surveys, types, quicks]) => {
-        for (const survey of surveys) {
-          for (const quick of quicks) {
-            if(survey._id == quick) {
-              survey.selected = true
-              break;
-            } else {
-              survey.selected = false
-            }      
-          }
-        }
+    // Promise.all([this.getSurveys(), this.surveyService.getTypes(), this.surveyService.getActiveQuicks()]).then(
+    //   ([surveys, types, quicks]) => {
+    //     for (const survey of surveys) {
+    //       for (const quick of quicks) {
+    //         if (survey.id == quick) {
+    //           survey.selected = true
+    //           break;
+    //         } else {
+    //           survey.selected = false
+    //         }
+    //       }
+    //     }
 
-        this.surveys = surveys;
-        this.types = types;
-        this.selectedQuicks = quicks;
-        this.loading = false;
-        this.selectedSurveys = this.surveys;
-      }
-    );
+    //     this.surveys = surveys;
+    //     this.types = types;
+    //     this.selectedQuicks = quicks;
+    //     this.loading = false;
+    //     this.selectedSurveys = this.surveys;
+    //   }
+    // );
   }
 
   async getSurveys(): Promise<any> {
@@ -60,9 +60,9 @@ export class QuickselectionPage implements OnInit {
   }
 
   addToQuicks(id: any, survey: any) {
-    if(!this.selectedQuicks.includes(id)) {
-      if(this.selectedQuicks.length <= 3) {
-        this.selectedQuicks.push(id)      
+    if (!this.selectedQuicks.includes(id)) {
+      if (this.selectedQuicks.length <= 3) {
+        this.selectedQuicks.push(id)
         this.surveyService.changeQuicks(this.selectedQuicks)
         survey.classList.add('selected')
       } else {
