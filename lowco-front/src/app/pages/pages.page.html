@@ -14,7 +14,26 @@
   (ionModalDidDismiss)="isLocationModalOpen = false" [backdropDismiss]="true">
   <ng-template>
     <div class="wrapper">
-      <h1>Fortbewegungsmittel auswählen</h1>
+      <h1>Fahrt Übersicht</h1>
+
+      <ion-item *ngIf="getMostLikelyVehicle()" button="true" detail="false" (click)="saveLocationModalValue(getMostLikelyVehicle()._id)">
+        <ion-label>{{getMostLikelyVehicle().title}}</ion-label>
+        <ion-icon name="{{getMostLikelyVehicle().iconName}}"></ion-icon>
+      </ion-item>
+
+      <div class="vehicleChangeButtons">
+        <ion-item button="true" detail="false">Bestätigen</ion-item>
+        <ion-item button="true" detail="false">Ändern</ion-item>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-modal class="modal locationModal" #locatonModal [isOpen]="isChangeVehicleModalOpen" [enterAnimation]="enterAnimation"
+  (ionModalDidDismiss)="isChangeVehicleModalOpen = false" [leaveAnimation]="leaveAnimation" [backdropDismiss]="true">
+  <ng-template>
+    <div class="wrapper">
+      <h1>Fortbewegungsmittel ändern</h1>
 
       <ion-list lines="none">
         <div *ngFor="let survey of locomotionSurveys">

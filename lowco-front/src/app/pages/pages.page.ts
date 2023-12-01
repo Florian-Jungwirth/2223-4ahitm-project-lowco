@@ -24,6 +24,7 @@ import { SurveyModel } from '../models/survey.model';
 })
 export class PagesPage {
   isLocationModalOpen = false;
+  isChangeVehicleModalOpen = false;
   title = "";
   locomotionSurveys: SurveyModel[] = []
   locomotionValue: number = 0
@@ -37,6 +38,9 @@ export class PagesPage {
     private categoryService: CategoryService,
     private navCtrl: NavController
   ) {
+
+
+    this.getMostLikelyVehicle = this.getMostLikelyVehicle.bind(this);
 
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
@@ -86,6 +90,12 @@ export class PagesPage {
   goBack() {
     this.navCtrl.back();
   }
+  
+  getMostLikelyVehicle = () => {
+    mostLikelyVehicle = getVehicle(60);
+    return mostLikelyVehicle;
+  };
+  
 
   getSurveysOfFortbewegung(){
     // this.categoryService.getFortbewegung().subscribe((element)=> {
@@ -104,6 +114,7 @@ export class PagesPage {
       })
     }
     this.isLocationModalOpen = false;
+    this.isChangeVehicleModalOpen = false;
   }
 
   templateNotification() {
@@ -170,9 +181,30 @@ async function sendNotification(title: string, body: string, distance: number) {
   await LocalNotifications.schedule(options)
 }
 
+function getVehicle(this: any, velocity: number){
+  if(velocity >= 25 && velocity <= 35){
+    return this.locomotionSurveys[3];
+    //Bike
+  }
+  else if(velocity > 35 && velocity <= 55){
+    return this.locomotionSurveys[1];
+    //Public Transport
+  }
+  else if(velocity > 55 && velocity <= 500){
+    return this.locomotionSurveys[0];
+    //Car
+  }
+  else if(velocity > 500){
+    return this.locomotionSurveys[2];
+    //Plane
+  }
+}
+
 let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
 let distance = 0;
 let isDriving = false;
+let startTime = Date.now();
+let mostLikelyVehicle: SurveyModel = {} as SurveyModel;
 let timeout: any = undefined;
 const speedLimit = 25;
 
@@ -216,11 +248,17 @@ BackgroundGeolocation.addWatcher(
       if (speedInKMH > speedLimit) {
         if (!isDriving) {
           isDriving = true;
+          startTime = Date.now();
           console.log("Fahrt wurde gestartet");
         } else {
           clearTimeout(timeout)
           timeout = setTimeout(() => {
             console.log("Fahrt wurde beendet");
+            let endTime = Date.now();
+            let averageVelocity = (endTime-startTime)/distance;
+
+            mostLikelyVehicle =  getVehicle(averageVelocity);
+
             sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
 
             isDriving = false;
