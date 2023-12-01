@@ -38,7 +38,7 @@ export class CategoryPage implements OnInit {
     this.surveyService.getUserSurveysOfCategory(this.id).subscribe(surveys => {
       for (const survey of surveys) {
         if(survey[1] == null) {
-          survey[1] = {value: survey[0].standardValue, unit: 'km'}
+          survey[1] = {value: survey[0].standardValue, unit: null}
         }
       }
       this.surveys = surveys;

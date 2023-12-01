@@ -113,23 +113,8 @@ export class SurveyService {
   }
 
   updateUserSurvey(surveyId: string, value: number, unit: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .patch(
-            `${API_URL}user-survey/${user.id}/${surveyId}/${value}/${unit}`,
-            {}
-          )
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-            error: (error) => {
-              reject(error);
-            },
-          });
-      });
-    });
+      console.log(surveyId, value, unit)
+    this.httpClient.put(`${SERVER_URL_NEU}userSurvey/updateUserSurvey/${USER_ID}/${surveyId}/${value}/${unit}`, {}).subscribe()
   }
 
   addValueToUserSurvey(surveyId: string, value: number) {

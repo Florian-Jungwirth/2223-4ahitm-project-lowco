@@ -1,5 +1,6 @@
 package at.lowco.resource;
 
+import at.lowco.model.Survey;
 import at.lowco.model.User;
 import at.lowco.model.UserSurvey;
 import at.lowco.repository.UserSurveyRepository;
@@ -23,6 +24,15 @@ public class UserSurveyRessource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserSurvey> allUserSurveys(){
         return userSurveyRepository.listAll();
+    }
+
+    @PUT
+    @Path("updateUserSurvey/{userID}/{surveyID}/{value}/{unit}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateSurvey(@PathParam("userID") long userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value){
+        userSurveyRepository.update(userID, surveyID, value, unit);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @Path("getAllActivatedJoinedByUserID/{id}")
@@ -58,14 +68,5 @@ public class UserSurveyRessource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserSurvey> getJoinedQuicks(@PathParam("id") long id){
         return userSurveyRepository.getJoinedQuicks(id);
-    }
-
-    @PUT
-    @Path("updateUserSurvey")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response updateUserSurvey(UserSurvey userSurvey){
-        userSurveyRepository.update(userSurvey);
-        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }

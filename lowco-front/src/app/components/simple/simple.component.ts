@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {MEASUREMENTS} from "../../constants";
+import {UserModel} from "../../models/user.model";
 
 @Component({
   selector: 'app-simple',
@@ -11,28 +12,28 @@ import {MEASUREMENTS} from "../../constants";
 export class SimpleComponent {
   @Input() title: any;
   @Input() icon: any;
-  @Input() showWarning: boolean;
   @Input() unit: any;
   @Input() value: any;
   @Input() id: any;
   @Input() measurement: any;
+  @Input() user: UserModel
   @Input() daysLeft: number;
+  @Input() showWarning: boolean;
   measurements: any = MEASUREMENTS;
   relevantMeasures: any;
   showModal = false
 
 
   constructor(
-    private surveyService: SurveyService,
-    private authService: AuthService
+    private surveyService: SurveyService
   ) {
     this.showWarning = false;
   }
 
   ngOnInit() {
-      if (this.value != undefined) {
-        this.value = this.value / this.getMeasurement();
-      }
+    if (this.value != undefined) {
+      this.value = this.value / this.getMeasurement();
+    }
   }
 
   openModal() {
@@ -51,6 +52,43 @@ export class SimpleComponent {
   }
 
   getMeasurement() {
+    for (const measurement of this.measurements) {
+      if (measurement.name == this.measurement) {
+        if (this.measurement == 'd') {
+          if (this.user.metric) {
+            if (this.unit == null || !Object.keys(measurement.units.metrisch).includes(this.unit)) {
+              if (this.unit == 'mi') {
+                this.unit = 'km'
+              } else {
+                this.unit = 'm'
+              }
+            }
+
+            this.relevantMeasures = measurement.units.metrisch;
+            return measurement.units.metrisch[this.unit]
+          } else {
+            if (this.unit == null || !Object.keys(measurement.units['imperial']).includes(this.unit)) {
+              // this.unit = 'ft';
+
+              if (this.unit == 'm') {
+                this.unit = 'ft'
+              } else {
+                this.unit = 'mi'
+              }
+            }
+
+            this.relevantMeasures = measurement.units['imperial'];
+            return measurement.units['imperial'][this.unit]
+          }
+        } else if (this.measurement == 'z') {
+          if (this.unit == null) {
+            this.unit = 'min';
+          }
+          this.relevantMeasures = measurement.units
+          return  measurement.units[this.unit];
+        }
+      }
+    }
     // for (let key in this.measurements) {
     //   if (this.measurements[key].name === this.measurement) {
     //     if (this.measurement == 'd') {

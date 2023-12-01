@@ -11,4 +11,3 @@ export interface UserSurveyModel {
   unit: string;
   style?: string;
 }
-

@@ -18,6 +18,6 @@ export interface UserModel {
     email: string;
     username: string;
     isAdmin: number;
-    metrisch: number;
+    metric: number;
     quicks: Array<any>;
 }

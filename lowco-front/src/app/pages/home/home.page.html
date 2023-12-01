@@ -15,7 +15,7 @@
           <div [style]="userSurvey.style">
             <app-simple *ngIf="types.Einfach == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
               [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
-              [measurement]="userSurvey.survey.measurement" [daysLeft]="0"></app-simple>
+              [measurement]="userSurvey.survey.measurement" [daysLeft]="0" [user]="userSurvey.user"></app-simple>
 
             <app-quantity *ngIf="types.Anzahl == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
               [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0"></app-quantity>

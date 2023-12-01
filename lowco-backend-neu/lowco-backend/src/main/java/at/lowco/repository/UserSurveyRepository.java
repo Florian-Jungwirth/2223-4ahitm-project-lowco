@@ -11,8 +11,16 @@ import java.util.List;
 
 @ApplicationScoped
 public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
-    public void update(UserSurvey userSurvey) {
-        getEntityManager().merge(userSurvey);
+    public void update(long userID, long surveyID, double value, String unit) {
+        Query query = getEntityManager().createQuery(
+                "update UserSurvey set value = :value, unit = :unit where user.id = :userID and survey.id = :surveyID"
+        );
+
+        query.setParameter("value", value);
+        query.setParameter("unit", unit);
+        query.setParameter("userID", userID);
+        query.setParameter("surveyID", surveyID);
+        query.executeUpdate();
     }
 
     public List<UserSurvey> getJoinedUserSurveyByUserID(Long id) {
