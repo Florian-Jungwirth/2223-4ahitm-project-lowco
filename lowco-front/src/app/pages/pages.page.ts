@@ -24,7 +24,7 @@ import { SurveyModel } from '../models/survey.model';
 })
 export class PagesPage {
   isLocationModalOpen = false;
-  isChangeVehicleModalOpen = false;
+  isChangeVehicleModalOpen = true;
   title = "";
   locomotionSurveys: SurveyModel[] = []
   locomotionValue: number = 0
@@ -35,7 +35,6 @@ export class PagesPage {
     private router: Router,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private categoryService: CategoryService,
     private navCtrl: NavController
   ) {
 
@@ -90,12 +89,12 @@ export class PagesPage {
   goBack() {
     this.navCtrl.back();
   }
-  
+
   getMostLikelyVehicle = () => {
     mostLikelyVehicle = getVehicle(60);
     return mostLikelyVehicle;
   };
-  
+
 
   getSurveysOfFortbewegung(){
     // this.categoryService.getFortbewegung().subscribe((element)=> {
