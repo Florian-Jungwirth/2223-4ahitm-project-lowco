@@ -25,7 +25,8 @@ import { SurveyModel } from '../models/survey.model';
 })
 export class PagesPage {
   isModalOpen = false;
-  isLocationModalOpen = false;
+  isLocationModalOpen = true;
+  isChangeVehicleModalOpen = false;
   unitBefore: any;
   valueBefore: any
   obj: any;
@@ -35,6 +36,7 @@ export class PagesPage {
   locomotionSurveys: SurveyModel[] = []
   locomotionValue: number = 0
   reload = false
+  
 
   constructor(
     private animationCtrl: AnimationController,
@@ -65,6 +67,9 @@ export class PagesPage {
       this.valueBefore = obj.value
       // this.showNum = obj.value
     });
+
+
+    this.getMostLikelyVehicle = this.getMostLikelyVehicle.bind(this);
 
     this.router.events.subscribe((event: any) => {
       if (event instanceof NavigationEnd) {
@@ -113,6 +118,12 @@ export class PagesPage {
 
     this.getSurveysOfFortbewegung()
   }
+  
+  getMostLikelyVehicle = () => {
+    mostLikelyVehicle = getVehicle(60);
+    return mostLikelyVehicle;
+  };
+  
 
   getSurveysOfFortbewegung(){
     this.categoryService.getFortbewegung().subscribe(async (element)=> {
@@ -129,6 +140,7 @@ export class PagesPage {
       })
     }
     this.isLocationModalOpen = false;
+    this.isChangeVehicleModalOpen = false;
   }
 
   templateNotification() {
@@ -160,7 +172,7 @@ export class PagesPage {
         .addAnimation([backdropAnimation, wrapperAnimation]);
     } else {
       return null;
-      
+
     }
   };
 
@@ -264,9 +276,30 @@ async function sendNotification(title: string, body: string, distance: number) {
   await LocalNotifications.schedule(options)
 }
 
+function getVehicle(this: any, velocity: number){
+  if(velocity >= 25 && velocity <= 35){
+    return this.locomotionSurveys[3];
+    //Bike
+  }
+  else if(velocity > 35 && velocity <= 55){
+    return this.locomotionSurveys[1];
+    //Public Transport
+  }
+  else if(velocity > 55 && velocity <= 500){
+    return this.locomotionSurveys[0];
+    //Car
+  }
+  else if(velocity > 500){
+    return this.locomotionSurveys[2];
+    //Plane
+  }
+}
+
 let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
 let distance = 0;
 let isDriving = false;
+let startTime = Date.now();
+let mostLikelyVehicle: SurveyModel = {} as SurveyModel;
 let timeout: any = undefined;
 const speedLimit = 25;
 
@@ -310,11 +343,17 @@ BackgroundGeolocation.addWatcher(
       if (speedInKMH > speedLimit) {
         if (!isDriving) {
           isDriving = true;
+          startTime = Date.now();
           console.log("Fahrt wurde gestartet");
         } else {
           clearTimeout(timeout)
           timeout = setTimeout(() => {
             console.log("Fahrt wurde beendet");
+            let endTime = Date.now();
+            let averageVelocity = (endTime-startTime)/distance;
+
+            mostLikelyVehicle =  getVehicle(averageVelocity);
+
             sendNotification(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
 
             isDriving = false;
@@ -326,11 +365,11 @@ BackgroundGeolocation.addWatcher(
     }
 
     if (isDriving) {
-      
+
       distance += getDistanceBetweenTwoPoints(previousCoordinates, currentCoord)
       console.log(distance);
       console.log(previousCoordinates.lat + ' ' + previousCoordinates.lon);
-      
+
       console.log("------------------------------");
       previousCoordinates = currentCoord
     }
