@@ -24,7 +24,7 @@ import { SurveyModel } from '../models/survey.model';
 })
 export class PagesPage {
   isLocationModalOpen = false;
-  isChangeVehicleModalOpen = true;
+  isChangeVehicleModalOpen = false;
   title = "";
   locomotionSurveys: SurveyModel[] = []
   locomotionValue: number = 0
