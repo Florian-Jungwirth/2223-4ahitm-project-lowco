@@ -2,14 +2,13 @@
   <div id="activitySelection">
     <!-- <ion-searchbar [debounce]="1000" (ionChange)="handleChange($event)"></ion-searchbar> -->
     <div class="searchBarDiv">
-      <ion-searchbar class="search" (ionChange)="search($event)" placeholder="Nach Kategorien suchen"></ion-searchbar>
+      <ion-searchbar class="search" (ionInput)="search()" [(ngModel)]="searchString" placeholder="Nach Kategorien suchen"></ion-searchbar>
     </div>
 
     <div class="categoryBox" *ngIf="!loading">
       <ng-container *ngIf="selectedCategories.length != 0">
         <div *ngFor="let category of selectedCategories">
-          <app-categoryComponent [title]="category.title" [showWarning]="false" [icon]="category.iconName"
-                                 (click)="navigateTo(category.id)"></app-categoryComponent>
+          <app-categoryComponent [title]="category.title" [searchString]="searchString" [showWarning]="false" [id]="category.id" [icon]="category.iconName" [surveys]="category.surveys"></app-categoryComponent>
         </div>
       </ng-container>
     </div>

@@ -1,7 +1,7 @@
 <ion-content>
   <div id="survey">
     <div class="searchBarDiv">
-      <ion-searchbar class="search" (ionChange)="search($event)"
+      <ion-searchbar class="search" [(ngModel)]="searchString" (ionInput)="search()"
         placeholder="Nach Emissionswerte suchen"></ion-searchbar>
     </div>
     <div id="surveys" *ngIf="!loading">

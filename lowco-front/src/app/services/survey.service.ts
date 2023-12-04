@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { API2_URL, API_URL, USER } from '../constants';
-import { SurveyModel } from '../models/survey.model';
-import { JoinedUserSurveyModel } from "../models/userSurvey.model";
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {AuthService} from '../auth/auth.service';
+import {API2_URL, API_URL, MEASUREMENTS, USER} from '../constants';
+import {SurveyModel} from '../models/survey.model';
+import {JoinedUserSurveyModel} from "../models/userSurvey.model";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -47,16 +47,6 @@ export class SurveyService {
     });
   }
 
-  getAllActivatedSurveys(): Promise<any> {
-    return new Promise<any>((resolve) => {
-      this.httpClient.get(`${API_URL}survey/activated/all`).subscribe({
-        next: (data) => {
-          resolve(data);
-        },
-      });
-    });
-  }
-
   getSurveyById(id: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.httpClient.get(`${API_URL}survey/${id}`).subscribe({
@@ -71,15 +61,24 @@ export class SurveyService {
   }
 
 
-
-  getSurveysByName(userSurveys: JoinedUserSurveyModel[], search: string): JoinedUserSurveyModel[] {
+  getSurveysByName(surveys: SurveyModel[], search: string): SurveyModel[] {
     let selectedSurveys = [];
-    for (const userSurvey of userSurveys) {
-      if (userSurvey.survey.title.toLowerCase().includes(search.toLowerCase())) {
-        selectedSurveys.push(userSurvey);
+    for (const survey of surveys) {
+      if (survey.title.toLowerCase().includes(search.toLowerCase())) {
+        selectedSurveys.push(survey);
       }
     }
     return selectedSurveys;
+  }
+
+  getUserSurveysByName(userSurveys: JoinedUserSurveyModel[], search: string): JoinedUserSurveyModel[] {
+    let selectedUserSurveys = [];
+    for (const userSurvey of userSurveys) {
+      if (userSurvey.survey.title.toLowerCase().includes(search.toLowerCase())) {
+        selectedUserSurveys.push(userSurvey);
+      }
+    }
+    return selectedUserSurveys;
   }
 
   createNewSurvey(survey: SurveyModel): Promise<any> {
@@ -104,26 +103,6 @@ export class SurveyService {
         error: (error) => {
           reject(error);
         },
-      });
-    });
-  }
-
-  updateUserSurvey(surveyId: number, value: number, unit: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .patch(
-            `${API_URL}user-survey/${user.id}/${surveyId}/${value}/${unit}`,
-            {}
-          )
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-            error: (error) => {
-              reject(error);
-            },
-          });
       });
     });
   }
@@ -193,23 +172,6 @@ export class SurveyService {
     });
   }
 
-  changeQuicks(quicks: any[]) {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .patch(`${API_URL}user/changeQuicks/${user.id}`, quicks)
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-            error: (error) => {
-              reject(error);
-            },
-          });
-      });
-    });
-  }
-
   setActivateSurvey(survey: SurveyModel, state: number) {
     this.httpClient
       .patch(
@@ -231,8 +193,64 @@ export class SurveyService {
     return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/${USER.id}`)
   }
 
+  getAllActiveJoined() {
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getJoinedUserSurveysByUser/${USER.id}`)
+  }
+
   getSurveysOfCategory(id: number): Observable<JoinedUserSurveyModel[]> {
     return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveByCategoryId/${USER.id}/${id}`)
+  }
+
+  getAllActiveSurveys(): Observable<SurveyModel[]> {
+    return this.httpClient.get<SurveyModel[]>(`${API2_URL}survey/getAllActiveSurveys`)
+  }
+
+  updateUserSurvey(surveyID: number, value: number, unit: string) {
+    this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${USER.id}/${surveyID}/${value}/${unit}`, {}).subscribe();
+  }
+
+  updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
+    this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${USER.id}/${surveyID}/${value}/${unit}/${isAQuick}`, {}).subscribe();
+  }
+
+  getMeasurement(measurementGiven: string, unit: any): {divisor: number, relevantMeasures: any, unit: string } {
+    let measurements: any = MEASUREMENTS;
+
+    for (const measurement of measurements) {
+      if (measurement.name == measurementGiven) {
+        if (measurementGiven == 'd') {
+          if (USER.metric) {
+            if (unit == null || !Object.keys(measurement.units.metrisch).includes(unit)) {
+              if (unit == 'mi') {
+                unit = 'km'
+              } else {
+                unit = 'm'
+              }
+            }
+
+            return {divisor: measurement.units.metrisch[unit], relevantMeasures: measurement.units.metrisch, unit: unit};
+          } else {
+            if (unit == null || !Object.keys(measurement.units.imperial).includes(unit)) {
+
+              if (unit == 'm') {
+                unit = 'ft'
+              } else {
+                unit = 'mi'
+              }
+            }
+
+            return {divisor: measurement.units.imperial[unit], relevantMeasures: measurement.imperial, unit: unit};
+          }
+        } else if (measurementGiven == 'z') {
+          if (unit == null) {
+            unit = 'min';
+          }
+
+          return {divisor: measurement.units[unit], relevantMeasures: measurement.units, unit: unit};
+        }
+      }
+    }
+    return {divisor: 1, relevantMeasures: null, unit: ''};
   }
 
 }

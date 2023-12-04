@@ -6,21 +6,21 @@
                     placeholder="Nach Emissionswerte suchen"></ion-searchbar>
             </div>
             <div id="surveys" *ngIf="!loading">
-                <div *ngFor="let survey of selectedSurveys" style="-ms-grid-column-span: 1;" #surveyDiv
-                    [class.selected]="survey.selected">
-                    <div (click)="addToQuicks(survey.id, surveyDiv)" id="box">
+                <div *ngFor="let userSurvey of selectedSurveys" style="-ms-grid-column-span: 1;" #surveyDiv
+                    [class.selected]="userSurvey.isAQuick">
+                    <div (click)="addToQuicks(userSurvey, surveyDiv)" id="box">
                         <div class="titleAndInfo">
-                            <p class="title" id="{{survey.id}}">{{survey.title}}</p>
-                            <ion-popover trigger="{{survey.id}}" triggerAction="click">
+                            <p class="title" id="{{userSurvey.survey.id}}">{{userSurvey.survey.title}}</p>
+                            <ion-popover trigger="{{userSurvey.survey.id}}" triggerAction="click">
                                 <ng-template>
-                                    <ion-content class="ion-padding">{{survey.title}}</ion-content>
+                                    <ion-content class="ion-padding">{{userSurvey.survey.title}}</ion-content>
                                 </ng-template>
                             </ion-popover>
                         </div>
-                        <ion-icon [name]="survey.iconName" class="icon"></ion-icon>
+                        <ion-icon [name]="userSurvey.survey.iconName" class="icon"></ion-icon>
                     </div>
 
-                    <div class="check" (click)="addToQuicks(survey.id, surveyDiv)"><ion-icon
+                    <div class="check" (click)="addToQuicks(userSurvey, surveyDiv)"><ion-icon
                             name="checkmark-circle-outline"></ion-icon></div>
                 </div>
             </div>

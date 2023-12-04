@@ -4,6 +4,9 @@ import { NavController } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { CategoryService } from 'src/app/services/category.service';
 import {CategoryModel} from "../../models/category.model";
+import {SurveyService} from "../../services/survey.service";
+import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
+import {SurveyModel} from "../../models/survey.model";
 
 @Component({
   selector: 'app-category-selection',
@@ -11,41 +14,46 @@ import {CategoryModel} from "../../models/category.model";
   styleUrls: ['./category-selection.page.scss'],
 })
 export class ActivitySelectionPage implements OnInit {
-  categories: any;
-  selectedCategories: CategoryModel[];
+  categories: CategoryModel[] = [];
+  selectedCategories: any[] = [];
   loading = true;
+  surveys: SurveyModel[];
+  searchString: string = ""
 
   constructor(
     private categoryService: CategoryService,
     private navController: NavController,
-    private titleService: TitleService
+    private titleService: TitleService,
+    private surveyService: SurveyService
   ) {}
 
   ionViewWillEnter() {
     this.titleService.setTitle('Kateogrien');
   }
 
-  search(event: any) {
-    this.selectedCategories = this.categoryService.getCategoriesByName(
+  search() {
+    this.selectedCategories = this.categoryService.getCategoriesWithSurveysByName(
       this.categories,
-      event.target.value.toLowerCase()
+      this.surveys,
+      this.searchString.toLowerCase()
     );
   }
 
   async ngOnInit() {
     this.categoryService.getAllActiveCategories().subscribe({
       next: (categories) => {
-        this.categories = categories;
         this.selectedCategories = categories;
+        for (const category of categories) {
+          let categoryChanged: any = category
+          categoryChanged.surveys = []
+          this.categories.push(categoryChanged);
+        }
         this.loading = false;
-      },
-      error: () => {
-        //TODO: Errorhandling
-      },
+      }
     });
-  }
 
-  navigateTo(id: any) {
-    this.navController.navigateForward('/lowco/category?id=' + id);
+    this.surveyService.getAllActiveSurveys().subscribe((surveys) => {
+      this.surveys = surveys;
+    })
   }
 }

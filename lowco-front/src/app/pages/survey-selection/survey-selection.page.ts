@@ -17,6 +17,7 @@ export class CategoryPage implements OnInit {
   values: any;
   types = Types;
   loading = true
+  searchString = ''
 
   constructor(
     private route: ActivatedRoute,
@@ -32,22 +33,24 @@ export class CategoryPage implements OnInit {
   async ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.id = params['id'];
-    });
+      this.searchString = params['s']
 
-    this.surveyService.getSurveysOfCategory(this.id).subscribe((userSurveys) => {
-      console.log(userSurveys)
-      this.userSurveys = userSurveys;
-      this.selectedUserSurveys = userSurveys;
-      this.loading = false;
-    })
+      this.surveyService.getSurveysOfCategory(this.id).subscribe((userSurveys) => {
+        this.userSurveys = userSurveys;
+        this.selectedUserSurveys = userSurveys;
+        this.loading = false;
+
+        if(this.searchString) {
+          this.search()
+        }
+      })
+    });
   }
 
-  async search(event: any) {
-    let searched = event.target.value.toLowerCase();
-
-    this.selectedUserSurveys = await this.surveyService.getSurveysByName(
+  search() {
+    this.selectedUserSurveys = this.surveyService.getUserSurveysByName(
       this.userSurveys,
-      searched
+      this.searchString
     );
   }
 }

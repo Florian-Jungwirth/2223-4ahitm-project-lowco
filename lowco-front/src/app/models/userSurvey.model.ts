@@ -11,6 +11,15 @@ export interface UserSurveyModel {
   unit: string;
 }
 
+export interface UpdateUserSurveyModel {
+  id: number | null;
+  isAQuick: boolean | null;
+  value: number | null;
+  unit: number | null;
+  userID: number;
+  surveyID: number;
+}
+
 export interface JoinedUserSurveyModel {
   id: number;
   value: number;

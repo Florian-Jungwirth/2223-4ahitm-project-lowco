@@ -15,18 +15,24 @@ export class SimpleComponent {
   @Input() unit: any;
   @Input() value: any;
   @Input() id: number;
-  @Input() measurement: any;
+  @Input() measurement: string;
   @Input() daysLeft: number;
   @Input() standardValue: number;
-  measurements: any = MEASUREMENTS;
   relevantMeasures: any;
   showModal = false
+
+  constructor(private surveyService: SurveyService) {
+
+  }
 
   ngOnInit() {
     if (this.value == null) {
       this.value = this.standardValue
     }
-    this.value = this.value / this.getMeasurement();
+    let measure = this.surveyService.getMeasurement(this.measurement, this.unit)
+    this.value = this.value / measure.divisor;
+    this.relevantMeasures = measure.relevantMeasures;
+    this.unit = measure.unit
   }
 
   openModal() {
@@ -44,43 +50,5 @@ export class SimpleComponent {
     this.unit = values.unit;
   }
 
-  getMeasurement() {
-    for (const measurement of this.measurements) {
-      if (measurement.name == this.measurement) {
-        if (this.measurement == 'd') {
-          if (USER.metric) {
-            if (this.unit == null || !Object.keys(measurement.units.metrisch).includes(this.unit)) {
-              if (this.unit == 'mi') {
-                this.unit = 'km'
-              } else {
-                this.unit = 'm'
-              }
-            }
 
-            this.relevantMeasures = measurement.units.metrisch;
-            return measurement.units.metrisch[this.unit]
-          } else {
-            if (this.unit == null || !Object.keys(measurement.units['imperial']).includes(this.unit)) {
-
-              if (this.unit == 'm') {
-                this.unit = 'ft'
-              } else {
-                this.unit = 'mi'
-              }
-            }
-
-            this.relevantMeasures = measurement.units['imperial'];
-            return measurement.units['imperial'][this.unit]
-          }
-        } else if (this.measurement == 'z') {
-          if (this.unit == null) {
-            this.unit = 'min';
-          }
-          this.relevantMeasures = measurement.units
-          return measurement.units[this.unit];
-        }
-      }
-    }
-    return 1;
-  }
 }

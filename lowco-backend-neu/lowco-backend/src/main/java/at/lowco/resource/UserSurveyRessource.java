@@ -56,11 +56,20 @@ public class UserSurveyRessource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    @Path("findJoinedUserSurveysByUser/{userID}")
+    @PUT
+    @Path("updateQuick/{userID}/{surveyID}/{value}/{unit}/{isAQuick}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateQuick(@PathParam("userID") long userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value, @PathParam("isAQuick") boolean isAQuick){
+        userSurveyRepository.updateQuick(userID, surveyID, value, unit, isAQuick);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @Path("getJoinedUserSurveysByUser/{userID}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserSurveyDTO> findJoinedUserSurveysByUser(@PathParam("userID") long userID){
-        return userSurveyRepository.findJoinedUserSurveysByUser(userID);
+    public List<UserSurveyDTO> getJoinedUserSurveysByUser(@PathParam("userID") long userID){
+        return userSurveyRepository.getJoinedUserSurveysByUser(userID);
     }
 
     @Path("getActiveQuicks/{userID}")

@@ -1,7 +1,6 @@
 package at.lowco.dtos;
 
 import at.lowco.model.Survey;
-import at.lowco.model.User;
 
 public class UserSurveyDTO {
     private Long id;

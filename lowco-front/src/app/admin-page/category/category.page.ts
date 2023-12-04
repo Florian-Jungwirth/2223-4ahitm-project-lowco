@@ -141,9 +141,9 @@ export class CategoryPage {
     await alert.present();
   }
 
-  async search(event: any) {
+  search(event: any) {
     let searched = event.target.value.toLowerCase();
-    this.categories = await this.categoryService.getCategoriesByName(
+    this.categories = this.categoryService.getCategoriesByName(
       this.categories,
       searched
     );

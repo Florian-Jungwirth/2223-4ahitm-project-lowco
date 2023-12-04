@@ -24,6 +24,13 @@ public class SurveyResource {
         return surveyRepository.listAll();
     }
 
+    @Path("getAllActiveSurveys")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Survey> getAllActiveSurveys(){
+        return surveyRepository.list("activated", true);
+    }
+
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)

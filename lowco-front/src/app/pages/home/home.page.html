@@ -33,9 +33,9 @@
         </div>
         <ion-icon id="menuIcon" name="grid-outline" routerLink="/lowco/activities"></ion-icon>
       </div>
-      <div id="surveys" #surveys>
+      <div class="surveys" #surveys>
         <ng-container *ngFor="let userSurvey of quickSelection">
-          <div [style]="userSurvey.style">
+          <div>
             <app-simple *ngIf="types.Einfach == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
                         [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
                         [measurement]="userSurvey.survey.measurement" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-simple>

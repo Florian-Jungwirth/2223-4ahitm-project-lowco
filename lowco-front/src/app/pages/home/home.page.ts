@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
@@ -60,10 +60,10 @@ export class HomePage {
   waterColor = '#259e9a';
   previousTheta: any;
   previousPhi: any;
-  quickSelection: any[];
+  quickSelection: JoinedUserSurveyModel[];
   values: any;
   time = new Date();
-  types: any;
+  types = Types;
   ISLANDSIZE = 15;
   directionalLight: THREE.DirectionalLight;
   latitude = 48.27965;
@@ -78,7 +78,8 @@ export class HomePage {
 
   constructor(
     private surveyService: SurveyService,
-    private titleService: TitleService
+    private titleService: TitleService,
+    private cdr: ChangeDetectorRef
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
@@ -87,33 +88,17 @@ export class HomePage {
   }
 
   ionViewWillEnter() {
+    this.quickSelection = []
     this.titleService.setTitle('LowCo2');
-
     this.surveyService.getActiveQuicksHome().subscribe((quicks: JoinedUserSurveyModel[]) => {
       this.quickSelection = quicks;
+      this.surveys.nativeElement.style.height = '0px'
 
-      switch (this.quickSelection.length) {
-        case 1:
-          this.quickSelection[0].style = 'grid-column: 1/3';
-          break;
-        case 2:
-          this.quickSelection[0].style = 'grid-column: 1/3';
-          this.quickSelection[1].style = 'grid-column: 1/3';
-          break;
-        case 3:
-          this.quickSelection[0].style = 'grid-column: 1/2';
-          this.quickSelection[1].style = 'grid-column: 2/3';
-          this.quickSelection[2].style = 'grid-column: 1/3';
-          break;
-        case 4:
-          this.quickSelection[0].style = 'grid-column: 1/2';
-          this.quickSelection[1].style = 'grid-column: 2/3';
-          this.quickSelection[2].style = 'grid-column: 1/2';
-          this.quickSelection[3].style = 'grid-column: 2/3';
-          break;
+      if(this.quickSelection.length%2 != 0) {
+        this.surveys.nativeElement.classList.add('odd')
       }
 
-      this.types = Types;
+      this.surveys.nativeElement.style.height = 'fit-content'
 
       setTimeout(() => {
         this.height = this.surveys.nativeElement.offsetHeight;
