@@ -82,7 +82,7 @@ export class HomePage {
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
-      this.latitude = position.coords.latitude;    
+      this.latitude = position.coords.latitude;
     });
   }
 
@@ -95,6 +95,8 @@ export class HomePage {
       this.surveyService.getQuicks(),
       this.surveyService.getAllActivatedSurveys(),
     ]).then(([values, types, quickSelection, quicks, surveys]) => {
+      console.log(quicks)
+      console.log(quickSelection)
       if (quicks.length == 0) {
         this.quickSelection = quickSelection;
       } else {
@@ -108,6 +110,8 @@ export class HomePage {
             }
           }
         }
+
+        console.log(qs)
 
         this.quickSelection = qs;
       }
@@ -705,7 +709,7 @@ export class HomePage {
     //     .easing(TWEEN.Easing.Sinusoidal.In)
     //     .onUpdate(() => {
     //       console.log(yVec);
-          
+
     //       bag.position.set(bag.position.x, yVec.y, bag.position.z);
     //     })
     //     .repeat(Infinity)
@@ -717,7 +721,7 @@ export class HomePage {
     //     this.meshTweens[bag.uuid] = tween;
 
     //     console.log(this.meshTweens);
-        
+
 
     //     bag.traverse((child) => {
     //       if ((child as THREE.Mesh).isMesh) {

@@ -237,6 +237,7 @@ export class SurveyService {
       this.authService.getUser().then((user) => {
         this.httpClient.get(`${API_URL}user/getQuicks/${user.id}`).subscribe({
           next: (data: any) => {
+            console.log(data)
             resolve(data[0].quicks);
           },
           error: (error) => {
