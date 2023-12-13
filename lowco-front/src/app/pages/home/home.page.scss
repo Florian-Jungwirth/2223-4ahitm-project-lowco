@@ -46,7 +46,7 @@
   display: grid;
   grid-template-columns: calc(50% - 3px) calc(50% - 3px);
   grid-template-rows: auto auto;
-  width: calc(100%);
+  width: 100%;
   gap: 6px;
   box-sizing: border-box;
   overflow: hidden;

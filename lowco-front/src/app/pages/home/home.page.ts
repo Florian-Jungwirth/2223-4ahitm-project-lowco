@@ -95,7 +95,10 @@ export class HomePage {
       this.surveys.nativeElement.style.height = '0px'
 
       if(this.quickSelection.length%2 != 0) {
+        console.log("asdf")
         this.surveys.nativeElement.classList.add('odd')
+      } else {
+        this.surveys.nativeElement.classList.remove('odd')
       }
 
       this.surveys.nativeElement.style.height = 'fit-content'
