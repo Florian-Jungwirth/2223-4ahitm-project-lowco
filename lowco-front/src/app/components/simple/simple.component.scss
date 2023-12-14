@@ -86,24 +86,22 @@ p {
 .infoIcon {
   font-size: 2em;
 }
+.start-button{
+  margin-top: 1vh;
+  margin-right: 8vw;
+  width: 10vw;
+  height: 10vw;
+}
 
-start-button{
-    margin-right: 8vw;
-    width: 10vw;
-    height: 10vw;
-  }
-  .start-button button{
-    font-size: 2em;
-    background-color: transparent;
-    width: 100%;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  
-
+.start-button button{
+  font-size: 1.5em;
+  background-color: transparent;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .daysLeft {
   display: flex;
   flex-direction: row;

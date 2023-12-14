@@ -22,6 +22,8 @@ export class SimpleComponent {
   @Input() standardValue: number;
   relevantMeasures: any;
   showModal = false
+  isStarted = false
+  currentIcon = "caret-forward-outline"
 
   constructor(private surveyService: SurveyService) {
       console.log(this.category);
@@ -52,5 +54,15 @@ export class SimpleComponent {
     this.unit = values.unit;
   }
 
+  hasBeenStarted(){
+    if(!this.isStarted){
+      this.isStarted = true;
+      this.currentIcon = "square";
+    }
+    else if(this.isStarted){
+      this.isStarted = false;
+      this.currentIcon = "caret-forward-outline";
+    }
+  }
 
 }

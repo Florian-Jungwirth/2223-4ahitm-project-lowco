@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="editBox" (click)="openModal()">
+  <div class="editBox" >
     <div class="daysLeft">
       <ion-icon name="calendar-outline"></ion-icon>
       <p>{{ daysLeft }}d</p>
@@ -29,10 +29,10 @@
 
   
     <div class="start-button">
-      <button *ngIf="category.id === 1" class="start-icon"><ion-icon name="caret-forward-outline"></ion-icon></button>
+      <button (click)="hasBeenStarted()" *ngIf="category.id === 1" class="start-icon"><ion-icon name="{{currentIcon}}"></ion-icon></button>
     </div>
 
-    <ion-icon class="edit" name="create"></ion-icon>
+    <ion-icon class="edit" name="create" (click)="openModal()"></ion-icon>
   </div>
 </div>
 
