@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {MEASUREMENTS, USER} from "../../constants";
+import { CategoryModel } from 'src/app/models/category.model';
 
 @Component({
   selector: 'app-simple',
@@ -15,6 +16,7 @@ export class SimpleComponent {
   @Input() unit: any;
   @Input() value: any;
   @Input() id: number;
+  @Input() category: CategoryModel;
   @Input() measurement: string;
   @Input() daysLeft: number;
   @Input() standardValue: number;
@@ -22,7 +24,7 @@ export class SimpleComponent {
   showModal = false
 
   constructor(private surveyService: SurveyService) {
-
+      console.log(this.category);
   }
 
   ngOnInit() {

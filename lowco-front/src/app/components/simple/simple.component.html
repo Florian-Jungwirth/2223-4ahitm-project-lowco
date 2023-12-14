@@ -27,6 +27,11 @@
       <p>{{ daysLeft }}d</p>
     </div>
 
+  
+    <div class="start-button">
+      <button *ngIf="category.id === 1" class="start-icon"><ion-icon name="caret-forward-outline"></ion-icon></button>
+    </div>
+
     <ion-icon class="edit" name="create"></ion-icon>
   </div>
 </div>
