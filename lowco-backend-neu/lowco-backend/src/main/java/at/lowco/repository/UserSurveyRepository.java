@@ -12,8 +12,6 @@ import jakarta.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
 
-import static io.quarkus.hibernate.orm.panache.Panache.getEntityManager;
-
 @ApplicationScoped
 public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
     public void updateUserSurvey(long userID, long surveyID, double value, String unit) {
@@ -61,6 +59,28 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
             updateQuery.setParameter("surveyID", surveyID);
             updateQuery.setParameter("time", new Date());
             updateQuery.setParameter("isAQuick", isAQuick);
+            updateQuery.executeUpdate();
+        }
+    }
+
+    public void addValue(long userID, long surveyID, double value) {
+        TypedQuery<UserSurvey> query = getEntityManager().createQuery(
+                "select u from UserSurvey u where u.user.id = :userID and u.survey.id = :surveyID", UserSurvey.class
+        );
+
+        query.setParameter("surveyID", surveyID);
+        query.setParameter("userID", userID);
+
+        if (query.getResultList().isEmpty()) {
+            this.createNewUserSurvey(surveyID, userID, value, null, false);
+        } else {
+            Query updateQuery = getEntityManager().createQuery(
+                    "update UserSurvey set value = value + :value where user.id = :userID and survey.id = :surveyID"
+            );
+
+            updateQuery.setParameter("value", value);
+            updateQuery.setParameter("userID", userID);
+            updateQuery.setParameter("surveyID", surveyID);
             updateQuery.executeUpdate();
         }
     }

@@ -78,8 +78,7 @@ export class HomePage {
 
   constructor(
     private surveyService: SurveyService,
-    private titleService: TitleService,
-    private cdr: ChangeDetectorRef
+    private titleService: TitleService
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
@@ -95,7 +94,6 @@ export class HomePage {
       this.surveys.nativeElement.style.height = '0px'
 
       if(this.quickSelection.length%2 != 0) {
-        console.log("asdf")
         this.surveys.nativeElement.classList.add('odd')
       } else {
         this.surveys.nativeElement.classList.remove('odd')
@@ -150,6 +148,7 @@ export class HomePage {
       1,
       20000
     );
+
     this.camera.position.set(30, 30, 100);
 
     const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
@@ -160,7 +159,7 @@ export class HomePage {
       waterNormals: new THREE.TextureLoader().load(
         'assets/textures/waternormals.jpg',
         function (texture) {
-          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping
         }
       ),
       sunDirection: new THREE.Vector3(),

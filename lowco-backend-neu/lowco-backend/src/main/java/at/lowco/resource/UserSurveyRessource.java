@@ -47,6 +47,15 @@ public class UserSurveyRessource {
     }
 
 
+    @PATCH
+    @Path("addValue/{userID}/{surveyID}/{value}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response updateUserSurvey(@PathParam("userID") long userID, @PathParam("surveyID") long surveyID, @PathParam("value") double value){
+        userSurveyRepository.addValue(userID, surveyID, value);
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
     @PUT
     @Path("updateUserSurvey/{userID}/{surveyID}/{value}/{unit}")
     @Consumes(MediaType.APPLICATION_JSON)

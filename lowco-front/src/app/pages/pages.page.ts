@@ -1,21 +1,21 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
-import { TitleService } from '../services/title.service';
-import { SurveyService } from '../services/survey.service';
-import { Capacitor, registerPlugin } from "@capacitor/core";
-import { BackgroundGeolocationPlugin } from "@capacitor-community/background-geolocation";
+import {Component} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {NavController} from '@ionic/angular';
+import {TitleService} from '../services/title.service';
+import {SurveyService} from '../services/survey.service';
+import {Capacitor, registerPlugin} from "@capacitor/core";
+import {BackgroundGeolocationPlugin} from "@capacitor-community/background-geolocation";
+
+
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
 
 import {
   FirebaseMessaging,
   GetTokenOptions,
 } from "@capacitor-firebase/messaging";
-import { environment } from 'src/environments/environment';
-import { CoordinateModel } from '../models/coordinate.model';
-import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
-import { CategoryService } from '../services/category.service';
-import { SurveyModel } from '../models/survey.model';
+import {environment} from 'src/environments/environment';
+import {CoordinateModel} from '../models/coordinate.model';
+import {LocalNotifications, ScheduleOptions} from '@capacitor/local-notifications';
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
 
 @Component({
@@ -35,7 +35,6 @@ export class PagesPage {
     private router: Router,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private categoryService: CategoryService,
     private navCtrl: NavController
   ) {
 
@@ -50,7 +49,7 @@ export class PagesPage {
     })
 
     FirebaseMessaging.addListener("notificationReceived", (event) => {
-      console.log("notificationReceived: ", { event });
+      console.log("notificationReceived: ", {event});
     });
 
     FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
@@ -62,12 +61,12 @@ export class PagesPage {
 
       if (Capacitor.getPlatform() === "web") {
         navigator.serviceWorker.addEventListener("message", (event: any) => {
-          console.log("serviceWorker message: ", { event });
+          console.log("serviceWorker message: ", {event});
           const notification = new Notification(event.data.notification.title, {
             body: event.data.notification.body,
           });
           notification.onclick = (event) => {
-            console.log("notification clicked: ", { event });
+            console.log("notification clicked: ", {event});
           };
         });
       }
@@ -83,22 +82,21 @@ export class PagesPage {
       }
     })
   }
+
   goBack() {
     this.navCtrl.back();
   }
 
-  getSurveysOfFortbewegung(){
-    this.categoryService.getFortbewegung().subscribe(async (element)=> {
-      this.surveyService.getSurveysOfCategory(element.id).subscribe((userSurveys) => {
-        this.locomotionSurveys = userSurveys;
-      })
+  getSurveysOfFortbewegung() {
+    this.surveyService.getSurveysOfCategory(1).subscribe((userSurveys) => {
+      this.locomotionSurveys = userSurveys;
     })
   }
 
   saveLocationModalValue(id: number) {
     if (this.locomotionValue != 0) {
       this.reload = true;
-      this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).then(() => {
+      this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).subscribe(() => {
         this.reload = false;
       })
     }
@@ -122,7 +120,7 @@ export class PagesPage {
       options.serviceWorkerRegistration =
         await navigator.serviceWorker.register("firebase-messaging-sw.js");
     }
-    const { token } = await FirebaseMessaging.getToken(options);
+    const {token} = await FirebaseMessaging.getToken(options);
     console.log(token);
   }
 }
@@ -169,7 +167,7 @@ async function sendNotification(title: string, body: string, distance: number) {
   await LocalNotifications.schedule(options)
 }
 
-let previousCoordinates: CoordinateModel = { lat: -1, lon: -1 }
+let previousCoordinates: CoordinateModel = {lat: -1, lon: -1}
 let distance = 0;
 let isDriving = false;
 let timeout: any = undefined;
@@ -206,7 +204,7 @@ BackgroundGeolocation.addWatcher(
     //   return;
     // }
 
-    let currentCoord = { lat: location?.latitude || 0, lon: location?.longitude || 0 }
+    let currentCoord = {lat: location?.latitude || 0, lon: location?.longitude || 0}
 
     if (location != undefined && location.speed != null) {
       let speedInKMH = location.speed * 3.6

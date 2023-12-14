@@ -107,26 +107,6 @@ export class SurveyService {
     });
   }
 
-  addValueToUserSurvey(surveyId: number, value: number) {
-    return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
-        this.httpClient
-          .patch(
-            `${API_URL}user-survey/addValue/${user.id}/${surveyId}/${value}`,
-            {}
-          )
-          .subscribe({
-            next: (data) => {
-              resolve(data);
-            },
-            error: (error) => {
-              reject(error);
-            },
-          });
-      });
-    });
-  }
-
   getAllValuesByUser() {
     return new Promise<any>((resolve, reject) => {
       this.authService.getUser().then((user) => {
@@ -211,6 +191,11 @@ export class SurveyService {
 
   updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
     this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${USER.id}/${surveyID}/${value}/${unit}/${isAQuick}`, {}).subscribe();
+  }
+
+  addValueToUserSurvey(surveyId: number, value: number) {
+        return this.httpClient.patch(
+            `${API2_URL}userSurvey/addValue/${USER.id}/${surveyId}/${value}`, {})
   }
 
   getMeasurement(measurementGiven: string, unit: any): {divisor: number, relevantMeasures: any, unit: string } {
