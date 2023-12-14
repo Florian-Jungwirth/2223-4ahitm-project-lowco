@@ -3,7 +3,7 @@ name: Deployment
 on:
   push:
     branches:
-      - 'main'
+      - 'new-backend'
 
 env:
   IMAGE_NAME: floaterd2201/lowco2
@@ -44,9 +44,9 @@ jobs:
 
       - name: Build
         run: |
-          cd lowco-back
-          docker build -t floaterd2201/lowco2 .
-          docker image tag floaterd2201/lowco2 ghcr.io/florian-jungwirth/lowco2:latest
+          cd lowco-backend-neu/lowco-backend/src/main/docker Dockerfile.jvm
+          docker build -t floaterd2201/lowco2_neu .
+          docker image tag floaterd2201/lowco2_neu ghcr.io/florian-jungwirth/lowco2_neu:latest
           docker image ls
 
       - name: Push latest to packages
@@ -59,112 +59,3 @@ jobs:
 
       - name: Push tagged version to packages
         run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
-
-  electron:
-    needs:
-      - build-push
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest]
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Run electron on windows
-        if: startsWith(matrix.os, 'windows-latest')
-        run: |
-          cd lowco-front
-          npm i
-          npm run build
-          npm run electron:make-windows
-
-      - name: Upload Windows file
-        if: startsWith(matrix.os, 'windows-latest')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: lowco-front/out/make/squirrel.windows/x64/lowco2-0.0.1 Setup.exe
-          tag: v0.0.${{github.run_number}}
-          asset_name: lowco2-windows-setup.exe
-          overwrite: true
-          prerelease: true
-
-      - name: Run electron on mac
-        if: startsWith(matrix.os, 'macos-latest')
-        run: |
-          cd lowco-front
-          npm i
-          npm run build
-          npm run electron:make-mac
-
-      - name: Upload Mac file
-        if: startsWith(matrix.os, 'macos-latest')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: lowco-front/out/make/zip/darwin/arm64/lowco2-darwin-arm64-0.0.1.zip
-          tag: v0.0.${{github.run_number}}
-          asset_name: lowco2-mac.zip
-          overwrite: true
-          prerelease: true
-
-  apk:
-    needs:
-      - electron
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Install Dependencies
-        run: |
-          cd lowco-front
-          npm install
-
-      - name: Build Angular Ionic Project
-        run: |
-          cd lowco-front
-          npm install -g @angular/cli  
-          npm run build
-
-      - name: Build APK
-        run: |
-          cd lowco-front
-           npm install -g @ionic/cli  
-          
-           npm install -g @capacitor/cli 
-          
-           npm i @capacitor/core
-          
-           ionic capacitor build android
-          
-           ionic capacitor copy android
-          
-           cd android
-          
-           chmod +x ./gradlew
-          
-           ./gradlew assembleDebug
-
-      - name: Upload APK file
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./lowco-front/android/app/build/outputs/apk/debug/app-debug.apk
-          tag: v0.0.${{github.run_number}}
-          overwrite: true
-          prerelease: true

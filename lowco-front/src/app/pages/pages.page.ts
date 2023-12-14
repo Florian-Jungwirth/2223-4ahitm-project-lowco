@@ -4,8 +4,8 @@ import {NavController} from '@ionic/angular';
 import {TitleService} from '../services/title.service';
 import {SurveyService} from '../services/survey.service';
 import {Capacitor, registerPlugin} from "@capacitor/core";
-import {BackgroundGeolocationPlugin} from "@capacitor-community/background-geolocation";
-
+import { BackgroundGeolocationPlugin } from "@capacitor-community/background-geolocation";
+import {BluetoothSerial} from "@speedengineering/capacitor-bluetooth-serial"
 
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
 
@@ -17,6 +17,7 @@ import {environment} from 'src/environments/environment';
 import {CoordinateModel} from '../models/coordinate.model';
 import {LocalNotifications, ScheduleOptions} from '@capacitor/local-notifications';
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
+import { time } from 'console';
 
 @Component({
   selector: 'app-pages',
@@ -35,7 +36,7 @@ export class PagesPage {
     private router: Router,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
   ) {
 
     this.router.events.subscribe((event: any) => {
@@ -170,8 +171,40 @@ async function sendNotification(title: string, body: string, distance: number) {
 let previousCoordinates: CoordinateModel = {lat: -1, lon: -1}
 let distance = 0;
 let isDriving = false;
+let connectedToCarWithBluetooth = false;
 let timeout: any = undefined;
 const speedLimit = 25;
+
+BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
+  if (connectionState.state == 'CONNECTED' && connectionState.device) {
+    let connectedDevice = connectionState.device;
+    console.log('Connected: ' + JSON.stringify(connectedDevice));
+
+    BluetoothSerial.getPairedDevices().then((data) => {
+      for (const device of data.devices) {
+        if (device.address == connectedDevice.address) {
+          console.log('found: ' + JSON.stringify(device));
+          if (device.class == 1056 || device.class == 1028) {//TODO: Remove second class
+            console.log('CAAr');
+            isDriving = true;
+            connectedToCarWithBluetooth = true;
+          }
+        }
+      }
+    })
+  } else {
+    console.log('Other event: ' + JSON.stringify(connectionState))
+    clearTimeout(timeout)
+    connectedToCarWithBluetooth = false;
+    isDriving = false;
+    distance = 0;
+  }
+
+  //wearable headphones: 1028
+  //car: 1056 
+  //https://developer.android.com/reference/android/bluetooth/BluetoothClass.Device#AUDIO_VIDEO_CAR_AUDIO
+
+})
 
 BackgroundGeolocation.addWatcher(
   {
@@ -222,7 +255,7 @@ BackgroundGeolocation.addWatcher(
 
             isDriving = false;
             distance = 0;
-          }, 1000 * 30)
+          }, 1000 * 120)
           console.log("Fährt noch immer");
         }
       }

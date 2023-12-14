@@ -25,3 +25,6 @@ project(':capacitor-local-notifications').projectDir = new File('../node_modules
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacitor/status-bar/android')
+
+include ':speedengineering-capacitor-bluetooth-serial'
+project(':speedengineering-capacitor-bluetooth-serial').projectDir = new File('../node_modules/@speedengineering/capacitor-bluetooth-serial/android')
