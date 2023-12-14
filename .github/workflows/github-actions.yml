@@ -56,8 +56,8 @@ jobs:
 
       - name: Tag latest to date
         run: |
-          docker tag ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }} ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
+          docker tag ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}_neu ${{ env.REGISTRY }}/${{ env.ORG_ACTOR }}/${{ env.PROJECT_NAME }}:$(date --rfc-3339=date)
           docker image ls
 
       - name: Push tagged version to packages
-        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}_neu:${{ env.PROJECT_VERSION }}
