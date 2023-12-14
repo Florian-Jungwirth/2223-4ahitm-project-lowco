@@ -52,7 +52,7 @@ jobs:
           docker image ls
 
       - name: Push latest to packages
-        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}:${{ env.PROJECT_VERSION }}
+        run: docker push ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.PROJECT_NAME }}_neu:${{ env.PROJECT_VERSION }}
 
       - name: Tag latest to date
         run: |
