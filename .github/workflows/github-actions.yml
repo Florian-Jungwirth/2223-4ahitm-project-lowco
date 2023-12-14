@@ -44,8 +44,9 @@ jobs:
 
       - name: Build
         run: |
-          cd lowco-backend-neu/lowco-backend/src/main/docker
-          docker build -t floaterd2201/lowco2_neu Dockerfile.jvm
+          ./mvnw package
+          cd lowco-backend-neu/lowco-backend
+          docker build -f src/main/docker/Dockerfile.jvm -t floaterd2201/lowco2_neu .
           docker image tag floaterd2201/lowco2_neu ghcr.io/florian-jungwirth/lowco2_neu:latest
           docker image ls
 
