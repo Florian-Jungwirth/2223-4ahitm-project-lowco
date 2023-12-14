@@ -2,6 +2,7 @@ import {Component, Input} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {MEASUREMENTS, USER} from "../../constants";
+import { CategoryModel } from 'src/app/models/category.model';
 
 @Component({
   selector: 'app-simple',
@@ -15,14 +16,17 @@ export class SimpleComponent {
   @Input() unit: any;
   @Input() value: any;
   @Input() id: number;
+  @Input() category: CategoryModel;
   @Input() measurement: string;
   @Input() daysLeft: number;
   @Input() standardValue: number;
   relevantMeasures: any;
   showModal = false
+  isStarted = false
+  currentIcon = "caret-forward-outline"
 
   constructor(private surveyService: SurveyService) {
-
+      console.log(this.category);
   }
 
   ngOnInit() {
@@ -50,5 +54,15 @@ export class SimpleComponent {
     this.unit = values.unit;
   }
 
+  hasBeenStarted(){
+    if(!this.isStarted){
+      this.isStarted = true;
+      this.currentIcon = "square";
+    }
+    else if(this.isStarted){
+      this.isStarted = false;
+      this.currentIcon = "caret-forward-outline";
+    }
+  }
 
 }
