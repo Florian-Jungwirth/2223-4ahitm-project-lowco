@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowco2-quarkus
+  labels:
+    app: lowco2
+  namespace: student-f-jungwirth1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lowco2
+  template:
+    metadata:
+      labels:
+        app: lowco2
+    spec:
+      containers:
+        - name: lowco2-backend-neu
+          image: floaterd2201/lowco2_neu:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "0.2"
+            requests:
+              memory: "500Mi"
+              cpu: "0.1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lowco2-service
+  namespace: student-f-jungwirth1
+spec:
+  selector:
+    app: lowco2
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-service
+spec:
+  type: ExternalName
+  externalName: trumpet.db.elephantsql.com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lowco2-ingress
+  namespace: student-f-jungwirth1
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+spec:
+  rules:
+    - host: student.cloud.htl-leonding.ac.at
+      http:
+        paths:
+          - path: /lowco2-neu/(.*)$
+            pathType: Prefix
+            backend:
+              service:
+                name: lowco2-service
+                port:
+                  number: 3000
