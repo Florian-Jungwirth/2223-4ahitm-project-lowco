@@ -63,11 +63,11 @@ export class CategoryService {
   }
 
   updateCategory(categoryId: number, category: CategorySaveModel) {
-    return this.httpClient.patch(`${API_URL }category / ${ categoryId }`, category);
+    return this.httpClient.patch(`${API_URL }category/${ categoryId }`, category);
   }
 
   deleteCategory(categoryId: number): Observable<CategoryModel> {
-    return this.httpClient.delete<CategoryModel>(`${API_URL}category / ${categoryId}`)
+    return this.httpClient.delete<CategoryModel>(`${API_URL}category/${categoryId}`)
   }
 
   createNewCategory(category: CategoryModel): Observable<any> {
@@ -78,7 +78,7 @@ export class CategoryService {
   setActivateCategory(category: CategoryModel, state: number) {
     this.httpClient
       .patch(
-        `${API_URL}category / activated / setOneActivated / ${category.id} / ${state}`,
+        `${API_URL}category/activated/setOneActivated/${category.id}/${state}`,
         {}
       )
       .subscribe();
@@ -87,7 +87,7 @@ export class CategoryService {
   //--------------------------------------
   getAllActiveCategories(): Observable<CategoryModel[]> {
     return this.httpClient.get<CategoryModel[]>(
-      `${ API2_URL }category / allActive`
+      `${ API2_URL }category/allActive`
     );
   }
 }

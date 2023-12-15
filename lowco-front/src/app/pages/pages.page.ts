@@ -19,6 +19,8 @@ import {LocalNotifications, ScheduleOptions} from '@capacitor/local-notification
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
 import { time } from 'console';
 import { SurveyModel } from '../models/survey.model';
+import { EventEmitter } from 'stream';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-pages',
@@ -33,6 +35,7 @@ export class PagesPage {
   locomotionValue: number = 0
   reload = false
   showBackButton = false
+  showBluetoothSymbol = false
 
   constructor(
     private router: Router,
@@ -40,6 +43,9 @@ export class PagesPage {
     private titleService: TitleService,
     private navCtrl: NavController,
   ) {
+    connectedEmitter.subscribe(data => {
+      this.showBluetoothSymbol = data
+    })
 
 
     this.getMostLikelyVehicle = this.getMostLikelyVehicle.bind(this);
@@ -80,10 +86,17 @@ export class PagesPage {
 
     this.getToken().then(this.requestPermissions)
 
+    LocalNotifications.addListener('localNotificationReceived', () => {
+      if (bluetoothMessage) {
+        this.surveyService.addValueToUserSurvey(2, 1.4).subscribe()
+      }
+    })
+
     LocalNotifications.addListener('localNotificationActionPerformed', (payload) => {
-      if (payload.notification.id == 1 && payload.actionId == 'tap') {
+      
+      if (payload.notification.id == 1 && payload.actionId == 'tap' && !payload.notification.extra.bluetooth) {
         this.getSurveysOfFortbewegung();
-        this.isLocationModalOpen = true;
+        this.isChangeVehicleModalOpen = true;
         this.locomotionValue = payload.notification.extra;
       }
     })
@@ -99,7 +112,7 @@ export class PagesPage {
   };
 
   getSurveysOfFortbewegung() {
-    this.surveyService.getSurveysOfCategory(1).subscribe((userSurveys: JoinedUserSurveyModel) => {
+    this.surveyService.getSurveysOfCategory(1).subscribe((userSurveys: JoinedUserSurveyModel[]) => {
       this.locomotionSurveys = userSurveys;
     })
   }
@@ -179,6 +192,21 @@ async function sendNotification(title: string, body: string, distance: number) {
   await LocalNotifications.schedule(options)
 }
 
+async function sendNotificationBluetooth(title: string, body: string, distance: number) {
+  let options: ScheduleOptions = {
+    notifications: [
+      {
+        title,
+        body,
+        extra: {bluetooth: true, distance},
+        id: 1
+      }
+    ]
+  }
+
+  await LocalNotifications.schedule(options)
+}
+
 function getVehicle(this: any, velocity: number){
   if(velocity >= 25 && velocity <= 35){
     return this.locomotionSurveys[3];
@@ -204,6 +232,8 @@ let previousCoordinates: CoordinateModel = {lat: -1, lon: -1}
 let distance = 0;
 let isDriving = false;
 let connectedToCarWithBluetooth = false;
+let connectedEmitter = new BehaviorSubject<boolean>(false)
+let bluetoothMessage = false
 let timeout: any = undefined;
 const speedLimit = 25;
 
@@ -219,6 +249,7 @@ BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
           if (device.class == 1056 || device.class == 1028) {//TODO: Remove second class
             console.log('CAAr');
             isDriving = true;
+            connectedEmitter.next(true)
             connectedToCarWithBluetooth = true;
           }
         }
@@ -227,9 +258,12 @@ BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
   } else {
     console.log('Other event: ' + JSON.stringify(connectionState))
     clearTimeout(timeout)
+    sendNotificationBluetooth(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
     connectedToCarWithBluetooth = false;
+    bluetoothMessage = true
     isDriving = false;
     distance = 0;
+    connectedEmitter.next(false)
   }
 
   //wearable headphones: 1028

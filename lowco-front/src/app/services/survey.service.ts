@@ -1,10 +1,10 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
-import {API2_URL, API_URL, MEASUREMENTS, USER} from '../constants';
-import {SurveyModel} from '../models/survey.model';
-import {JoinedUserSurveyModel} from "../models/userSurvey.model";
-import {Observable} from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
+import { API2_URL, API_URL, MEASUREMENTS, USER } from '../constants';
+import { SurveyModel } from '../models/survey.model';
+import { JoinedUserSurveyModel } from "../models/userSurvey.model";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class SurveyService {
 
   getAllSurveys(): Promise<any> {
     return new Promise<any>((resolve) => {
-      this.httpClient.get(`${API_URL}survey`).subscribe({
+      this.httpClient.get(`${ API_URL }survey`).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -26,7 +26,7 @@ export class SurveyService {
 
   updateSurvey(surveyId: number, survey: SurveyModel) {
     return new Promise<any>((resolve, reject) => {
-      this.httpClient.patch(`${API_URL}survey/${surveyId}`, survey).subscribe({
+      this.httpClient.patch(`${ API_URL }survey/${ surveyId }`, survey).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -39,7 +39,7 @@ export class SurveyService {
 
   getAllSurveysAdmin(): Promise<any> {
     return new Promise<any>((resolve) => {
-      this.httpClient.get(`${API_URL}survey/activated/allAdmin`).subscribe({
+      this.httpClient.get(`${ API_URL }survey/activated/allAdmin`).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -49,7 +49,7 @@ export class SurveyService {
 
   getSurveyById(id: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      this.httpClient.get(`${API_URL}survey/${id}`).subscribe({
+      this.httpClient.get(`${ API_URL }survey/${ id }`).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -58,6 +58,17 @@ export class SurveyService {
         },
       });
     });
+  }
+
+
+  getSurveysByName(surveys: SurveyModel[], search: string): SurveyModel[] {
+    let selectedSurveys = [];
+    for (const survey of surveys) {
+      if (survey.title.toLowerCase().includes(search.toLowerCase())) {
+        selectedSurveys.push(survey);
+      }
+    }
+    return selectedSurveys;
   }
 
   getUserSurveysByName(userSurveys: JoinedUserSurveyModel[], search: string): JoinedUserSurveyModel[] {
@@ -72,7 +83,7 @@ export class SurveyService {
 
   createNewSurvey(survey: SurveyModel): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      this.httpClient.post(`${API_URL}survey`, survey).subscribe({
+      this.httpClient.post(`${ API_URL }survey`, survey).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -85,7 +96,7 @@ export class SurveyService {
 
   deleteSurvey(surveyId: number): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      this.httpClient.delete(`${API_URL}survey/${surveyId}`).subscribe({
+      this.httpClient.delete(`${ API_URL }survey/${ surveyId }`).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -100,7 +111,7 @@ export class SurveyService {
     return new Promise<any>((resolve, reject) => {
       this.authService.getUser().then((user) => {
         this.httpClient
-          .get(`${API_URL}user-survey/getByUserAndSurvey/${user.id}`)
+          .get(`${ API_URL }user-survey/getByUserAndSurvey/${ user.id }`)
           .subscribe({
             next: (data) => {
               resolve(data);
@@ -115,7 +126,7 @@ export class SurveyService {
 
   getTypes() {
     return new Promise<any>((resolve, reject) => {
-      this.httpClient.get(`${API_URL}survey/types/getAll`).subscribe({
+      this.httpClient.get(`${ API_URL }survey/types/getAll`).subscribe({
         next: (data) => {
           resolve(data);
         },
@@ -129,7 +140,7 @@ export class SurveyService {
   getAmountOfSurveys(amount: number) {
     return new Promise<any>((resolve, reject) => {
       this.httpClient
-        .get(`${API_URL}survey/getAmountOfSurveys/${amount}`)
+        .get(`${ API_URL }survey/getAmountOfSurveys/${ amount }`)
         .subscribe({
           next: (data) => {
             resolve(data);
@@ -144,7 +155,7 @@ export class SurveyService {
   setActivateSurvey(survey: SurveyModel, state: number) {
     this.httpClient
       .patch(
-        `${API_URL}survey/activated/setOneActivated/${survey.id}/${state}`,
+        `${ API_URL }survey/activated/setOneActivated/${ survey.id }/${ state }`,
         {}
       )
       .subscribe((data) => {
@@ -155,39 +166,39 @@ export class SurveyService {
   //------------------------------------------------
 
   getActiveQuicks() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicks/${USER.id}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicks/${ USER.id }`)
   }
 
   getActiveQuicksHome() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/${USER.id}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicksHome/${ USER.id }`)
   }
 
   getAllActiveJoined() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getJoinedUserSurveysByUser/${USER.id}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getJoinedUserSurveysByUser/${ USER.id }`)
   }
 
   getSurveysOfCategory(id: number): Observable<JoinedUserSurveyModel[]> {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveByCategoryId/${USER.id}/${id}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveByCategoryId/${ USER.id }/${ id }`)
   }
 
   getAllActiveSurveys(): Observable<SurveyModel[]> {
-    return this.httpClient.get<SurveyModel[]>(`${API2_URL}survey/getAllActiveSurveys`)
+    return this.httpClient.get<SurveyModel[]>(`${ API2_URL }survey/getAllActiveSurveys`)
   }
 
   updateUserSurvey(surveyID: number, value: number, unit: string) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${USER.id}/${surveyID}/${value}/${unit}`, {}).subscribe();
+    this.httpClient.put(`${ API2_URL }userSurvey/updateUserSurvey/${ USER.id }/${ surveyID }/${ value }/${ unit }`, {}).subscribe();
   }
 
   updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${USER.id}/${surveyID}/${value}/${unit}/${isAQuick}`, {}).subscribe();
+    this.httpClient.put(`${ API2_URL }userSurvey/updateQuick/${ USER.id }/${ surveyID }/${ value }/ ${ unit }/${ isAQuick }`, {}).subscribe();
   }
 
   addValueToUserSurvey(surveyId: number, value: number) {
-        return this.httpClient.patch(
-            `${API2_URL}userSurvey/addValue/${USER.id}/${surveyId}/${value}`, {})
+    return this.httpClient.patch(
+      `${ API2_URL }userSurvey/addValue/${ USER.id }/${ surveyId }/${ value }`, {})
   }
 
-  getMeasurement(measurementGiven: string, unit: any): {divisor: number, relevantMeasures: any, unit: string } {
+  getMeasurement(measurementGiven: string, unit: any): { divisor: number, relevantMeasures: any, unit: string } {
     let measurements: any = MEASUREMENTS;
 
     for (const measurement of measurements) {
@@ -202,7 +213,7 @@ export class SurveyService {
               }
             }
 
-            return {divisor: measurement.units.metrisch[unit], relevantMeasures: measurement.units.metrisch, unit: unit};
+            return { divisor: measurement.units.metrisch[unit], relevantMeasures: measurement.units.metrisch, unit: unit };
           } else {
             if (unit == null || !Object.keys(measurement.units.imperial).includes(unit)) {
 
@@ -213,18 +224,18 @@ export class SurveyService {
               }
             }
 
-            return {divisor: measurement.units.imperial[unit], relevantMeasures: measurement.imperial, unit: unit};
+            return { divisor: measurement.units.imperial[unit], relevantMeasures: measurement.imperial, unit: unit };
           }
         } else if (measurementGiven == 'z') {
           if (unit == null) {
             unit = 'min';
           }
 
-          return {divisor: measurement.units[unit], relevantMeasures: measurement.units, unit: unit};
+          return { divisor: measurement.units[unit], relevantMeasures: measurement.units, unit: unit };
         }
       }
     }
-    return {divisor: 1, relevantMeasures: null, unit: ''};
+    return { divisor: 1, relevantMeasures: null, unit: '' };
   }
 
 }

@@ -1,7 +1,10 @@
 <ion-header>
   <nav>
-    <img *ngIf="!showBackButton" ngSrc="assets/icon/favicon.svg" id="logo" routerLink="/" alt="Zurück" height="36"
-      width="36">
+    <div>
+      <img *ngIf="!showBackButton" ngSrc="assets/icon/favicon.svg" id="logo" routerLink="/" alt="Zurück" height="36"
+        width="36">
+      <ion-icon name="bluetooth-outline"></ion-icon>
+    </div>
     <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
     <h1 (click)="templateNotification()">{{title}}</h1>
     <!-- TODO: Remove sendNotification -->

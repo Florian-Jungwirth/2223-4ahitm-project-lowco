@@ -25,29 +25,6 @@ public class UserSurveyRessource {
         return userSurveyRepository.listAll();
     }
 
-    @PUT
-    @Path("updateUserSurvey/{userID}/{surveyID}/{value}/{unit}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response updateSurvey(@PathParam("userID") long userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value){
-        userSurveyRepository.update(userID, surveyID, value, unit);
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @Path("getAllActivatedJoinedByUserID/{id}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Object[]> getAllActivatedJoinedByUserID(@PathParam("id") long id){
-        return userSurveyRepository.getAllActivatedJoinedByUserID(id);
-    }
-
-    @Path("getAllActivatedByUserAndCategory/{id}/{userid}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Object[]> getAllActivatedByUserAndCategory(@PathParam("id") long id, @PathParam("userid") long userid){
-        return userSurveyRepository.getAllActivatedByUserAndCategory(id, userid);
-    }
-
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,11 +32,11 @@ public class UserSurveyRessource {
         return userSurveyRepository.findById(id);
     }
 
-    @Path("getJoinedUserSurveyByUserID/{id}")
+    @Path("getByUserId/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserSurvey> getJoinedUserSurveyByUserID(@PathParam("id") long id){
-        return userSurveyRepository.getJoinedUserSurveyByUserID(id);
+    public List<UserSurvey> getUserSurveyByUserID(@PathParam("id") long id){
+        return userSurveyRepository.getByUserId(id);
     }
 
     @Path("getActiveByCategoryId/{userID}/{categoryID}")
