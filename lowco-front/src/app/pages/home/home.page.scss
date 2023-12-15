@@ -42,16 +42,18 @@
   padding-top: calc(40px + 0.8em);
 }
 
-#surveys {
+.surveys {
   display: grid;
   grid-template-columns: calc(50% - 3px) calc(50% - 3px);
   grid-template-rows: auto auto;
-  width: calc(100%);
+  width: 100%;
   gap: 6px;
   box-sizing: border-box;
   overflow: hidden;
-  height: fit-content;
-  transition: height 0.420s ease-in;
+}
+
+.odd div:last-child {
+  grid-column: span 2 !important;
 }
 
 ion-content {

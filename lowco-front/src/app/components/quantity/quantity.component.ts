@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { SurveyService } from 'src/app/services/survey.service';
+import {Component, Input} from '@angular/core';
+import {SurveyService} from 'src/app/services/survey.service';
 
 @Component({
   selector: 'app-quantity',
@@ -9,28 +9,27 @@ import { SurveyService } from 'src/app/services/survey.service';
 export class QuantityComponent {
   @Input() title: any;
   @Input() icon: any;
-  @Input() showWarning: Boolean;
+  @Input() showWarning: Boolean = false;
   @Input() value: any;
-  @Input() id: any;
+  @Input() id: number;
   @Input() daysLeft: number;
+  @Input() standardValue: number;
   showModal = false
 
   isClickable = 'changeQuantity';
 
   constructor(private surveyService: SurveyService) {
-    this.showWarning = false;
 
+  }
+
+  ngOnInit() {
     if (this.value == 0) this.isClickable = 'notClickable';
-    // this.modalService.valueChanged.subscribe((changeObj) => {
-    //   if (this.id == changeObj.id) this.value = changeObj.value;
-    //   if (this.value == 0) this.isClickable = 'notClickable';
-    // });
   }
 
   addOne() {
     this.value += 1;
     this.isClickable = 'changeQuantity';
-    this.surveyService.updateUserSurvey(this.id, this.value, '-')
+    this.surveyService.updateUserSurvey(this.id, this.value, '')
   }
 
   removeOne() {
@@ -40,7 +39,7 @@ export class QuantityComponent {
       if (this.value == 0) {
         this.isClickable = 'notClickable';
       }
-      this.surveyService.updateUserSurvey(this.id, this.value, '-')
+      this.surveyService.updateUserSurvey(this.id, this.value, '')
     }
   }
 
@@ -48,7 +47,7 @@ export class QuantityComponent {
     this.showModal = true
   }
 
-  changeValues(values: { id: string, value: number, unit: string }) {
+  changeValues(values: { id: number, value: number, unit: string }) {
     this.id = values.id;
     this.value = values.value;
   }

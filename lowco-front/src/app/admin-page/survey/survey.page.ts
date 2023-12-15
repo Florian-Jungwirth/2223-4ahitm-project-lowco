@@ -5,6 +5,7 @@ import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
 import { CategoryService } from 'src/app/services/category.service';
+import {MEASUREMENTS} from "../../constants";
 
 @Component({
   selector: 'app-survey',
@@ -21,10 +22,10 @@ export class SurveyPage implements OnInit {
   setSurveys: any[] = new Array();
   allSurveys: any[] = new Array();
   edit = false;
-  surveyId = ""
+  surveyId = 0
   categories: any;
   collapsed = true;
-  measurements: any;
+  measurements = MEASUREMENTS;
   types: any;
   @ViewChild('modal') modal!: IonModal
 
@@ -41,8 +42,6 @@ export class SurveyPage implements OnInit {
         //TODO: Errorhandling
       }
     })
-
-    this.measurements = this.toArray(await this.surveyService.getMeasurements());
 
     this.types = this.toArray(await this.surveyService.getTypes());
   }
@@ -64,7 +63,7 @@ export class SurveyPage implements OnInit {
     surveyMeasurements: new FormControl('', [Validators.required]),
     surveyStandard: new FormControl(0, [Validators.required]),
     surveyType: new FormControl('', [Validators.required]),
-    surveyCat: new FormControl('', [Validators.required])
+    surveyCat: new FormControl(0, [Validators.required])
   });
 
   async editModal(survey: SurveyModel) {
@@ -92,19 +91,15 @@ export class SurveyPage implements OnInit {
 
 
     for (const survey of this.setSurveys) {
-      console.log(survey);
-
-
       if (survey.id == this.surveyId) {
         survey.title = updatedSurvey.title
         survey.iconName = updatedSurvey.iconName
         survey.standardValue = updatedSurvey.standardValue
         survey.measurement = updatedSurvey.measurement
         survey.dataType = updatedSurvey.type
-        survey.category._id = updatedSurvey.category
+        survey.category.id = updatedSurvey.category
         break;
       }
-
     }
 
     this.modal.dismiss();

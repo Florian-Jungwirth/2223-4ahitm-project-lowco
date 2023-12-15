@@ -1,7 +1,7 @@
 <ion-header>
   <nav>
     <img *ngIf="!showBackButton" ngSrc="assets/icon/favicon.svg" id="logo" routerLink="/" alt="Zurück" height="36"
-         width="36">
+      width="36">
     <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
     <h1 (click)="templateNotification()">{{title}}</h1>
     <!-- TODO: Remove sendNotification -->
@@ -36,10 +36,10 @@
       <h1>Fortbewegungsmittel ändern</h1>
 
       <ion-list lines="none">
-        <div *ngFor="let survey of locomotionSurveys">
-          <ion-item button="true" detail="false" (click)="saveLocationModalValue(survey.id)">
-            <ion-label>{{survey.title}}</ion-label>
-            <ion-icon name="{{survey.iconName}}"></ion-icon>
+        <div *ngFor="let userSurvey of locomotionSurveys">
+          <ion-item button="true" detail="false" (click)="saveLocationModalValue(userSurvey.survey.id)">
+            <ion-label>{{userSurvey.survey.title}}</ion-label>
+            <ion-icon name="{{userSurvey.survey.iconName}}"></ion-icon>
           </ion-item>
         </div>
       </ion-list>

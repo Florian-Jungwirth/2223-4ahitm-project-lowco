@@ -24,7 +24,7 @@ export class CategoryPage {
   setCategories: CategoryModel[] = new Array();
   allCategories: CategoryModel[] = new Array();
   edit = false;
-  categoryId = '';
+  categoryId = 0;
   collapsed = true;
   categories: any;
   @ViewChild('modal') modal!: any;
@@ -141,9 +141,9 @@ export class CategoryPage {
     await alert.present();
   }
 
-  async search(event: any) {
+  search(event: any) {
     let searched = event.target.value.toLowerCase();
-    this.categories = await this.categoryService.getCategoriesByName(
+    this.categories = this.categoryService.getCategoriesByName(
       this.categories,
       searched
     );

@@ -1,7 +1,18 @@
-export const API_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2/'
-// export const API_URL = 'http://localhost:3000/'
+import {UserModel} from "./models/user.model";
 
-export const USER_ID = 1;
+export const API_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2/'
+export const API2_URL = 'http://localhost:3000/'
+
+export const USER: UserModel = {
+  id: 1,
+  firstname: 'Florian',
+  lastname: 'Jungwirth',
+  metric: true,
+  email: 'florian22jungwirth@gmail.com',
+  isAdmin: true,
+  username: 'flo'
+}
+
 export enum Types {
   Einfach = 'e',
   Anzahl = 'a'
@@ -36,5 +47,3 @@ export const MEASUREMENTS = [
     }
   }
 ]
-
-export const SERVER_URL_NEU = 'http://localhost:3000/'

@@ -1,11 +1,18 @@
-<div id="fwPre">
+<div id="fwPre" (click)="navigateTo()">
   <div class="titleDiv">
     <p class="title">{{title}}</p>
     <ion-icon *ngIf="showWarning" name="alert-circle" class="warning" color="warning"></ion-icon>
   </div>
-  <div class="contentDiv">
+  <div class="contentDiv" [class.hasSurveys]="surveys.length > 0">
     <div class="centerBox">
       <ion-icon *ngIf="icon !== ''" class="titleIcon" name="{{icon}}"></ion-icon>
     </div>
   </div>
+  <ng-container *ngFor="let survey of surveys">
+    <div class="survey" (click)="navigateToSearch($event)">
+      <ion-icon name="{{survey.iconName}}" class="surveyIcon"></ion-icon>
+      <p>{{survey.title}}</p>
+    </div>
+  </ng-container>
 </div>
+

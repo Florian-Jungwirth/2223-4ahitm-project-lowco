@@ -22,3 +22,6 @@ create sequence category_seq start with 100;
 
 drop sequence survey_seq RESTRICT;
 create sequence survey_seq start with 100;
+
+drop sequence usersurvey_seq RESTRICT;
+create sequence usersurvey_seq start with 100;

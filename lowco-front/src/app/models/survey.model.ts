@@ -1,7 +1,7 @@
 import { CategoryModel } from "./category.model";
 
 export interface SurveyModel {
-    id: string;
+    id: number;
     iconName: string;
     title: string;
     measurement: string;

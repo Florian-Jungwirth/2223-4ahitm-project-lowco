@@ -1,26 +1,25 @@
 <ion-content>
   <div id="survey">
     <div class="searchBarDiv">
-      <ion-searchbar class="search" (ionChange)="search($event)"
-                     placeholder="Nach Emissionswerte suchen"></ion-searchbar>
+      <ion-searchbar class="search" [(ngModel)]="searchString" (ionInput)="search()"
+        placeholder="Nach Emissionswerte suchen"></ion-searchbar>
     </div>
     <div id="surveys" *ngIf="!loading">
-      <ng-container *ngIf="selectedSurveys.length != 0">
-        <div *ngFor="let survey of selectedSurveys" style="grid-column: 1/3;">
-          <app-simple *ngIf="types.Einfach == survey[0].type" [title]="survey[0].title" [showWarning]="false"
-                      [icon]="survey[0].iconName" [unit]="survey[1]?.unit" [value]="survey[1]?.value"
-                      [id]="survey[0].id"
-                      [measurement]="survey[0].measurement" [daysLeft]="0"></app-simple>
+      <ng-container *ngIf="selectedUserSurveys.length != 0">
+        <div *ngFor="let userSurvey of selectedUserSurveys" style="grid-column: 1/3;">
+          <app-simple *ngIf="types.Einfach == userSurvey.survey.type"[category]="userSurvey.survey.category" [title]="userSurvey.survey.title" [showWarning]="false"
+            [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
+            [measurement]="userSurvey.survey.measurement" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-simple>
 
-          <app-quantity *ngIf="types.Anzahl == survey[0].type" [title]="survey[0].title" [showWarning]="false"
-                        [icon]="survey[0].iconName" [value]="survey[1]?.value" [id]="survey[0].id"
-                        [daysLeft]="0"></app-quantity>
+          <app-quantity *ngIf="types.Anzahl == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
+            [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-quantity>
         </div>
       </ng-container>
     </div>
-    <p *ngIf="!loading && selectedSurveys.length == 0" style="text-align: center; width: 100%">Keine Abfragen in dieser Kategorie!</p>
+    <p *ngIf="!loading && selectedUserSurveys.length == 0" style="text-align: center; width: 100%">Keine Abfragen in dieser
+      Kategorie!</p>
     <div *ngIf="loading" id="loadingSpinner" class="loading"
-         style="display: flex; align-items: center; justify-content: center;">
+      style="display: flex; align-items: center; justify-content: center;">
       <ion-spinner></ion-spinner>
     </div>
   </div>

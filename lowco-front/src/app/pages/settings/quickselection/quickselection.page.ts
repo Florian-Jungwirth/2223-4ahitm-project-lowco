@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { SurveyService } from 'src/app/services/survey.service';
 import { TitleService } from 'src/app/services/title.service';
+import {JoinedUserSurveyModel} from "../../../models/userSurvey.model";
 
 @Component({
   selector: 'app-quickselection',
@@ -9,10 +10,10 @@ import { TitleService } from 'src/app/services/title.service';
   styleUrls: ['./quickselection.page.scss'],
 })
 export class QuickselectionPage implements OnInit {
-  surveys: any[] = [];
-  selectedSurveys: any;
-  loading = true;
-  selectedQuicks: any[] = []
+  surveys: any;
+  loading: boolean = true;
+  selectedSurveys: JoinedUserSurveyModel[] = []
+  selectedQuicks: JoinedUserSurveyModel[] = []
 
   constructor(private surveyService: SurveyService, private toastController: ToastController, private titleService: TitleService) { }
 
@@ -21,42 +22,41 @@ export class QuickselectionPage implements OnInit {
   }
 
   ngOnInit() {
-    this.surveyService.getSurveyWithQuicks().subscribe((surveys) => {
-      for (const survey of surveys) {
-        let preparedSurvey: any = survey[0]
-        preparedSurvey.selected = survey[1]
-        this.surveys.push(preparedSurvey)
-        if(survey[1]) {
-          this.selectedQuicks.push(survey[0].id)
-        }
-      }
-      this.selectedSurveys = this.surveys;
+    this.surveyService.getAllActiveJoined().subscribe((quicks) => {
+      this.surveys = quicks;
+      this.selectedSurveys = quicks;
+      this.selectedQuicks = quicks.filter((i) => {return i.isAQuick})
       this.loading = false;
     })
   }
 
-  async search(event: any) {
+  search(event: any) {
     let searched = event.target.value.toLowerCase();
 
-    this.selectedSurveys = await this.surveyService.getSurveysByName(
+    this.selectedSurveys = this.surveyService.getUserSurveysByName(
       this.surveys,
       searched
     );
   }
 
-  addToQuicks(id: any, survey: any) {
-    if (!this.selectedQuicks.includes(id)) {
+  addToQuicks(quick: JoinedUserSurveyModel, surveyDiv: any) {
+    if (!this.selectedQuicks.includes(quick)) {
       if (this.selectedQuicks.length <= 3) {
-        this.selectedQuicks.push(id)
-        this.surveyService.changeQuicks(this.selectedQuicks)
-        survey.classList.add('selected')
+        this.selectedQuicks.push(quick)
+        if(quick.id) {
+          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true)
+        } else {
+          let measure = this.surveyService.getMeasurement(quick.survey.measurement, null);
+          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, measure.unit, true)
+        }
+        surveyDiv.classList.add('selected')
       } else {
         this.presentToast()
       }
     } else {
-      this.selectedQuicks.splice(this.selectedQuicks.indexOf(id), 1)
-      this.surveyService.changeQuicks(this.selectedQuicks)
-      survey.classList.remove('selected')
+      this.selectedQuicks.splice(this.selectedQuicks.indexOf(quick), 1)
+      this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, false)
+      surveyDiv.classList.remove('selected')
     }
   }
 

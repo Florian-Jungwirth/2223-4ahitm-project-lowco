@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"lowco2"},"name":"lowco2-deployment","namespace":"student-f-jungwirth1"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"lowco2"}},"template":{"metadata":{"labels":{"app":"lowco2"}},"spec":{"containers":[{"image":"floaterd2201/lowco2_neu:latest","imagePullPolicy":"Always","name":"lowco2-backend","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{"limits":{"cpu":"0.2","memory":"1Gi"},"requests":{"cpu":"0.1","memory":"500Mi"}}}]}}}}
+  creationTimestamp: "2023-12-14T17:39:24Z"
+  generation: 2
+  labels:
+    app: lowco2
+  name: lowco2-quarkus
+  namespace: student-f-jungwirth1
+  resourceVersion: "189380833"
+  uid: ddd8d385-9029-4307-8dbb-0a85f19221e2
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: lowco2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: lowco2
+    spec:
+      containers:
+      - image: floaterd2201/lowco2_neu:latest
+        imagePullPolicy: Always
+        name: lowco2-backend
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 500Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  conditions:
+  - lastTransitionTime: "2023-12-14T17:39:24Z"
+    lastUpdateTime: "2023-12-14T19:44:22Z"
+    message: ReplicaSet "lowco2-deployment-6fb9b5c89f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2023-12-14T19:46:17Z"
+    lastUpdateTime: "2023-12-14T19:46:17Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  observedGeneration: 2
+  replicas: 1
+  unavailableReplicas: 1
+  updatedReplicas: 1

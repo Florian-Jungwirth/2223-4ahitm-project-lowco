@@ -1,20 +1,23 @@
-import { Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
-import { TitleService } from '../services/title.service';
-import { SurveyService } from '../services/survey.service';
-import { Capacitor, registerPlugin } from "@capacitor/core";
+import {Component} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {NavController} from '@ionic/angular';
+import {TitleService} from '../services/title.service';
+import {SurveyService} from '../services/survey.service';
+import {Capacitor, registerPlugin} from "@capacitor/core";
 import { BackgroundGeolocationPlugin } from "@capacitor-community/background-geolocation";
+import {BluetoothSerial} from "@speedengineering/capacitor-bluetooth-serial"
+
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>("BackgroundGeolocation");
 
 import {
   FirebaseMessaging,
   GetTokenOptions,
 } from "@capacitor-firebase/messaging";
-import { environment } from 'src/environments/environment';
-import { Coordinate } from '../models/coordinate.model';
-import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
-import { CategoryService } from '../services/category.service';
+import {environment} from 'src/environments/environment';
+import {CoordinateModel} from '../models/coordinate.model';
+import {LocalNotifications, ScheduleOptions} from '@capacitor/local-notifications';
+import {JoinedUserSurveyModel} from "../models/userSurvey.model";
+import { time } from 'console';
 import { SurveyModel } from '../models/survey.model';
 
 @Component({
@@ -26,7 +29,7 @@ export class PagesPage {
   isLocationModalOpen = false;
   isChangeVehicleModalOpen = false;
   title = "";
-  locomotionSurveys: SurveyModel[] = []
+  locomotionSurveys: JoinedUserSurveyModel[] = []
   locomotionValue: number = 0
   reload = false
   showBackButton = false
@@ -35,7 +38,7 @@ export class PagesPage {
     private router: Router,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private navCtrl: NavController
+    private navCtrl: NavController,
   ) {
 
 
@@ -52,7 +55,7 @@ export class PagesPage {
     })
 
     FirebaseMessaging.addListener("notificationReceived", (event) => {
-      console.log("notificationReceived: ", { event });
+      console.log("notificationReceived: ", {event});
     });
 
     FirebaseMessaging.addListener("notificationActionPerformed", (event) => {
@@ -64,12 +67,12 @@ export class PagesPage {
 
       if (Capacitor.getPlatform() === "web") {
         navigator.serviceWorker.addEventListener("message", (event: any) => {
-          console.log("serviceWorker message: ", { event });
+          console.log("serviceWorker message: ", {event});
           const notification = new Notification(event.data.notification.title, {
             body: event.data.notification.body,
           });
           notification.onclick = (event) => {
-            console.log("notification clicked: ", { event });
+            console.log("notification clicked: ", {event});
           };
         });
       }
@@ -83,9 +86,9 @@ export class PagesPage {
         this.isLocationModalOpen = true;
         this.locomotionValue = payload.notification.extra;
       }
-      console.log(JSON.stringify(payload));
     })
   }
+
   goBack() {
     this.navCtrl.back();
   }
@@ -95,20 +98,16 @@ export class PagesPage {
     return mostLikelyVehicle;
   };
 
-
-  getSurveysOfFortbewegung(){
-    // this.categoryService.getFortbewegung().subscribe((element)=> {
-    //   this.surveyService.getSdurveysOfCategory(element._id).subscribe(data => {
-    //
-    //   })
-    // })
+  getSurveysOfFortbewegung() {
+    this.surveyService.getSurveysOfCategory(1).subscribe((userSurveys: JoinedUserSurveyModel) => {
+      this.locomotionSurveys = userSurveys;
+    })
   }
 
-  saveLocationModalValue(id: string) {
-    console.log(id + ' ' + this.locomotionValue);
+  saveLocationModalValue(id: number) {
     if (this.locomotionValue != 0) {
       this.reload = true;
-      this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).then(() => {
+      this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).subscribe(() => {
         this.reload = false;
       })
     }
@@ -133,12 +132,12 @@ export class PagesPage {
       options.serviceWorkerRegistration =
         await navigator.serviceWorker.register("firebase-messaging-sw.js");
     }
-    const { token } = await FirebaseMessaging.getToken(options);
+    const {token} = await FirebaseMessaging.getToken(options);
     console.log(token);
   }
 }
 
-function getDistanceBetweenTwoPoints(previousCoord: Coordinate, currentCoord: Coordinate) {
+function getDistanceBetweenTwoPoints(previousCoord: CoordinateModel, currentCoord: CoordinateModel) {
   if (previousCoord.lat == currentCoord.lat && previousCoord.lon == currentCoord.lon || previousCoord.lat == -1) {
     return 0;
   }
@@ -199,13 +198,45 @@ function getVehicle(this: any, velocity: number){
   }
 }
 
-let previousCoordinates: Coordinate = { lat: -1, lon: -1 }
-let distance = 0;
-let isDriving = false;
 let startTime = Date.now();
 let mostLikelyVehicle: SurveyModel = {} as SurveyModel;
+let previousCoordinates: CoordinateModel = {lat: -1, lon: -1}
+let distance = 0;
+let isDriving = false;
+let connectedToCarWithBluetooth = false;
 let timeout: any = undefined;
 const speedLimit = 25;
+
+BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
+  if (connectionState.state == 'CONNECTED' && connectionState.device) {
+    let connectedDevice = connectionState.device;
+    console.log('Connected: ' + JSON.stringify(connectedDevice));
+
+    BluetoothSerial.getPairedDevices().then((data) => {
+      for (const device of data.devices) {
+        if (device.address == connectedDevice.address) {
+          console.log('found: ' + JSON.stringify(device));
+          if (device.class == 1056 || device.class == 1028) {//TODO: Remove second class
+            console.log('CAAr');
+            isDriving = true;
+            connectedToCarWithBluetooth = true;
+          }
+        }
+      }
+    })
+  } else {
+    console.log('Other event: ' + JSON.stringify(connectionState))
+    clearTimeout(timeout)
+    connectedToCarWithBluetooth = false;
+    isDriving = false;
+    distance = 0;
+  }
+
+  //wearable headphones: 1028
+  //car: 1056 
+  //https://developer.android.com/reference/android/bluetooth/BluetoothClass.Device#AUDIO_VIDEO_CAR_AUDIO
+
+})
 
 BackgroundGeolocation.addWatcher(
   {
@@ -238,7 +269,7 @@ BackgroundGeolocation.addWatcher(
     //   return;
     // }
 
-    let currentCoord = { lat: location?.latitude || 0, lon: location?.longitude || 0 }
+    let currentCoord = {lat: location?.latitude || 0, lon: location?.longitude || 0}
 
     if (location != undefined && location.speed != null) {
       let speedInKMH = location.speed * 3.6
@@ -262,7 +293,7 @@ BackgroundGeolocation.addWatcher(
 
             isDriving = false;
             distance = 0;
-          }, 1000 * 30)
+          }, 1000 * 120)
           console.log("Fährt noch immer");
         }
       }

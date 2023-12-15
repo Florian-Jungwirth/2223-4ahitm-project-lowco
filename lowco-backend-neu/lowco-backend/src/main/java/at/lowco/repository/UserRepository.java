@@ -8,7 +8,6 @@ import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<User> {
-
     public void update(User user) {
         getEntityManager().merge(user);
     }

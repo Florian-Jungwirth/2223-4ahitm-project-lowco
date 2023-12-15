@@ -1,5 +1,5 @@
 export interface ProfileModel {
-    id: string;
+    id: number;
     email: string;
     firstname: string;
     lastname: string;
@@ -12,12 +12,11 @@ export interface UserLoginModel {
 }
 
 export interface UserModel {
-    id: string;
+    id: number;
     firstname: string;
     lastname: string;
     email: string;
     username: string;
-    isAdmin: number;
-    metric: number;
-    quicks: Array<any>;
+    isAdmin: boolean;
+    metric: boolean;
 }

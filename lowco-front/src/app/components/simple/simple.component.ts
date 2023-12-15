@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
-import {MEASUREMENTS} from "../../constants";
-import {UserModel} from "../../models/user.model";
+import {MEASUREMENTS, USER} from "../../constants";
+import { CategoryModel } from 'src/app/models/category.model';
 
 @Component({
   selector: 'app-simple',
@@ -12,28 +12,31 @@ import {UserModel} from "../../models/user.model";
 export class SimpleComponent {
   @Input() title: any;
   @Input() icon: any;
+  @Input() showWarning: boolean = false;
   @Input() unit: any;
   @Input() value: any;
-  @Input() id: any;
-  @Input() measurement: any;
-  @Input() user: UserModel
+  @Input() id: number;
+  @Input() category: CategoryModel;
+  @Input() measurement: string;
   @Input() daysLeft: number;
-  @Input() showWarning: boolean;
-  measurements: any = MEASUREMENTS;
+  @Input() standardValue: number;
   relevantMeasures: any;
   showModal = false
+  isStarted = false
+  currentIcon = "caret-forward-outline"
 
-
-  constructor(
-    private surveyService: SurveyService
-  ) {
-    this.showWarning = false;
+  constructor(private surveyService: SurveyService) {
+      console.log(this.category);
   }
 
   ngOnInit() {
-    if (this.value != undefined) {
-      this.value = this.value / this.getMeasurement();
+    if (this.value == null) {
+      this.value = this.standardValue
     }
+    let measure = this.surveyService.getMeasurement(this.measurement, this.unit)
+    this.value = this.value / measure.divisor;
+    this.relevantMeasures = measure.relevantMeasures;
+    this.unit = measure.unit
   }
 
   openModal() {
@@ -45,96 +48,21 @@ export class SimpleComponent {
     this.showModal = false
   }
 
-  changeValues(values: { id: string, value: number, unit: string }) {
+  changeValues(values: { id: number, value: number, unit: string }) {
     this.id = values.id;
     this.value = values.value;
     this.unit = values.unit;
   }
 
-  getMeasurement() {
-    for (const measurement of this.measurements) {
-      if (measurement.name == this.measurement) {
-        if (this.measurement == 'd') {
-          if (this.user.metric) {
-            if (this.unit == null || !Object.keys(measurement.units.metrisch).includes(this.unit)) {
-              if (this.unit == 'mi') {
-                this.unit = 'km'
-              } else {
-                this.unit = 'm'
-              }
-            }
-
-            this.relevantMeasures = measurement.units.metrisch;
-            return measurement.units.metrisch[this.unit]
-          } else {
-            if (this.unit == null || !Object.keys(measurement.units['imperial']).includes(this.unit)) {
-              // this.unit = 'ft';
-
-              if (this.unit == 'm') {
-                this.unit = 'ft'
-              } else {
-                this.unit = 'mi'
-              }
-            }
-
-            this.relevantMeasures = measurement.units['imperial'];
-            return measurement.units['imperial'][this.unit]
-          }
-        } else if (this.measurement == 'z') {
-          if (this.unit == null) {
-            this.unit = 'min';
-          }
-          this.relevantMeasures = measurement.units
-          return  measurement.units[this.unit];
-        }
-      }
+  hasBeenStarted(){
+    if(!this.isStarted){
+      this.isStarted = true;
+      this.currentIcon = "square";
     }
-    // for (let key in this.measurements) {
-    //   if (this.measurements[key].name === this.measurement) {
-    //     if (this.measurement == 'd') {
-    //       const user = await this.authService.getUser();
-    //
-    //       if (user.metrisch) {
-    //         if (this.unit == null || !Object.keys(this.measurements[key].units['metrisch']).includes(this.unit)) {
-    //           // this.unit = 'm';
-    //           if (this.unit == 'mi') {
-    //             this.unit = 'km'
-    //           } else {
-    //             this.unit = 'm'
-    //           }
-    //
-    //         }
-    //
-    //         this.relevantMeasures = this.measurements[key].units['metrisch'];
-    //         return Promise.resolve(
-    //           this.measurements[key].units['metrisch'][this.unit]
-    //         );
-    //       } else {
-    //         if (this.unit == null || !Object.keys(this.measurements[key].units['imperial']).includes(this.unit)) {
-    //           // this.unit = 'ft';
-    //
-    //           if (this.unit == 'm') {
-    //             this.unit = 'ft'
-    //           } else {
-    //             this.unit = 'mi'
-    //           }
-    //         }
-    //
-    //         this.relevantMeasures = this.measurements[key].units['imperial'];
-    //         return Promise.resolve(
-    //           this.measurements[key].units['imperial'][this.unit]
-    //         );
-    //       }
-    //     } else if (this.measurement == 'z') {
-    //       if (this.unit == null) {
-    //         this.unit = 'min';
-    //       }
-    //       this.relevantMeasures = this.measurements[key].units
-    //       return this.measurements[key].units[this.unit];
-    //     }
-    //   }
-    // }
-    // TODO
-    return 1;
+    else if(this.isStarted){
+      this.isStarted = false;
+      this.currentIcon = "caret-forward-outline";
+    }
   }
+
 }
