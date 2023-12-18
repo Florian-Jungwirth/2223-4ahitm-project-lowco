@@ -28,7 +28,7 @@ export class ActivitySelectionPage implements OnInit {
   ) {}
 
   ionViewWillEnter() {
-    this.titleService.setTitle('Kateogrien');
+    this.titleService.setTitle('Kategorien');
   }
 
   search() {

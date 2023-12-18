@@ -1,11 +1,11 @@
 <ion-header>
   <nav>
-    <div>
+    <div style="display: flex; align-items: center;">
       <img *ngIf="!showBackButton" ngSrc="assets/icon/favicon.svg" id="logo" routerLink="/" alt="Zurück" height="36"
         width="36">
-      <ion-icon name="bluetooth-outline"></ion-icon>
+        <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
+        <ion-icon *ngIf="showBluetoothSymbol" style="font-size: 1.5em;" name="bluetooth-outline"></ion-icon>
     </div>
-    <ion-icon class="navIcons" (click)="goBack()" *ngIf="showBackButton" name="chevron-back-outline"></ion-icon>
     <h1 (click)="templateNotification()">{{title}}</h1>
     <!-- TODO: Remove sendNotification -->
     <ion-icon name="settings-outline" class="navIcons" routerLink="/lowco/settings"></ion-icon>
@@ -13,13 +13,14 @@
 </ion-header>
 <ion-router-outlet *ngIf="!reload"></ion-router-outlet>
 
-<ion-modal class="modal locationModal" [isOpen]="isLocationModalOpen"
-  (ionModalDidDismiss)="isLocationModalOpen = false" [backdropDismiss]="true">
+<ion-modal class="modal locationModal" [isOpen]="isLocationModalOpen" (ionModalDidDismiss)="isLocationModalOpen = false"
+  [backdropDismiss]="true">
   <ng-template>
     <div class="wrapper">
       <h1>Fahrt Übersicht</h1>
 
-      <ion-item *ngIf="getMostLikelyVehicle()" button="true" detail="false" (click)="saveLocationModalValue(getMostLikelyVehicle().id)">
+      <ion-item *ngIf="getMostLikelyVehicle()" button="true" detail="false"
+        (click)="saveLocationModalValue(getMostLikelyVehicle().id)">
         <ion-label>{{getMostLikelyVehicle().title}}</ion-label>
         <ion-icon name="{{getMostLikelyVehicle().iconName}}"></ion-icon>
       </ion-item>

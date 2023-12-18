@@ -88,7 +88,7 @@ export class PagesPage {
 
     LocalNotifications.addListener('localNotificationReceived', () => {
       if (bluetoothMessage) {
-        this.surveyService.addValueToUserSurvey(2, 1.4).subscribe()
+        this.surveyService.addValueToUserSurvey(2, Math.random()*1000).subscribe()
       }
     })
 
