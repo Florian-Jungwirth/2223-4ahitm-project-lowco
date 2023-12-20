@@ -2,7 +2,7 @@ import {UserModel} from "./models/user.model";
 
 export const API_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2/'
 // export const API2_URL = 'http://localhost:3000/'
-export const API2_URL = 'https://evil-symbols-follow.loca.lt/'
+export const API2_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2-neu/'
 
 export const USER: UserModel = {
   id: 1,

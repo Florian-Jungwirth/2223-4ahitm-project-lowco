@@ -18,6 +18,14 @@ public class UserSurveyRessource {
     @Inject
     UserSurveyRepository userSurveyRepository;
 
+    @Path("hi")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String hi() {
+        return "hallo";
+    }
+
+
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,7 +53,6 @@ public class UserSurveyRessource {
     public List<UserSurveyDTO> getActiveByCategoryId(@PathParam("userID") long userID, @PathParam("categoryID") long categoryID){
         return userSurveyRepository.getActiveByCategoryId(userID, categoryID);
     }
-
 
     @PATCH
     @Path("addValue/{userID}/{surveyID}/{value}")

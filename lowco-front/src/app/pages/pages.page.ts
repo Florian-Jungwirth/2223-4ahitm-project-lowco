@@ -17,15 +17,15 @@ import {environment} from 'src/environments/environment';
 import {CoordinateModel} from '../models/coordinate.model';
 import {LocalNotifications, ScheduleOptions} from '@capacitor/local-notifications';
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
-import { time } from 'console';
 import { SurveyModel } from '../models/survey.model';
-import { EventEmitter } from 'stream';
 import { BehaviorSubject } from 'rxjs';
+import {HomePage} from "./home/home.page";
 
 @Component({
   selector: 'app-pages',
   templateUrl: './pages.page.html',
   styleUrls: ['./pages.page.scss'],
+  providers: [HomePage]
 })
 export class PagesPage {
   isLocationModalOpen = false;
@@ -42,11 +42,12 @@ export class PagesPage {
     private surveyService: SurveyService,
     private titleService: TitleService,
     private navCtrl: NavController,
+    private home: HomePage
   ) {
+
     connectedEmitter.subscribe(data => {
       this.showBluetoothSymbol = data
     })
-
 
     this.getMostLikelyVehicle = this.getMostLikelyVehicle.bind(this);
 
@@ -93,7 +94,7 @@ export class PagesPage {
     })
 
     LocalNotifications.addListener('localNotificationActionPerformed', (payload) => {
-      
+
       if (payload.notification.id == 1 && payload.actionId == 'tap' && !payload.notification.extra.bluetooth) {
         this.getSurveysOfFortbewegung();
         this.isChangeVehicleModalOpen = true;
@@ -255,7 +256,7 @@ BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
         }
       }
     })
-  } else {
+  } else if(connectionState.state == 'DISCONNECTED') {
     console.log('Other event: ' + JSON.stringify(connectionState))
     clearTimeout(timeout)
     sendNotificationBluetooth(`Fahrt wurde beendet (${distance.toFixed(2).replace('.', ',')}km)`, 'Klicken, um Fortbewegungsmittel auszuwählen.', distance)
@@ -267,7 +268,7 @@ BluetoothSerial.addListener("onConnectionChange", (connectionState) => {
   }
 
   //wearable headphones: 1028
-  //car: 1056 
+  //car: 1056
   //https://developer.android.com/reference/android/bluetooth/BluetoothClass.Device#AUDIO_VIDEO_CAR_AUDIO
 
 })

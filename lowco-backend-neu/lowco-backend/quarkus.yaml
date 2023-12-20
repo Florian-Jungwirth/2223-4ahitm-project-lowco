@@ -3,24 +3,24 @@ kind: Deployment
 metadata:
   name: lowco2-quarkus
   labels:
-    app: lowco2
+    app: lowco2-neu
   namespace: student-f-jungwirth1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lowco2
+      app: lowco2-neu
   template:
     metadata:
       labels:
-        app: lowco2
+        app: lowco2-neu
     spec:
       containers:
         - name: lowco2-backend-neu
           image: floaterd2201/lowco2_neu:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
               protocol: TCP
           resources:
             limits:
@@ -29,32 +29,31 @@ spec:
             requests:
               memory: "500Mi"
               cpu: "0.1"
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: jdbc:postgresql://postgres:5432/postgres
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: demo
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: demo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: lowco2-service
+  name: lowco2-service-neu
   namespace: student-f-jungwirth1
 spec:
   selector:
-    app: lowco2
+    app: lowco2-neu
   ports:
     - protocol: TCP
-      port: 3000
-      targetPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: database-service
-spec:
-  type: ExternalName
-  externalName: trumpet.db.elephantsql.com
+      port: 8080
+      targetPort: 8080
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: lowco2-ingress
+  name: lowco2-neu-ingress
   namespace: student-f-jungwirth1
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
@@ -67,6 +66,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: lowco2-service
+                name: lowco2-service-neu
                 port:
-                  number: 3000
+                  number: 8080

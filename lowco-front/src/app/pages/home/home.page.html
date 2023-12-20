@@ -11,7 +11,7 @@
         <ion-icon id="menuIcon" name="grid-outline" routerLink="/lowco/activities"></ion-icon>
       </div>
       <div class="surveys" #surveys>
-        <ng-container *ngFor="let userSurvey of quickSelection">
+        <ng-container *ngFor="let userSurvey of quickSelection; trackBy: identify">
           <div>
             <app-simple *ngIf="types.Einfach == userSurvey.survey.type" [category]="userSurvey.survey.category" [title]="userSurvey.survey.title" [showWarning]="false"
                         [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"

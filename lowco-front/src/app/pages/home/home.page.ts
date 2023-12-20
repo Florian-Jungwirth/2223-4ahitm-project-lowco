@@ -90,6 +90,7 @@ export class HomePage {
     this.quickSelection = []
     this.titleService.setTitle('LowCo2');
     this.surveyService.getActiveQuicksHome().subscribe((quicks: JoinedUserSurveyModel[]) => {
+
       this.quickSelection = quicks;
       this.surveys.nativeElement.style.height = '0px'
 
@@ -109,60 +110,10 @@ export class HomePage {
         this.setHeight(window.innerHeight - this.height, true);
       }, 200);
     })
+  }
 
-    // Promise.all([
-    //   this.getAllVaues(),
-    //   this.surveyService.getTypes(),
-    //   this.surveyService.getAmountOfSurveys(4),
-    //   this.surveyService.getQuicks(),
-    //   this.surveyService.getAllActivatedSurveys(),
-    // ]).then(([values, types, quickSelection, quicks, surveys]) => {
-    //   if (quicks.length == 0) {
-    //     this.quickSelection = quickSelection;
-    //   } else {
-    //     let qs = [];
-    //
-    //     for (const survey of surveys) {
-    //       for (const quick of quicks) {
-    //         if (survey.id == quick) {
-    //           qs.push(survey);
-    //           break;
-    //         }
-    //       }
-    //     }
-    //
-    //     this.quickSelection = qs;
-    //   }
-    //   this.values = values;
-    //   this.types = types;
-    //
-    //   switch (this.quickSelection.length) {
-    //     case 1:
-    //       this.quickSelection[0].style = 'grid-column: 1/3';
-    //       break;
-    //     case 2:
-    //       this.quickSelection[0].style = 'grid-column: 1/3';
-    //       this.quickSelection[1].style = 'grid-column: 1/3';
-    //       break;
-    //     case 3:
-    //       this.quickSelection[0].style = 'grid-column: 1/2';
-    //       this.quickSelection[1].style = 'grid-column: 2/3';
-    //       this.quickSelection[2].style = 'grid-column: 1/3';
-    //       break;
-    //     case 4:
-    //       this.quickSelection[0].style = 'grid-column: 1/2';
-    //       this.quickSelection[1].style = 'grid-column: 2/3';
-    //       this.quickSelection[2].style = 'grid-column: 1/2';
-    //       this.quickSelection[3].style = 'grid-column: 2/3';
-    //       break;
-    //   }
-    //
-    //   setTimeout(() => {
-    //     this.height = this.surveys.nativeElement.offsetHeight;
-    //     this.surveys.nativeElement.style.height = this.height + 'px';
-    //     this.setHeight(window.innerHeight - this.height, true);
-    //   }, 200);
-    // });
+  identify(index: number, item: JoinedUserSurveyModel) {
+    return item.value
   }
 
   getValueById(survey: any) {
