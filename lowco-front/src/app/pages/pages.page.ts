@@ -90,6 +90,7 @@ export class PagesPage {
     LocalNotifications.addListener('localNotificationReceived', () => {
       if (bluetoothMessage) {
         this.surveyService.addValueToUserSurvey(2, Math.random()*1000).subscribe()
+        this.surveyService.getActiveQuicksHome()
       }
     })
 
@@ -120,9 +121,8 @@ export class PagesPage {
 
   saveLocationModalValue(id: number) {
     if (this.locomotionValue != 0) {
-      this.reload = true;
       this.surveyService.addValueToUserSurvey(id, this.locomotionValue * 1000).subscribe(() => {
-        this.reload = false;
+        this.surveyService.getActiveQuicksHome()
       })
     }
     this.isLocationModalOpen = false;

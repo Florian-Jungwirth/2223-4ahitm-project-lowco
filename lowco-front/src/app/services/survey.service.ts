@@ -4,12 +4,13 @@ import { AuthService } from '../auth/auth.service';
 import { API2_URL, API_URL, MEASUREMENTS, USER } from '../constants';
 import { SurveyModel } from '../models/survey.model';
 import { JoinedUserSurveyModel } from "../models/userSurvey.model";
-import { Observable } from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyService {
+  activeQuicksHomeEmitter = new BehaviorSubject<JoinedUserSurveyModel[]>([])
 
   constructor(private httpClient: HttpClient, private authService: AuthService) {
   }
@@ -60,7 +61,7 @@ export class SurveyService {
     });
   }
 
-  
+
 
   getSurveysByName(surveys: SurveyModel[], search: string): SurveyModel[] {
     let selectedSurveys = [];
@@ -171,7 +172,9 @@ export class SurveyService {
   }
 
   getActiveQuicksHome() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicksHome/${ USER.id }`)
+    this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicksHome/${ USER.id }`).subscribe((data) => {
+      this.activeQuicksHomeEmitter.next(data)
+    })
   }
 
   getAllActiveJoined() {

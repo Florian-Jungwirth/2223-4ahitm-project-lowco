@@ -45,9 +45,11 @@ export class QuickselectionPage implements OnInit {
         this.selectedQuicks.push(quick)
         if(quick.id) {
           this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true)
+          this.surveyService.getActiveQuicksHome()
         } else {
           let measure = this.surveyService.getMeasurement(quick.survey.measurement, null);
           this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, measure.unit, true)
+          this.surveyService.getActiveQuicksHome()
         }
         surveyDiv.classList.add('selected')
       } else {

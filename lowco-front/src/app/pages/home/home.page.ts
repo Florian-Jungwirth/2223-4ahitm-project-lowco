@@ -89,7 +89,8 @@ export class HomePage {
   ionViewWillEnter() {
     this.quickSelection = []
     this.titleService.setTitle('LowCo2');
-    this.surveyService.getActiveQuicksHome().subscribe((quicks: JoinedUserSurveyModel[]) => {
+    this.surveyService.getActiveQuicksHome()
+    this.surveyService.activeQuicksHomeEmitter.subscribe((quicks: JoinedUserSurveyModel[]) => {
 
       this.quickSelection = quicks;
       this.surveys.nativeElement.style.height = '0px'
@@ -112,10 +113,6 @@ export class HomePage {
     })
   }
 
-  identify(index: number, item: JoinedUserSurveyModel) {
-    return item.value
-  }
-
   getValueById(survey: any) {
     for (const value of this.values) {
       if (survey.id == value.survey.id) {
@@ -132,10 +129,6 @@ export class HomePage {
       }
     }
     return null;
-  }
-
-  async getAllVaues(): Promise<any> {
-    return await this.surveyService.getAllValuesByUser();
   }
 
   ngAfterViewInit() {
