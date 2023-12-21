@@ -3,7 +3,10 @@
     <div id="canvasThree" #canvas></div>
     <div id="quickMenu" #menu>
       <div class="positioning">
-        <ion-icon name="bar-chart-outline" routerLink="/lowco/dashboard"></ion-icon>
+        <div>
+          <ion-icon name="bar-chart-outline" routerLink="/lowco/dashboard"></ion-icon>
+          <ion-icon style="padding-left: 1em" routerLink="/lowco/fahrtenverlauf" name="albums-outline"></ion-icon>
+        </div>
         <!-- add (click)="isOpen()" for clicking on computer -->
         <div class="scrollUpDiv" (touchstart)="isOpen()">
           <div class="scrollUpButton"></div>

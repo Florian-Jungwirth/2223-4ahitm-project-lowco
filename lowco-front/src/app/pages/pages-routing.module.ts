@@ -34,7 +34,10 @@ const routes: Routes = [
             (m) => m.CategoryPageModule
           ),
       },
-
+      {
+        path: 'fahrtenverlauf',
+        loadChildren: () => import('./fahrtenverlauf/fahrtenverlauf.module').then( m => m.FahrtenverlaufPageModule)
+      },
       {
         path: 'dashboard',
         loadChildren: () =>
@@ -48,7 +51,8 @@ const routes: Routes = [
     path: '',
     redirectTo: '/lowco',
     pathMatch: 'full',
-  },
+  }
+
 ];
 
 @NgModule({
