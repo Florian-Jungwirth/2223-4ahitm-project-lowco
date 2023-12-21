@@ -1,13 +1,30 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>fahrtenverlauf</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
+  <div class="fullwrapper">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">fahrtenverlauf</ion-title>
+      <ion-title size="large"></ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <div class="wrapper">
+    <div class="drives">
+      <div class="iconBox">
+        <ion-icon class="icon" name="car-sport-outline"></ion-icon>
+      </div>
+      <p class="date"><ion-icon name="calendar-outline"></ion-icon>07.07.2017</p>
+      <p class="time"><ion-icon name="time-outline"></ion-icon>11:00 - 12:00</p>
+      <p class="location"><ion-icon name="location-outline"></ion-icon>Salzburg-Linz</p>
+      <button>Verkehrsmittel ändern</button>
+    </div>
+
+    <div class="drives">
+      <div class="iconBox">
+        <ion-icon class="icon" name="bus-outline"></ion-icon>
+      </div>
+      <p class="time">14:00 - 16:00</p>
+      <p class="location">ST.Florian-Linz</p>
+      <button>Verkehrsmittel ändern</button>
+    </div>
+  </div>
+</div>
 </ion-content>

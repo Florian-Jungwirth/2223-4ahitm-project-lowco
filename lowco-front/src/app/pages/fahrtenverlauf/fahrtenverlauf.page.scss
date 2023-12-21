@@ -1,0 +1,23 @@
+.fullwrapper{
+    background-color: var(--ion-color-light-tint);
+    width: 100%;
+    height: 100%;
+}
+.wrapper{
+    margin-top: 5vh;
+}
+.drives{
+    border-radius: 1rem;
+    background-color: var(--ion-color-light);
+    margin: 1vh;
+}
+.iconBox{
+    border: green solid 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1vh;
+}
+.iconBox ion-icon{
+    font-size: 2.5em;
+}
