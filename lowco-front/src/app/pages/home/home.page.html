@@ -11,7 +11,10 @@
         <div class="scrollUpDiv" (touchstart)="isOpen()">
           <div class="scrollUpButton"></div>
         </div>
-        <ion-icon id="menuIcon" name="grid-outline" routerLink="/lowco/activities"></ion-icon>
+        <div>
+          <ion-icon style="padding-right: 1em; opacity: 0;" name="albums-outline"></ion-icon>
+          <ion-icon id="menuIcon" name="grid-outline" routerLink="/lowco/activities"></ion-icon>
+        </div>
       </div>
       <div class="surveys" #surveys>
         <ng-container *ngFor="let userSurvey of quickSelection">

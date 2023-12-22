@@ -8,7 +8,10 @@
     </div>
     <h1 (click)="templateNotification()">{{title}}</h1>
     <!-- TODO: Remove sendNotification -->
-    <ion-icon name="settings-outline" class="navIcons" routerLink="/lowco/settings"></ion-icon>
+    <div>
+      <ion-icon *ngIf="showBluetoothSymbol" style="font-size: 1.5em; opacity: 0px;" name="bluetooth-outline"></ion-icon>
+      <ion-icon name="settings-outline" class="navIcons" routerLink="/lowco/settings"></ion-icon>
+    </div>
   </nav>
 </ion-header>
 <ion-router-outlet *ngIf="!reload"></ion-router-outlet>
