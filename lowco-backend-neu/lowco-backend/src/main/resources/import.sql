@@ -1,10 +1,18 @@
     insert into CATEGORY(ID, ICONNAME, TITLE, ACTIVATED)
     values (1, 'analytics-outline', 'Fortbewegung', true),
-           (2, 'logo-electron', 'Energie', true);
+           (2, 'logo-electron', 'Energie', true),
+           (3, 'shirt-outline', 'Konsumverhalten', true);
 
     insert into SURVEY(ID, ICONNAME, TITLE, MEASUREMENT, STANDARDVALUE, ACTIVATED, TYPE, CATEGORY_ID)
     values (1, 'bus-outline', 'Öffentliche Verkehrsmittel', 'd', 0, true, 'e', 1),
-           (2, 'car-sport-outline', 'Autofahren', 'd', 0, true, 'e', 1);
+           (2, 'car-sport-outline', 'Autofahren', 'd', 0, true, 'e', 1),
+           (3, 'bicycle-outline', 'Radfahren', 'd', 0, true, 'e', 1),
+           (4, 'plane-outline', 'Flüge', 'd', 0, true, 'e', 1),
+           (5, 'walk-outline', 'Gehen', 'd', 0, true, 'e', 1),
+           (6, 'desktop-outline', 'Screentime', 'z', 0, true, 'e', 2),
+           (7, 'flame-outline', 'Heizung', 'z', 0, true, 'e', 2),
+           (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'e', 3),
+           (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'e', 3);
 
     insert into USERS(ID, FIRSTNAME, LASTNAME, EMAIL, USERNAME, ISADMIN, PASSWORD, METRIC)
     values

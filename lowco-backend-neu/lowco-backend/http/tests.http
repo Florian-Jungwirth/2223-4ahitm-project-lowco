@@ -24,7 +24,7 @@ content-type: application/json
 }
 
 ### Category get All
-GET http://localhost:3000/category/all
+GET http://localhost:8080/category/all
 
 <> 2023-11-28T111556.200.json
 
@@ -34,7 +34,7 @@ GET http://localhost:3000/category/1
 <> 2023-11-28T112050.200.json
 
 ### create new Category
-POST http://localhost:3000/category
+POST http://localhost:8080/category
 content-type: application/json
 
 {
