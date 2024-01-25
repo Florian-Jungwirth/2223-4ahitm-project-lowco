@@ -189,7 +189,7 @@ export class SurveyService {
     return this.httpClient.get<SurveyModel[]>(`${ API2_URL }survey/getAllActiveSurveys`)
   }
 
-  updateUserSurvey(surveyID: number, value: number, unit: string) {
+  updateUserSurvey(surveyID: number, value: number, unit: string | null = null) {
     this.httpClient.put(`${ API2_URL }userSurvey/updateUserSurvey/${ USER.id }/${ surveyID }/${ value }/${ unit }`, {}).subscribe();
   }
 

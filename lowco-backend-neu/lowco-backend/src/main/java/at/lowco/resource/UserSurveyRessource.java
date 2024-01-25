@@ -3,6 +3,7 @@ package at.lowco.resource;
 import at.lowco.dtos.UserSurveyDTO;
 import at.lowco.model.UserSurvey;
 import at.lowco.repository.UserSurveyRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -18,19 +19,11 @@ public class UserSurveyRessource {
     @Inject
     UserSurveyRepository userSurveyRepository;
 
-    @Path("hi")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String hi() {
-        return "hallo";
-    }
-
-
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<UserSurvey> allUserSurveys(){
-        return userSurveyRepository.listAll();
+        return userSurveyRepository.listAll(Sort.by("survey.title"));
     }
 
     @Path("{id}")

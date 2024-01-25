@@ -2,6 +2,7 @@ package at.lowco.resource;
 
 import at.lowco.model.Survey;
 import at.lowco.repository.SurveyRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -21,14 +22,14 @@ public class SurveyResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Survey> allSurveys(){
-        return surveyRepository.listAll();
+        return surveyRepository.listAll(Sort.by("title"));
     }
 
     @Path("getAllActiveSurveys")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Survey> getAllActiveSurveys(){
-        return surveyRepository.list("activated", true);
+        return surveyRepository.list("activated", Sort.by("title"), true);
     }
 
     @Path("{id}")

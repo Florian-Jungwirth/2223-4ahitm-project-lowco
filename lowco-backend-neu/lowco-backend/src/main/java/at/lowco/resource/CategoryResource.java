@@ -3,6 +3,7 @@ package at.lowco.resource;
 import at.lowco.model.Category;
 import at.lowco.model.User;
 import at.lowco.repository.CategoryRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -25,14 +26,14 @@ public class CategoryResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> allCategories(){
-        return categoryRepository.listAll();
+        return categoryRepository.listAll(Sort.by("title"));
     }
 
     @Path("allActive")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> allActive(){
-        return categoryRepository.list("activated", true);
+        return categoryRepository.list("activated", Sort.by("title"), true);
     }
 
     @Path("{id}")

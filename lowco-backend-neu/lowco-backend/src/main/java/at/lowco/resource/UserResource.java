@@ -2,6 +2,7 @@ package at.lowco.resource;
 
 import at.lowco.model.User;
 import at.lowco.repository.UserRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -22,7 +23,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> allUsers(){
-        return userRepository.listAll();
+        return userRepository.listAll(Sort.by("email"));
     }
 
     @GET

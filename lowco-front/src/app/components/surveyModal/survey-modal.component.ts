@@ -35,8 +35,14 @@ export class SurveyModalComponent {
   }
 
   okModal() {
-    if (this.value && this.unit) {
-      if (this.valueBefore != this.value || this.unit != this.unitBefore) {
+    console.log("asdöflskdfj");
+    
+    if (this.value != null && this.unit != null) {
+      
+      
+      if (!(this.valueBefore == this.value && this.unit == this.unitBefore)) {
+        console.log("asdfs");
+        
         if (!this.isQuantity) {
           this.surveyService.updateUserSurvey(
             this.id,
