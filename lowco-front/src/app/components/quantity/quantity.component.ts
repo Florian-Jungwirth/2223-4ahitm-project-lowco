@@ -23,6 +23,10 @@ export class QuantityComponent {
   }
 
   ngOnInit() {
+    if(!this.value) {
+      this.value = this.standardValue
+    }
+
     if (this.value == 0) this.isClickable = 'notClickable';
   }
 

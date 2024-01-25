@@ -24,7 +24,6 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
 
         if (query.getResultList().isEmpty()) {
             this.createNewUserSurvey(surveyID, userID, value, unit, false);
-            System.out.println("asdfasdflk");
         } else {
             Query updateQuery = getEntityManager().createQuery(
                     "update UserSurvey set value = :value, unit = :unit, time = :time where user.id = :userID and survey.id = :surveyID"

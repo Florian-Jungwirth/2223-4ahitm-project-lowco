@@ -7,12 +7,12 @@
     values (1, 'bus-outline', 'Öffentliche Verkehrsmittel', 'd', 0, true, 'e', 1),
            (2, 'car-sport-outline', 'Autofahren', 'd', 0, true, 'e', 1),
            (3, 'bicycle-outline', 'Radfahren', 'd', 0, true, 'e', 1),
-           (4, 'plane-outline', 'Flüge', 'd', 0, true, 'e', 1),
+           (4, 'airplane-outline', 'Flüge', 'd', 0, true, 'e', 1),
            (5, 'walk-outline', 'Gehen', 'd', 0, true, 'e', 1),
            (6, 'desktop-outline', 'Screentime', 'z', 0, true, 'e', 2),
            (7, 'flame-outline', 'Heizung', 'z', 0, true, 'e', 2),
-           (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'e', 3),
-           (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'e', 3);
+           (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'a', 3),
+           (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'a', 3);
 
     insert into USERS(ID, FIRSTNAME, LASTNAME, EMAIL, USERNAME, ISADMIN, PASSWORD, METRIC)
     values
