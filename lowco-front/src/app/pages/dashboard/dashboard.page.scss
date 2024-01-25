@@ -7,14 +7,28 @@ ion-content {
   height: 100vh;
   overflow-y: scroll;
   padding: 5px;
+  box-sizing: border-box;
   width: 100vw;
   padding: calc(40px + 1.6em) 5px 5px;
 }
 
 .chartBox {
   background-color: var(--ion-color-light);
-  margin: 0.5em auto 0;
+  margin: 0.8em 0 0;
   border-radius: 15px;
-  padding: 1em;
-  width: 98vw;
+  padding: 1vw;
+  box-sizing: border-box;
+  width: 97.1vw;
+}
+
+.pieChart {
+  height: calc(100% - 1em);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.pieChart canvas {
+  opacity: 0.5;
 }

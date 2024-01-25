@@ -9,10 +9,11 @@
 }
 .startBox{
     margin: 0.5vh;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
-.startBox input{
-    margin-left: 1vh;
-}
+
 .endBox{
     margin: 0.5vh;
 }
@@ -78,4 +79,7 @@
     padding: 1vh;
     background-color: var(--ion-color-light-tint);
     border-radius: 0.5rem;
+}
+.start {
+    padding-right: 0.5em;
 }

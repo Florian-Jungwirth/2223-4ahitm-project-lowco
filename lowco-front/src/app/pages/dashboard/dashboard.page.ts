@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js/auto';
 import { ChartItem } from 'chart.js/dist/types/index';
+import { SurveyService } from 'src/app/services/survey.service';
 import { TitleService } from 'src/app/services/title.service';
 
 @Component({
@@ -16,7 +17,7 @@ export class DashboardPage {
   bars: any;
   doughnuts: any;
   pie: any;
-  constructor(private titleService: TitleService) {}
+  constructor(private titleService: TitleService, private surveyService: SurveyService) {}
 
   ionViewWillEnter() {
     this.titleService.setTitle('Statistik')
@@ -26,8 +27,8 @@ export class DashboardPage {
     Chart.register();
     Chart.defaults.color = '#C0C0C0';
     Chart.defaults.borderColor = 'rgba(128,128,128, 0.1)'
-    this.createBarChart();
-    this.createDoughnatChart();
+    //this.createBarChart();
+    //this.createDoughnatChart();
     this.createPieChart();
   }
 
@@ -69,20 +70,28 @@ export class DashboardPage {
   }
 
   createPieChart() {
-    this.pie = new Chart(this.pieChart.nativeElement, {
-      type: 'pie',
-      data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
-        datasets: [
-          {
-            label: 'My Pie Chart',
-            data: [10, 20, 30, 25, 15],
-            backgroundColor: ['rgba(255, 87, 51, 0.4)', 'rgba(63, 81, 181, 0.4)', 'rgba(255, 195, 0, 0.4)', 'rgba(76, 175, 80, 0.4)', 'rgba(156, 39, 176, 0.4)'],
-            borderColor: ['rgba(255, 87, 51, 1)', 'rgba(63, 81, 181, 1)', 'rgba(255, 195, 0, 1)', 'rgba(76, 175, 80, 1)', 'rgba(156, 39, 176, 1)'],
-            borderWidth: 0,
-          },
-        ],
+    this.surveyService.getSurveysOfCategory(1).subscribe((surveys) => {
+      let labels = []
+      let data = []
+
+      for (const survey of surveys) {
+        labels.push(survey.survey.title)
+        data.push(survey.value)
       }
-    });
+      
+      this.pie = new Chart(this.pieChart.nativeElement, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'My Pie Chart',
+              data: data,
+              borderWidth: 0,
+            },
+          ],
+        }
+      });
+    })
   }  
 }

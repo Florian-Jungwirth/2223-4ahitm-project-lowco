@@ -9,15 +9,27 @@
     <div class="wrapper">
       <div class="pickDate">
 
-        <div class="startBox">
-          <label for="start">von: </label>
-          <input type="date" id="start" />
-        </div>
+      <div class="startBox">
+          <label class="start">von: </label>
+          <ion-datetime-button datetime="datetimeFrom"></ion-datetime-button>
 
-        <div class="endBox">
-          <label for="end">bis: </label>
-          <input type="date" id="end" />
-        </div>
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="datetimeFrom"></ion-datetime>
+            </ng-template>
+          </ion-modal>
+      </div>
+
+      <div class="startBox">
+        <label class="start">bis: </label>
+        <ion-datetime-button datetime="datetimeTo"></ion-datetime-button>
+
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime id="datetimeTo"></ion-datetime>
+          </ng-template>
+        </ion-modal>
+    </div>
 
       </div>
 
@@ -28,7 +40,7 @@
         <div class="information">
           <p class="date"><ion-icon name="calendar-outline"></ion-icon>07.07.2017</p>
           <p class="time"><ion-icon name="time-outline"></ion-icon>11:00 - 12:00</p>
-          <p class="location"><ion-icon name="location-outline"></ion-icon>Salzburg-Linz</p>
+          <p class="location"><ion-icon name="location-outline"></ion-icon>Salzburg-Linz (131 km)</p>
         </div>
         <div class="buttonBox">
           <button>Verkehrsmittel ändern</button>
@@ -43,7 +55,7 @@
         <div class="information">
           <p class="date"><ion-icon name="calendar-outline"></ion-icon>21.12.2023</p>
           <p class="time"><ion-icon name="time-outline"></ion-icon>08:00 - 09:00</p>
-          <p class="location"><ion-icon name="location-outline"></ion-icon>ST.Florian-Linz</p>
+          <p class="location"><ion-icon name="location-outline"></ion-icon>ST.Florian-Linz (30 km)</p>
         </div>
         <div class="buttonBox">
           <button>Verkehrsmittel ändern</button>
