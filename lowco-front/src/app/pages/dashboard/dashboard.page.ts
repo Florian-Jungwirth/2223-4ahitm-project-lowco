@@ -70,13 +70,13 @@ export class DashboardPage {
   }
 
   createPieChart() {
-    this.surveyService.getSurveysOfCategory(1).subscribe((surveys) => {
+    this.surveyService.getSurveysOfCategory(1).subscribe((joinedSurveys) => {
       let labels = []
       let data = []
 
-      for (const survey of surveys) {
-        labels.push(survey.survey.title)
-        data.push(survey.value)
+      for (const joinedSurvey of joinedSurveys) {
+        labels.push(joinedSurvey.survey.title)
+        data.push(joinedSurvey.value)
       }
       
       this.pie = new Chart(this.pieChart.nativeElement, {
