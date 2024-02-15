@@ -26,17 +26,16 @@ export class SimpleComponent {
   currentIcon = "caret-forward-outline"
 
   constructor(private surveyService: SurveyService) {
-      console.log(this.category);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.value == null) {
       this.value = this.standardValue
     }
     let measure = this.surveyService.getMeasurement(this.measurement, this.unit)
-    this.value = this.value / measure.divisor;
-    this.relevantMeasures = measure.relevantMeasures;
-    this.unit = measure.unit
+    this.value = this.value / (await measure).divisor;
+    this.relevantMeasures = (await measure).relevantMeasures;
+    this.unit = (await measure).unit
   }
 
   openModal() {

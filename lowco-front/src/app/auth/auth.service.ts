@@ -1,46 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ErrorHandler, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { Storage } from '@ionic/storage';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { API_URL } from '../constants';
-import { UserModel, UserLoginModel } from '../models/user.model';
+import { API2_URL, API_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL_ADMIN, KEYCLOAK_URL_TOKEN } from '../constants';
+import { UserModel, UserLoginModel, RegisterModel, RegisterModelKeyCloak } from '../models/user.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  async isAuthenticated(): Promise<boolean> {
-    if (!(await this.isSessionExpired())) {
-      let user = await this.getUser();
-
-      return new Promise<boolean>((resolve) => {
-        this.httpClient
-          .get(`${API_URL}user/` + user.id)
-          .subscribe({
-            next: () => {
-              resolve(true);
-            },
-            error: () => {
-              resolve(false);
-            },
-          });
-      });
-    } else {
-      return false;
-    }
-  }
-
-  async isSessionExpired() {
-    if (await this.getToken()) {
-      return await this.jwtHelper.decodeToken(this.getToken()).then((res) => {
-        return !(res.exp > Math.floor(Date.now() / 1000));
-      });
-    }
-    return true;
-  }
 
   async getToken() {
     if (await this.storage.get('ACCESS_TOKEN')) {
@@ -48,127 +20,116 @@ export class AuthService {
     }
   }
 
-  authSubject = new BehaviorSubject(false);
   jwtHelper = new JwtHelperService();
 
-  constructor(private httpClient: HttpClient, private storage: Storage) {
-    this.createStorage();
+  constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) {
   }
 
-  async createStorage() {
-    await this.storage.create();
+  register(user: RegisterModel) {
+    this.httpClient
+      .post(`${API2_URL}user/register`, user)
+      .subscribe()
   }
 
-  register(user: UserModel): Observable<any> {
-    return this.httpClient
-      .post(`${API_URL}auth/register`, user)
-      .pipe(tap(async (res: any) => {}));
+  registerKeyCloak(user: RegisterModelKeyCloak) {
+    let self = this
+    return new Observable(observer => {
+      this.getKeyCloakToken().subscribe(clientToken => {
+        
+        let keyCloakUser = {
+          "enabled": true,
+          "email": user.email,
+          "emailVerified": true,
+          "firstName": user.firstname,
+          "lastName": user.lastname,
+          "username": user.username,
+          "credentials": [{
+            "type": "password",
+            "value": user.password,
+            "temporary": false
+          }]
+        }
+  
+        this.httpClient
+          .post(`/admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
+            next (data)  {
+              let userLogin: UserLoginModel = {
+                email: user.email,
+                password: user.password
+              }
+              self.login(userLogin).subscribe(data => {
+                
+                let uid = self.jwtHelper.decodeToken(data.access_token).sub
+                self.mapDefaultRole(uid, clientToken.access_token)
+                
+                let register: RegisterModel = {
+                  metric: true,
+                  id: uid
+                }
+                self.register(register)
+              })
+
+              observer.next(data)
+            },
+            error(error) {
+              observer.error(error)
+            },
+            complete() {
+              observer.complete()
+            }
+          })
+        })
+    })
+  }
+
+  mapDefaultRole(uid: string, token: string) {
+    this.httpClient.get(`/admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe((role) => {
+      this.mapRole(role, uid, token)
+    })
+  }
+
+  mapRole(role: Object, uid: string, token: string) {
+    this.httpClient.post(`/admin/realms/lowco2_realm/users/${uid}/role-mappings/clients/${CLIENT_UUID}`, [role], {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
+  }
+
+  getKeyCloakToken(): Observable<any> {
+    let body = new HttpParams()
+      .set('client_id', CLIENT_ID)
+      .set('client_secret', CLIENT_SECRET)
+      .set('grant_type', 'client_credentials');
+
+    
+    return this.httpClient.post(`/realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
   login(user: UserLoginModel): Observable<any> {
-    return this.httpClient
-      .post(`${API_URL}auth/login`, user)
-      .pipe(
-        tap(async (res: any) => {
-          if (res.token) {
-            await this.storage.create();
-            await this.storage.set('ACCESS_TOKEN', res.token);
-            this.authSubject.next(true);
-          }
-        })
-      );
+      let body = new HttpParams()
+      .set('client_id', CLIENT_ID)
+      .set('client_secret', CLIENT_SECRET)
+      .set('grant_type', 'password')
+      .set('username', user.email)
+      .set('password', user.password);
+
+      return this.httpClient.post(`/realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
-  async logout() {
-    await this.storage.remove('ACCESS_TOKEN');
-    this.authSubject.next(false);
+  logout() {
+    sessionStorage.removeItem('jwt-token');
+    this.router.navigate(['login'])
   }
 
-  async isUserAdmin() {
-    let user = await this.getUser()
-
-    return user.isAdmin == 1
+  isUserAdmin() {
+    let user = this.getUserKeyCloak()
+    return user?.resource_access?.lowco2_client?.roles?.includes('admin')
   }
 
-  async getUserProfile() {
-    let user = await this.getUser();
-    const profile = {id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname, username: user.username};
-
-    return profile;
-  }
-
-  async updateUserEmail(userId: number, email: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient
-        .patch(`${API_URL}user/changeEmail/${userId}`, {email: email})
-        .subscribe({
-          next: (data) => {
-            resolve(data);
-          },
-          error: (error) => {
-            reject(error);
-          }
-        });
-    });
-  }
-
-  async updateName(userId: number, firstname: string, lastname: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient
-        .patch(`${API_URL}user/changeName/${userId}`, {firstname: firstname, lastname: lastname})
-        .subscribe({
-          next: (data) => {
-            resolve(data);
-          },
-          error: (error) => {
-            reject(error);
-          }
-        });
-    });
-  }
-
-  async updateUserPassword(userId: number, password: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient
-        .patch(`${API_URL}user/changePW/${userId}`, {pw: password})
-        .subscribe({
-          next: (data) => {
-            resolve(data);
-          },
-          error: (error) => {
-            reject(error);
-          }
-        });
-    });
-  }
-
-  async getUser() {
-    return new Promise<any>(async (resolve) => {
-      this.httpClient
-        .get(`${API_URL}user/` + (await this.jwtHelper.decodeToken(this.getToken())).user.id)
-        .subscribe({
-          next: (data) => {
-            resolve(data);
-          },
-          error: (error) => {
-            resolve(error);
-          },
-        });
-    });
-  }
-
-  async updateMetric(userId: string, metric: number) {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient
-        .patch(`${API_URL}user/${userId}`, {metric: metric})
-        .subscribe({
-          next: (data) => {
-            resolve(data);
-          },
-          error: (error) => {
-            reject(error);
-          },
-        });
-    });
+  getUserKeyCloak():any {
+    let token = sessionStorage.getItem('jwt-token')
+    
+    if(!this.jwtHelper.isTokenExpired(token) && token) {
+      return this.jwtHelper.decodeToken(token)
+    } else {
+      this.logout()
+    }
   }
 }

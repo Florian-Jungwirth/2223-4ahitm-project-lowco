@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 
 import {PagesPage} from './pages.page';
+import { AuthGuard } from '../admin-page/guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,26 +14,26 @@ const routes: Routes = [
         loadChildren: () =>
           import('./settings/settings.module').then(
             (m) => m.SettingsPageModule
-          ),
+          )
       },
       {
         path: '',
         loadChildren: () =>
-          import('./home/home.module').then((m) => m.HomePageModule),
+          import('./home/home.module').then((m) => m.HomePageModule)
       },
       {
         path: 'activities',
         loadChildren: () =>
           import('./category-selection/category-selection.module').then(
             (m) => m.ActivitySelectionPageModule
-          ),
+          )
       },
       {
         path: 'category',
         loadChildren: () =>
           import('./survey-selection/survey-selection.module').then(
             (m) => m.CategoryPageModule
-          ),
+          )
       },
       {
         path: 'fahrtenverlauf',
@@ -43,7 +44,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('./dashboard/dashboard.module').then(
             (m) => m.DashboardPageModule
-          ),
+          )
       },
     ],
   },

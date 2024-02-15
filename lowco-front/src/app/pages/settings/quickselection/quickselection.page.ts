@@ -39,7 +39,7 @@ export class QuickselectionPage implements OnInit {
     );
   }
 
-  addToQuicks(quick: JoinedUserSurveyModel, surveyDiv: any) {
+  async addToQuicks(quick: JoinedUserSurveyModel, surveyDiv: any) {
     if (!this.selectedQuicks.includes(quick)) {
       if (this.selectedQuicks.length <= 3) {
         this.selectedQuicks.push(quick)
@@ -48,7 +48,7 @@ export class QuickselectionPage implements OnInit {
           this.surveyService.getActiveQuicksHome()
         } else {
           let measure = this.surveyService.getMeasurement(quick.survey.measurement, null);
-          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, measure.unit, true)
+          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, (await measure).unit, true)
           this.surveyService.getActiveQuicksHome()
         }
         surveyDiv.classList.add('selected')

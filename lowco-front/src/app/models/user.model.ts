@@ -20,3 +20,16 @@ export interface UserModel {
     isAdmin: boolean;
     metric: boolean;
 }
+
+export interface RegisterModel {
+    id: string;
+    metric: boolean;
+}
+
+export interface RegisterModelKeyCloak {
+    email: string;
+    firstname: string;
+    lastname: string;
+    username: string;
+    password: string;
+}

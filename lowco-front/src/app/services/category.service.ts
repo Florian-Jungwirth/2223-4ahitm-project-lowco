@@ -13,10 +13,6 @@ export class CategoryService {
   constructor(private httpClient: HttpClient, private surveyService: SurveyService) {
   }
 
-  getAllCategories(): Observable<CategoryModel[]> {
-    return this.httpClient.get<CategoryModel[]>(`${ API_URL }category`);
-  }
-
   getCategoriesByName(categories: CategoryModel[], search: string): CategoryModel[] {
     let selectedCategories = [];
 
@@ -88,6 +84,12 @@ export class CategoryService {
   getAllActiveCategories(): Observable<CategoryModel[]> {
     return this.httpClient.get<CategoryModel[]>(
       `${ API2_URL }category/allActive`
+    );
+  }
+
+  getAllCategories(): Observable<CategoryModel[]> {
+    return this.httpClient.get<CategoryModel[]>(
+      `${ API2_URL }category/all`
     );
   }
 }

@@ -5,7 +5,7 @@ import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
 import { CategoryService } from 'src/app/services/category.service';
-import {MEASUREMENTS} from "../../constants";
+import {MEASUREMENTS, Types} from "../../constants";
 
 @Component({
   selector: 'app-survey',
@@ -21,29 +21,28 @@ export class SurveyPage implements OnInit {
 
   setSurveys: any[] = new Array();
   allSurveys: any[] = new Array();
+  categories: any = []
   edit = false;
   surveyId = 0
-  categories: any;
   collapsed = true;
   measurements = MEASUREMENTS;
-  types: any;
+  types: any[] = [];
   @ViewChild('modal') modal!: IonModal
 
   async ngOnInit() {
-    this.setSurveys = await this.surveyService.getAllSurveysAdmin();
+    this.surveyService.getAllSurveysAdmin().subscribe((surveys: any) => {
+      this.setSurveys = surveys
+    });
+
+    this.categoryService.getAllCategories().subscribe((categories: any) => {
+      this.categories = categories
+    });
 
     this.allSurveys = this.setSurveys;
 
-    this.categoryService.getAllCategories().subscribe({
-      next: (categories) => {
-        this.categories = categories;
-      },
-      error: () => {
-        //TODO: Errorhandling
-      }
-    })
-
-    this.types = this.toArray(await this.surveyService.getTypes());
+    for (let i = 0; i < Object.keys(Types).length; i++) {
+      this.types.push({value: Object.values(Types)[i], key: Object.keys(Types)[i]})
+    }
   }
 
   toArray(obj: any): any[] {

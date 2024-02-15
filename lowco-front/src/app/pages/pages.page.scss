@@ -11,6 +11,7 @@ nav {
 
   #logo {
     width: 40px;
+    height: auto;
   }
 
   h1 {
@@ -28,8 +29,8 @@ nav {
 }
 
 ion-header {
-  background:transparent;
-  position:unset;
+  background: transparent;
+  position: unset;
   box-shadow: none !important;
 }
 
@@ -37,14 +38,14 @@ ion-list {
   width: fit-content;
 }
 
-.locationModal .wrapper{
+.locationModal .wrapper {
   padding-bottom: 1vh;
   padding-left: 0.5vh;
   padding-right: 0.5vh;
   background-color: var(--ion-color-light-tint);
 }
 
-.locationModal .wrapper h1{
+.locationModal .wrapper h1 {
   text-align: center;
   font-size: 1em;
 }
@@ -54,7 +55,7 @@ ion-list {
   --ion-item-background: none;
 }
 
-.locationModal ion-list ion-item{
+.locationModal ion-list ion-item {
   width: 98%;
   border-radius: 0.5em;
   margin-left: 1%;
@@ -62,7 +63,7 @@ ion-list {
   --ion-item-background: var(--ion-color-light);
 }
 
-.locationModal ion-list ion-item ion-icon{
+.locationModal ion-list ion-item ion-icon {
   margin-right: 1vw;
 }
 
@@ -71,7 +72,7 @@ ion-modal.modal {
   --height: fit-content;
   --background: var(--ion-color-light);
   --border-radius: 15px;
-  --box-shadow: 0px 0px 44px 4px rgba(0,0,0,0.75);
+  --box-shadow: 0px 0px 44px 4px rgba(0, 0, 0, 0.75);
   --backdrop-opacity: var(--ion-backdrop-opacity, 0.5);
 }
 

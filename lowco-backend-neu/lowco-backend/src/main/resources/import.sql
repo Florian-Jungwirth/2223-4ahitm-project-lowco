@@ -14,13 +14,12 @@
            (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'a', 3),
            (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'a', 3);
 
-    insert into USERS(ID, FIRSTNAME, LASTNAME, EMAIL, USERNAME, ISADMIN, PASSWORD, METRIC)
+    insert into USERS(ID, METRIC)
     values
-        (1, 'Florian', 'Jungwirth', 'florian22jungwirth@gmail.com', 'flo', true, '1234', true),
-        (2, 'Jan', 'van Anger', 'j_vanAnger@gmail.com', 'Angerer', false, '2456', false);
+        ('6bb773ee-8071-49c1-afa7-ca51472670dd', true);
 
     insert into USERSURVEY(ID, VALUE, UNIT, TIME, USER_ID, SURVEY_ID, ISAQUICK)
-    values (1, 10, 'km', '2023-11-29T08:29:09', 1, 1, true);
+    values (1, 10, 'km', '2023-11-29T08:29:09', '6bb773ee-8071-49c1-afa7-ca51472670dd', 1, true);
 
     drop sequence users_seq RESTRICT;
     create sequence users_seq start with 100;

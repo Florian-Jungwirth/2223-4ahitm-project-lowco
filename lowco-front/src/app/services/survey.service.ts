@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { API2_URL, API_URL, MEASUREMENTS, USER } from '../constants';
+import { API2_URL, API_URL, MEASUREMENTS } from '../constants';
 import { SurveyModel } from '../models/survey.model';
 import { JoinedUserSurveyModel } from "../models/userSurvey.model";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, firstValueFrom} from "rxjs";
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 export class SurveyService {
   activeQuicksHomeEmitter = new BehaviorSubject<JoinedUserSurveyModel[]>([])
 
-  constructor(private httpClient: HttpClient, private authService: AuthService) {
+  constructor(private httpClient: HttpClient, private authService: AuthService, private userService: UserService) {
   }
 
   getAllSurveys(): Promise<any> {
@@ -38,15 +39,6 @@ export class SurveyService {
     });
   }
 
-  getAllSurveysAdmin(): Promise<any> {
-    return new Promise<any>((resolve) => {
-      this.httpClient.get(`${ API_URL }survey/activated/allAdmin`).subscribe({
-        next: (data) => {
-          resolve(data);
-        },
-      });
-    });
-  }
 
   getSurveyById(id: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
@@ -110,8 +102,10 @@ export class SurveyService {
   }
 
   getAllValuesByUser() {
+    /*
+    TODO
     return new Promise<any>((resolve, reject) => {
-      this.authService.getUser().then((user) => {
+      this.authService.getUser().then((user: any) => {
         this.httpClient
           .get(`${ API_URL }user-survey/getByUserAndSurvey/${ user.id }`)
           .subscribe({
@@ -124,19 +118,7 @@ export class SurveyService {
           });
       });
     });
-  }
-
-  getTypes() {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient.get(`${ API_URL }survey/types/getAll`).subscribe({
-        next: (data) => {
-          resolve(data);
-        },
-        error: (error) => {
-          reject(error);
-        },
-      });
-    });
+    */
   }
 
   getAmountOfSurveys(amount: number) {
@@ -168,21 +150,26 @@ export class SurveyService {
   //------------------------------------------------
 
   getActiveQuicks() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicks/${ USER.id }`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicks/${ this.authService.getUserKeyCloak().sub }`)
+  }
+
+
+  getAllSurveysAdmin() {
+    return this.httpClient.get(`${ API2_URL }survey/all`)
   }
 
   getActiveQuicksHome() {
-    this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicksHome/${ USER.id }`).subscribe((data) => {
+    this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveQuicksHome/${ this.authService.getUserKeyCloak().sub }`).subscribe((data) => {
       this.activeQuicksHomeEmitter.next(data)
     })
   }
 
   getAllActiveJoined() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getJoinedUserSurveysByUser/${ USER.id }`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getJoinedUserSurveysByUser/${this.authService.getUserKeyCloak().sub }`)
   }
 
   getSurveysOfCategory(id: number): Observable<JoinedUserSurveyModel[]> {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveByCategoryId/${ USER.id }/${ id }`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${ API2_URL }userSurvey/getActiveByCategoryId/${ this.authService.getUserKeyCloak().sub }/${ id }`)
   }
 
   getAllActiveSurveys(): Observable<SurveyModel[]> {
@@ -190,25 +177,26 @@ export class SurveyService {
   }
 
   updateUserSurvey(surveyID: number, value: number, unit: string | null = null) {
-    this.httpClient.put(`${ API2_URL }userSurvey/updateUserSurvey/${ USER.id }/${ surveyID }/${ value }/${ unit }`, {}).subscribe();
+    this.httpClient.put(`${ API2_URL }userSurvey/updateUserSurvey/${ this.authService.getUserKeyCloak().sub }/${ surveyID }/${ value }/${ unit }`, {}).subscribe();
   }
 
   updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
-    this.httpClient.put(`${ API2_URL }userSurvey/updateQuick/${ USER.id }/${ surveyID }/${ value }/ ${ unit }/${ isAQuick }`, {}).subscribe();
+    this.httpClient.put(`${ API2_URL }userSurvey/updateQuick/${ this.authService.getUserKeyCloak().sub }/${ surveyID }/${ value }/ ${ unit }/${ isAQuick }`, {}).subscribe();
   }
 
   addValueToUserSurvey(surveyId: number, value: number) {
     return this.httpClient.patch(
-      `${ API2_URL }userSurvey/addValue/${ USER.id }/${ surveyId }/${ value }`, {})
+      `${ API2_URL }userSurvey/addValue/${ this.authService.getUserKeyCloak().sub }/${ surveyId }/${ value }`, {})
   }
 
-  getMeasurement(measurementGiven: string, unit: any): { divisor: number, relevantMeasures: any, unit: string } {
+  async getMeasurement(measurementGiven: string, unit: any): Promise<{ divisor: number; relevantMeasures: any; unit: string; }> {
     let measurements: any = MEASUREMENTS;
 
     for (const measurement of measurements) {
       if (measurement.name == measurementGiven) {
         if (measurementGiven == 'd') {
-          if (USER.metric) {
+          
+          if ((await firstValueFrom(this.userService.getUserByID(this.authService.getUserKeyCloak().sub))).metric) {
             if (unit == null || !Object.keys(measurement.units.metrisch).includes(unit)) {
               if (unit == 'mi') {
                 unit = 'km'
@@ -228,7 +216,7 @@ export class SurveyService {
               }
             }
 
-            return { divisor: measurement.units.imperial[unit], relevantMeasures: measurement.imperial, unit: unit };
+            return { divisor: measurement.units.imperial[unit], relevantMeasures: measurement.units.imperial, unit: unit };
           }
         } else if (measurementGiven == 'z') {
           if (unit == null) {

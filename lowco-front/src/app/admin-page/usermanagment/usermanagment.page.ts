@@ -18,13 +18,15 @@ export class UsermanagmentPage implements OnInit {
   allUsers: any[] = new Array();
 
   async ngOnInit() {
-    this.setUsers = await this.categoryService.getAllUsers();
+    //TODO
+    //this.setUsers = await this.categoryService.getAllUsers();
     this.allUsers = this.setUsers;
   }
 
   async search(event: any) {
     let searched = event.target.value.toLowerCase();
-    this.setUsers = await this.categoryService.getUserByEmail(this.allUsers, searched);
+    //TODO
+    //this.setUsers = await this.categoryService.getUserByEmail(this.allUsers, searched);
   }
 
   editUser(user: any) {

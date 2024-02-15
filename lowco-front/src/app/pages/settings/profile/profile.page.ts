@@ -96,7 +96,7 @@ export class ProfilePage implements OnInit {
   }
 
   async ngOnInit() {
-    this.returnValue = await this.authservice.getUserProfile();
+    //this.returnValue = await this.authservice.getUserProfile();
   }
 
   async editName() {
@@ -109,7 +109,7 @@ export class ProfilePage implements OnInit {
       lastname = this.returnValue.lastname;
     }
 
-    this.authservice.updateName(this.returnValue.id, firstname, lastname);
+    //this.authservice.updateName(this.returnValue.id, firstname, lastname);
     this.modal.dismiss();
     window.location.reload();
   }
@@ -122,7 +122,7 @@ export class ProfilePage implements OnInit {
       email = this.returnValue.email;
     }
 
-    this.authservice.updateUserEmail(this.returnValue.id, email);
+    //this.authservice.updateUserEmail(this.returnValue.id, email);
     this.modal2.dismiss();
 
     this.changeEmailForm.setValue({

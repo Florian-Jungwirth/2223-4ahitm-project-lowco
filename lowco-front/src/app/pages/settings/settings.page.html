@@ -21,8 +21,8 @@
         <ion-list color="none" lines="none" class="bg-transparent" style="padding: 0px;">
           <ion-item color="none" lines="none">
             <ion-select color="none" lines="none" aria-label="Metric System" interface="popover" (ionChange)="changeInput($event)" value="{{metric}}">
-              <ion-select-option value="0">imperial</ion-select-option>
-              <ion-select-option value="1">metrisch</ion-select-option>
+              <ion-select-option value="false">imperial</ion-select-option>
+              <ion-select-option value="true">metrisch</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-list>

@@ -14,7 +14,7 @@ import java.util.List;
 
 @ApplicationScoped
 public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
-    public void updateUserSurvey(long userID, long surveyID, double value, String unit) {
+    public void updateUserSurvey(String userID, long surveyID, double value, String unit) {
         TypedQuery<UserSurvey> query = getEntityManager().createQuery(
                 "select u from UserSurvey u where u.user.id = :userID and u.survey.id = :surveyID", UserSurvey.class
         );
@@ -38,7 +38,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         }
     }
 
-    public void updateQuick(long userID, long surveyID, double value, String unit, Boolean isAQuick) {
+    public void updateQuick(String userID, long surveyID, double value, String unit, Boolean isAQuick) {
         TypedQuery<UserSurvey> query = getEntityManager().createQuery(
                 "select u from UserSurvey u where u.user.id = :userID and u.survey.id = :surveyID", UserSurvey.class
         );
@@ -63,7 +63,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         }
     }
 
-    public void addValue(long userID, long surveyID, double value) {
+    public void addValue(String userID, long surveyID, double value) {
         TypedQuery<UserSurvey> query = getEntityManager().createQuery(
                 "select u from UserSurvey u where u.user.id = :userID and u.survey.id = :surveyID", UserSurvey.class
         );
@@ -85,7 +85,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         }
     }
 
-    public void createNewUserSurvey(long surveyID, long userID, double value, String unit, Boolean isAQuick) {
+    public void createNewUserSurvey(long surveyID, String userID, double value, String unit, Boolean isAQuick) {
         UserSurvey u = new UserSurvey();
         u.survey = Survey.findById(surveyID);
         u.user = User.findById(userID);
@@ -101,7 +101,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         return list("user.id", id);
     }
 
-    public List<UserSurveyDTO> getJoinedUserSurveysByUser(long userID) {
+    public List<UserSurveyDTO> getJoinedUserSurveysByUser(String userID) {
         TypedQuery<UserSurveyDTO> query = getEntityManager().createQuery(
                 "SELECT NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, s)" +
                         "FROM Survey s LEFT JOIN UserSurvey u ON s.id = u.survey.id AND u.user.id = :id" +
@@ -113,7 +113,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         return query.getResultList();
     }
 
-    public List<UserSurveyDTO> getActiveQuicksHome(Long userID) {
+    public List<UserSurveyDTO> getActiveQuicksHome(String userID) {
         TypedQuery<UserSurveyDTO> queryQuicks = getEntityManager().createQuery(
                 "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true", UserSurveyDTO.class
         );
@@ -137,7 +137,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         return queryNormal.getResultList();
     }
 
-    public List<UserSurveyDTO> getActiveQuicks(Long userID) {
+    public List<UserSurveyDTO> getActiveQuicks(String userID) {
         TypedQuery<UserSurveyDTO> queryQuicks = getEntityManager().createQuery(
                 "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true", UserSurveyDTO.class
         );
@@ -147,7 +147,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         return queryQuicks.getResultList();
     }
 
-    public List<UserSurveyDTO> getActiveByCategoryId(long userID, long categoryID) {
+    public List<UserSurveyDTO> getActiveByCategoryId(String userID, long categoryID) {
         TypedQuery<UserSurveyDTO> query = getEntityManager().createQuery(
                 "SELECT NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, s)" +
                         "FROM Survey s LEFT JOIN UserSurvey u ON s.id = u.survey.id AND u.user.id = :userID" +

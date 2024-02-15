@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PagesPage } from '../pages.page';
+import { UserService } from 'src/app/services/user.service';
+import { RegisterModel } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-settings',
@@ -11,16 +13,18 @@ import { PagesPage } from '../pages.page';
 })
 export class SettingsPage implements OnInit {
   isAdmin = false;
-  user: any;
-  metric: number;
+  user: RegisterModel;
+  metric: boolean;
 
-  constructor(private router: Router, private authService: AuthService, private titleService: TitleService) {
+  constructor(private router: Router, private userService: UserService, private authService: AuthService, private titleService: TitleService) {
   }
 
-  async ngOnInit() {
-    this.isAdmin = await this.authService.isUserAdmin();
-    this.user = await this.authService.getUser();
-    this.metric = this.user.metric;
+  ngOnInit() {
+    this.isAdmin = this.authService.isUserAdmin();
+    this.userService.getUserByID(this.authService.getUserKeyCloak().sub).subscribe(user => {
+      this.user = user;
+      this.metric = user.metric;
+    })
   }
 
   ionViewWillEnter() {
@@ -33,6 +37,8 @@ export class SettingsPage implements OnInit {
   }
 
   changeInput(event: any) {
-    this.authService.updateMetric(this.user.id, event.detail.value);
+    this.user.metric = event.detail.value
+
+    this.userService.updateMetric(this.user).subscribe()
   }
 }

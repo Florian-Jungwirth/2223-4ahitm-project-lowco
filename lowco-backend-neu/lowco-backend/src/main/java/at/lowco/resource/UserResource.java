@@ -23,14 +23,14 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> allUsers(){
-        return userRepository.listAll(Sort.by("email"));
+        return userRepository.listAll();
     }
 
     @GET
-    @Path("{id}")
+    @Path("getByID/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUserByID(@PathParam("id") long id){
-        return userRepository.findById(id);
+    public User getUserByID(@PathParam("id") String id){
+        return userRepository.find("id", id).firstResult();
     }
 
     @PUT
@@ -40,5 +40,14 @@ public class UserResource {
     public Response updateUser(User user){
         userRepository.update(user);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @POST
+    @Path("register")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response register(User user) {
+        userRepository.persist(user);
+        return Response.status(Response.Status.CREATED).build();
     }
 }

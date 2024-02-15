@@ -28,6 +28,7 @@ export class SurveyModalComponent {
   ngOnInit() {
     this.value = (this.value == null) ? 0 : this.value
     this.valueBefore = this.value
+    
     if (!this.isQuantity) {
       this.units = Object.keys(this.relevantMeasures);
       this.unitBefore = this.unit
@@ -35,13 +36,11 @@ export class SurveyModalComponent {
   }
 
   okModal() {
-    console.log("asdöflskdfj");
     
     if (this.value != null && this.unit != null) {
       
       
       if (!(this.valueBefore == this.value && this.unit == this.unitBefore)) {
-        console.log("asdfs");
         
         if (!this.isQuantity) {
           this.surveyService.updateUserSurvey(
