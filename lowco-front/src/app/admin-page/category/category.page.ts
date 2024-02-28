@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { CategoryModel, CategorySaveModel } from '../../models/category.model';
+import { CategoryModel } from '../../models/category.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonModal } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
@@ -21,12 +21,11 @@ export class CategoryPage {
     this.titleService.setTitle('Kategorien')
   }
 
-  setCategories: CategoryModel[] = new Array();
-  allCategories: CategoryModel[] = new Array();
+  setCategories: CategoryModel[] = [];
+  allCategories: CategoryModel[] = [];
   edit = false;
   categoryId = 0;
   collapsed = true;
-  categories: any;
   @ViewChild('modal') modal!: any;
 
   async ngOnInit() {
@@ -60,26 +59,22 @@ export class CategoryPage {
 
   async updateCategory() {
     let formValues = this.categoryForm.value;
-    let updatedCategory: CategorySaveModel = {
-      title: formValues.categoryTitle || '', iconName: this.selectedIcon,
+    let updatedCategory: CategoryModel = {
+      title: formValues.categoryTitle || '', iconName: this.selectedIcon, id: this.categoryId, activated: true
     };
+
     this.categoryService
-      .updateCategory(this.categoryId, updatedCategory).subscribe({
-        next: (data) => {
-
-        },
-        error: () => {
-          //TODO: Errorhandling
+      .updateCategory(updatedCategory).subscribe(() => {
+      for (let category of this.setCategories) {
+        if (category.id == this.categoryId) {
+          category.title = updatedCategory.title;
+          category.iconName = updatedCategory.iconName
+          break;
         }
-      });
-
-    for (const category of this.setCategories) {
-      if (category.id == this.categoryId) {
-        category.title = updatedCategory.title;
-        category.iconName = updatedCategory.iconName;
-        break;
       }
-    }
+    });
+
+
 
     this.modal.dismiss();
   }
@@ -94,32 +89,29 @@ export class CategoryPage {
   async createCategory() {
     let formValues = this.categoryForm.value;
     //@ts-ignore
-    let createCategory: CategoryModel = { title: formValues.categoryTitle, iconName: this.selectedIcon };
-    this.categoryService.createNewCategory(createCategory).subscribe({
-      next: (category) => {
-        this.setCategories.push(category)
-      },
-      error: () => {
-        //TODO: Errorhandling
-      }
+    let createCategory: CategoryModel = { title: formValues.categoryTitle, iconName: this.selectedIcon, activated: true };
+    this.categoryService.createNewCategory(createCategory).subscribe(() => {
+      this.ngOnInit()
     })
 
     this.modal.dismiss();
   }
 
   deactivate(category: CategoryModel) {
-    this.categoryService.setActivateCategory(category, 0);
-    this.setCategories[this.setCategories.indexOf(category)].activated = 0;
+    category.activated = false
+    this.categoryService.updateCategory(category).subscribe();
+    this.setCategories[this.setCategories.indexOf(category)].activated = false;
   }
 
   activate(category: CategoryModel) {
-    this.categoryService.setActivateCategory(category, 1);
-    this.setCategories[this.setCategories.indexOf(category)].activated = 1;
+    category.activated = true
+    this.categoryService.updateCategory(category).subscribe();
+    this.setCategories[this.setCategories.indexOf(category)].activated = true;
   }
 
   async deleteCategory(category: CategoryModel) {
     const alert = await this.alertController.create({
-      header: category.title + ' löschen?',
+      header: category.title + ' löschen? (Achtung, alle zugehörigen Abfragen werden auch gelöscht)',
       cssClass: 'custom-alert',
       buttons: [
         {
@@ -131,8 +123,9 @@ export class CategoryPage {
           text: 'Ja',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.categoryService.deleteCategory(category.id).subscribe();
-            this.setCategories.splice(this.setCategories.indexOf(category), 1);
+            this.categoryService.deleteCategory(category.id).subscribe(() => {
+              this.ngOnInit()
+            });
           },
         },
       ],
@@ -143,8 +136,8 @@ export class CategoryPage {
 
   search(event: any) {
     let searched = event.target.value.toLowerCase();
-    this.categories = this.categoryService.getCategoriesByName(
-      this.categories,
+    this.setCategories = this.categoryService.getCategoriesByName(
+      this.allCategories,
       searched
     );
   }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CategoryModel, CategorySaveModel } from '../models/category.model';
-import { API2_URL, API_URL } from '../constants';
+import { CategoryModel } from '../models/category.model';
+import { API2_URL } from '../constants';
 import { Observable } from 'rxjs';
 import { SurveyModel } from "../models/survey.model";
 import { SurveyService } from "./survey.service";
@@ -12,6 +12,31 @@ import { SurveyService } from "./survey.service";
 export class CategoryService {
   constructor(private httpClient: HttpClient, private surveyService: SurveyService) {
   }
+
+  getAllActiveCategories(): Observable<CategoryModel[]> {
+    return this.httpClient.get<CategoryModel[]>(
+      `${ API2_URL }category/allActive`
+    );
+  }
+
+  deleteCategory(categoryId: number): Observable<CategoryModel> {
+    return this.httpClient.delete<CategoryModel>(`${API2_URL}category/deleteWithSurveys/${categoryId}`)
+  }
+
+  getAllCategories(): Observable<CategoryModel[]> {
+    return this.httpClient.get<CategoryModel[]>(
+      `${ API2_URL }category/all`
+    );
+  }
+
+  updateCategory(category: CategoryModel) {
+    return this.httpClient.put(`${API2_URL }category/updateCategory`, category);
+  }
+
+  createNewCategory(category: CategoryModel) {
+    return this.httpClient.post(`${API2_URL}category`, category);
+  }
+
 
   getCategoriesByName(categories: CategoryModel[], search: string): CategoryModel[] {
     let selectedCategories = [];
@@ -25,10 +50,10 @@ export class CategoryService {
   }
 
   getCategoriesWithSurveysByName(categories: any, surveys: SurveyModel[], search: string): any {
+    for (const category of categories) {
+      category.surveys = []
+    }
     if (search == '') {
-      for (const category of categories) {
-        category.surveys = []
-      }
       return categories;
     }
     let selectedCategories = [];
@@ -56,40 +81,5 @@ export class CategoryService {
       }
     }
     return selectedCategories;
-  }
-
-  updateCategory(categoryId: number, category: CategorySaveModel) {
-    return this.httpClient.patch(`${API_URL }category/${ categoryId }`, category);
-  }
-
-  deleteCategory(categoryId: number): Observable<CategoryModel> {
-    return this.httpClient.delete<CategoryModel>(`${API_URL}category/${categoryId}`)
-  }
-
-  createNewCategory(category: CategoryModel): Observable<any> {
-    return this.httpClient.post(`${API_URL}category`, category);
-  }
-
-
-  setActivateCategory(category: CategoryModel, state: number) {
-    this.httpClient
-      .patch(
-        `${API_URL}category/activated/setOneActivated/${category.id}/${state}`,
-        {}
-      )
-      .subscribe();
-  }
-
-  //--------------------------------------
-  getAllActiveCategories(): Observable<CategoryModel[]> {
-    return this.httpClient.get<CategoryModel[]>(
-      `${ API2_URL }category/allActive`
-    );
-  }
-
-  getAllCategories(): Observable<CategoryModel[]> {
-    return this.httpClient.get<CategoryModel[]>(
-      `${ API2_URL }category/all`
-    );
   }
 }

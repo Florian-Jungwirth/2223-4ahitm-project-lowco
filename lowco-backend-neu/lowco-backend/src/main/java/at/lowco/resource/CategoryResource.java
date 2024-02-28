@@ -1,8 +1,11 @@
 package at.lowco.resource;
 
 import at.lowco.model.Category;
+import at.lowco.model.Survey;
 import at.lowco.model.User;
 import at.lowco.repository.CategoryRepository;
+import at.lowco.repository.SurveyRepository;
+import at.lowco.repository.UserSurveyRepository;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,6 +24,12 @@ public class CategoryResource {
 
     @Inject
     CategoryRepository categoryRepository;
+
+    @Inject
+    SurveyRepository surveyRepository;
+
+    @Inject
+    UserSurveyRepository userSurveyRepository;
 
     @Path("all")
     @GET
@@ -51,17 +60,6 @@ public class CategoryResource {
         return Response.created(URI.create("/category/" + category.id)).build();
     }
 
-    @DELETE
-    @Path("{id}")
-    @Transactional
-    public void deleteCategory(@PathParam("id") int id){
-        Category entity = Category.findById(id);
-        if(entity == null) {
-            throw new NotFoundException();
-        }
-        entity.delete();
-    }
-
     @PUT
     @Path("updateCategory")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -69,6 +67,16 @@ public class CategoryResource {
     public Response updateCategory(Category category){
         categoryRepository.update(category);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    @DELETE
+    @Path("deleteWithSurveys/{id}")
+    @Transactional
+    public Response deleteWithSurveys(@PathParam("id") long id) {
+        userSurveyRepository.delete("survey.id", id);
+        surveyRepository.delete("category.id", id);
+        categoryRepository.deleteById(id);
+        return Response.status(Response.Status.OK).build();
     }
 
 }

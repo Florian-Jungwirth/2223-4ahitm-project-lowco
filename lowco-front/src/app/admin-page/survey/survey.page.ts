@@ -6,6 +6,7 @@ import { TitleService } from 'src/app/services/title.service';
 import { SurveyService } from 'src/app/services/survey.service';
 import { CategoryService } from 'src/app/services/category.service';
 import {MEASUREMENTS, Types} from "../../constants";
+import {CategoryModel} from "../../models/category.model";
 
 @Component({
   selector: 'app-survey',
@@ -19,9 +20,9 @@ export class SurveyPage implements OnInit {
     this.titleService.setTitle('Emissionswerte')
   }
 
-  setSurveys: any[] = new Array();
-  allSurveys: any[] = new Array();
-  categories: any = []
+  setSurveys: SurveyModel[] = [];
+  allSurveys: SurveyModel[] = [];
+  categories: CategoryModel[] = []
   edit = false;
   surveyId = 0
   collapsed = true;
@@ -32,37 +33,27 @@ export class SurveyPage implements OnInit {
   async ngOnInit() {
     this.surveyService.getAllSurveysAdmin().subscribe((surveys: any) => {
       this.setSurveys = surveys
+      this.allSurveys = this.setSurveys;
     });
 
     this.categoryService.getAllCategories().subscribe((categories: any) => {
       this.categories = categories
     });
 
-    this.allSurveys = this.setSurveys;
-
+    this.types = []
     for (let i = 0; i < Object.keys(Types).length; i++) {
       this.types.push({value: Object.values(Types)[i], key: Object.keys(Types)[i]})
     }
   }
 
-  toArray(obj: any): any[] {
-    const array = [];
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        array.push({ key: key, value: obj[key] });
-      }
-    }
-    return array;
-  }
-
   selectedIcon = "";
+  selectedCategoryID: number = 0
 
   surveyForm = new FormGroup({
     surveyTitle: new FormControl('', [Validators.required]),
     surveyMeasurements: new FormControl('', [Validators.required]),
     surveyStandard: new FormControl(0, [Validators.required]),
-    surveyType: new FormControl('', [Validators.required]),
-    surveyCat: new FormControl(0, [Validators.required])
+    surveyType: new FormControl('', [Validators.required])
   });
 
   async editModal(survey: SurveyModel) {
@@ -72,53 +63,66 @@ export class SurveyPage implements OnInit {
       surveyTitle: survey.title,
       surveyStandard: survey.standardValue,
       surveyMeasurements: survey.measurement,
-      surveyType: survey.type,
-      surveyCat: survey.category.id
+      surveyType: survey.type
     })
     this.selectedIcon = survey.iconName;
+    this.selectedCategoryID = survey.category.id
     this.edit = true
-    this.modal.present()
+    await this.modal.present()
   }
 
   async updateSurvey() {
     let formValues = this.surveyForm.value;
-    console.log(formValues);
-
-    //@ts-ignore
-    let updatedSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat }
-    this.surveyService.updateSurvey(this.surveyId, updatedSurvey)
-
+    let selectedCategory: CategoryModel | null = null
+    for (const category of this.categories) {
+      if(category.id == this.selectedCategoryID) {
+        selectedCategory = category
+      }
+    }
 
     for (const survey of this.setSurveys) {
-      if (survey.id == this.surveyId) {
-        survey.title = updatedSurvey.title
-        survey.iconName = updatedSurvey.iconName
-        survey.standardValue = updatedSurvey.standardValue
-        survey.measurement = updatedSurvey.measurement
-        survey.dataType = updatedSurvey.type
-        survey.category.id = updatedSurvey.category
+      if (survey.id == this.surveyId && selectedCategory && formValues.surveyTitle && formValues.surveyStandard != null && formValues.surveyMeasurements && formValues.surveyType) {
+        survey.title = formValues.surveyTitle
+        survey.iconName = this.selectedIcon
+        survey.standardValue = formValues.surveyStandard
+        survey.measurement = formValues.surveyMeasurements
+        survey.type = formValues.surveyType
+        survey.category = selectedCategory
+        this.surveyService.updateSurvey(survey).subscribe()
         break;
       }
     }
 
-    this.modal.dismiss();
+    await this.modal.dismiss();
   }
 
   async createModal() {
     this.surveyForm.reset()
     this.selectedIcon = ""
     this.edit = false
-    this.modal.present()
+    await this.modal.present()
   }
 
   async createSurvey() {
     let formValues = this.surveyForm.value;
+    let selectedCategory: CategoryModel | null = null
+    for (const category of this.categories) {
+      if(category.id == this.selectedCategoryID) {
+        selectedCategory = category
+      }
+    }
+
     //@ts-ignore
-    let createSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: formValues.surveyCat }
-    this.surveyService.createNewSurvey(createSurvey).then((survey) => {
-      this.setSurveys.push(survey)
+    let createSurvey: SurveyModel = { title: formValues.surveyTitle, iconName: this.selectedIcon, measurement: formValues.surveyMeasurements, standardValue: formValues.surveyStandard, type: formValues.surveyType, category: selectedCategory, activated: true }
+
+    if(createSurvey.type == 'a') {
+      createSurvey.measurement = 'a'
+    }
+
+    this.surveyService.createNewSurvey(createSurvey).subscribe((data) => {
+      this.ngOnInit()
     })
-    this.modal.dismiss();
+    await this.modal.dismiss();
   }
 
   async deleteSurvey(survey: SurveyModel) {
@@ -135,8 +139,9 @@ export class SurveyPage implements OnInit {
           text: 'Ja',
           cssClass: 'alert-button-confirm',
           handler: () => {
-            this.surveyService.deleteSurvey(survey.id);
-            this.setSurveys.splice(this.setSurveys.indexOf(survey), 1)
+            this.surveyService.deleteSurvey(survey.id).subscribe(() => {
+              this.ngOnInit()
+            });
           }
         },
       ],
@@ -145,16 +150,16 @@ export class SurveyPage implements OnInit {
     await alert.present();
   }
 
-  async search(event: any) {
+  search(event: any) {
     let searched = event.target.value.toLowerCase();
-    this.setSurveys = await this.surveyService.getSurveysByName(this.allSurveys, searched);
+    this.setSurveys = this.surveyService.getSurveysByName(this.allSurveys, searched);
   }
 
   @ViewChild('modal2', { static: true }) modal2!: IonModal;
 
-  iconSelectionChange(icon: string) {
+  async iconSelectionChange(icon: string) {
     this.selectedIcon = icon;
-    this.modal2.dismiss();
+    await this.modal2.dismiss();
   }
 
   changeCollapsed() {
@@ -162,12 +167,18 @@ export class SurveyPage implements OnInit {
   }
 
   deactivate(survey: SurveyModel) {
-    this.surveyService.setActivateSurvey(survey, 0);
-    this.setSurveys[this.setSurveys.indexOf(survey)].activated = 0;
+    survey.activated = false
+    this.surveyService.updateSurvey(survey).subscribe()
+    this.setSurveys[this.setSurveys.indexOf(survey)].activated = false;
   }
 
   activate(survey: SurveyModel) {
-    this.surveyService.setActivateSurvey(survey, 1);
-    this.setSurveys[this.setSurveys.indexOf(survey)].activated = 1;
+    survey.activated = true
+    this.surveyService.updateSurvey(survey).subscribe()
+    this.setSurveys[this.setSurveys.indexOf(survey)].activated = true;
+  }
+
+  changeCategoryId(e: any) {
+    this.selectedCategoryID = e.detail.value;
   }
 }

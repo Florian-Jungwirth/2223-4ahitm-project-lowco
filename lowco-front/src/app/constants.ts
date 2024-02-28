@@ -1,6 +1,4 @@
 import {UserModel} from "./models/user.model";
-
-export const API_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2/'
 export const API2_URL = 'http://localhost:8080/'
 //export const API2_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2-neu/'
 export const KEYCLOAK_URL_ADMIN = 'http://localhost:8081/admin/realms/lowco2_realm/'

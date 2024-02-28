@@ -53,11 +53,6 @@ export class SurveyController {
     return this.surveyService.getAmountOfSurveys(amount)
   }
 
-  // @Patch('activated/all')
-  // activateAll() {
-  //   return this.surveyService.setAllActivated();
-  // }
-
   @Get('activated/all')
   getActivated() {
     return this.surveyService.getAllActivated();

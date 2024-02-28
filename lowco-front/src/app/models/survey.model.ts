@@ -8,4 +8,5 @@ export interface SurveyModel {
     standardValue: number;
     type: string;
     category: CategoryModel;
+    activated: boolean;
 }

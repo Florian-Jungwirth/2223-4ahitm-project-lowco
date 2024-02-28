@@ -1,11 +1,11 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import {Observable, BehaviorSubject, firstValueFrom} from 'rxjs';
 
 import { Storage } from '@ionic/storage';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { API2_URL, API_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL_ADMIN, KEYCLOAK_URL_TOKEN } from '../constants';
+import { API2_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL_ADMIN, KEYCLOAK_URL_TOKEN } from '../constants';
 import { UserModel, UserLoginModel, RegisterModel, RegisterModelKeyCloak } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -35,7 +35,7 @@ export class AuthService {
     let self = this
     return new Observable(observer => {
       this.getKeyCloakToken().subscribe(clientToken => {
-        
+
         let keyCloakUser = {
           "enabled": true,
           "email": user.email,
@@ -49,7 +49,7 @@ export class AuthService {
             "temporary": false
           }]
         }
-  
+
         this.httpClient
           .post(`/admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
             next (data)  {
@@ -58,10 +58,10 @@ export class AuthService {
                 password: user.password
               }
               self.login(userLogin).subscribe(data => {
-                
+
                 let uid = self.jwtHelper.decodeToken(data.access_token).sub
                 self.mapDefaultRole(uid, clientToken.access_token)
-                
+
                 let register: RegisterModel = {
                   metric: true,
                   id: uid
@@ -98,7 +98,7 @@ export class AuthService {
       .set('client_secret', CLIENT_SECRET)
       .set('grant_type', 'client_credentials');
 
-    
+
     return this.httpClient.post(`/realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
@@ -125,11 +125,26 @@ export class AuthService {
 
   getUserKeyCloak():any {
     let token = sessionStorage.getItem('jwt-token')
-    
+
     if(!this.jwtHelper.isTokenExpired(token) && token) {
       return this.jwtHelper.decodeToken(token)
     } else {
       this.logout()
     }
+  }
+
+  async getAllUsersKeycloak() {
+    let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
+    return this.httpClient.get<any>('/admin/realms/lowco2_realm/users', {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+  }
+
+  async getAllDefaultUsersKeycloak() {
+    let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
+    return this.httpClient.get<any>(`admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+  }
+
+  async getAllAdminUsersKeycloak() {
+    let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
+    return this.httpClient.get<any>(`admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/admin/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 }

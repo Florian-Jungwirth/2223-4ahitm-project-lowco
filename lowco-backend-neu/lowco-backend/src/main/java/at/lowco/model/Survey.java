@@ -17,4 +17,18 @@ public class Survey extends PanacheEntity {
     @ManyToOne
     @JoinColumn(name="category_id")
     public Category category;
+
+    @Override
+    public String toString() {
+        return "Survey{" +
+                "iconName='" + iconName + '\'' +
+                ", title='" + title + '\'' +
+                ", measurement='" + measurement + '\'' +
+                ", standardValue=" + standardValue +
+                ", activated=" + activated +
+                ", type='" + type + '\'' +
+                ", category=" + category +
+                ", id=" + id +
+                '}';
+    }
 }

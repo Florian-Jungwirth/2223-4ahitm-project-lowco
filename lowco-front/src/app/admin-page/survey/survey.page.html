@@ -1,15 +1,15 @@
 <ion-content>
   <div id="survey">
     <div class="searchBarDiv">
-      <ion-searchbar id="open-modal" class="search" (ionChange)="search($event)"
+      <ion-searchbar id="open-modal" class="search" (ionInput)="search($event)"
         placeholder="Nach Emissionswerte suchen"></ion-searchbar>
     </div>
 
     <div id="surveyList">
       <ng-container *ngFor="let survey of setSurveys">
-        <div [class.categoryActive]="survey.category" *ngIf="survey.activated == 1">
+        <div [class.categoryActive]="survey.category" *ngIf="survey.activated">
           <div class="left"><ion-icon name="{{survey.iconName}}"></ion-icon>
-            <p>{{survey.title}}</p><p *ngIf="survey.category.activated == 0" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
+            <p>{{survey.title}}</p><p *ngIf="!survey.category.activated" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
           </div>
           <div class="right">
             <div (click)="editModal(survey)"><ion-icon name="create-outline"></ion-icon></div>
@@ -30,7 +30,7 @@
 
     <div *ngIf="!collapsed" id="deactivatedList">
       <ng-container *ngFor="let survey of setSurveys">
-        <div *ngIf="survey.activated == 0" [class.categoryActive]="survey.category">
+        <div *ngIf="!survey.activated" [class.categoryActive]="survey.category">
           <div class="left"><ion-icon name="{{survey.iconName}}"></ion-icon>
             <p>{{survey.title}}</p><p *ngIf="survey.category" class="deactivatedInCategory">(Kategorie deaktiviert)</p>
           </div>
@@ -56,8 +56,8 @@
           </ion-item>
           <ion-item (click)="modal2.present()">
             <div class="iconSelection">
-              <ion-input type="text" *ngIf="selectedIcon == ''" readonly value="Icon auswählen"></ion-input>
-              <ion-icon *ngIf="selectedIcon != ''" [name]="selectedIcon"></ion-icon>
+              <ion-input type="text" *ngIf="selectedIcon === ''" readonly value="Icon auswählen"></ion-input>
+              <ion-icon *ngIf="selectedIcon !== ''" [name]="selectedIcon"></ion-icon>
               <ion-icon class="linkTo" name="open-outline"></ion-icon>
             </div>
           </ion-item>
@@ -68,7 +68,7 @@
               <ion-select-option *ngFor="let type of types" [value]="type.value">{{type.key}}</ion-select-option>
             </ion-select>
           </ion-item>
-          <ion-item *ngIf="surveyForm.get('surveyType')?.value == 'e'">
+          <ion-item *ngIf="surveyForm.get('surveyType')?.value === 'e'">
             <ion-label position="floating">Maß</ion-label>
             <ion-select formControlName="surveyMeasurements">
               <ion-label position="floating">Maß</ion-label>
@@ -82,7 +82,7 @@
           </ion-item>
           <ion-item>
             <ion-label position="floating">Kategorie</ion-label>
-            <ion-select formControlName="surveyCat">
+            <ion-select [value]="selectedCategoryID" (ionChange)="changeCategoryId($event)">
               <ion-label position="floating">Kategorie</ion-label>
               <ion-select-option *ngFor="let category of categories"
                 [value]="category.id">{{category.title}}</ion-select-option>

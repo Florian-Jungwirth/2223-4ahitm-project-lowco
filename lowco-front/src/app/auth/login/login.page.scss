@@ -1,7 +1,6 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--ion-color-light-tint);
 }
 
 .form-box {
@@ -11,7 +10,6 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  background-color: var(--ion-color-light-tint);
 }
 
 .form-box input:not(input[type="submit"]) {
@@ -37,17 +35,19 @@ ion-item.item-has-focus > ion-label {
 }
 
 .subBtn {
-    background-color: var(--ion-color-medium-shade);
+    background-color: var(--ion-color-project-greenl);
     color: var(--ion-color-medium-contrast);
     text-transform: uppercase;
     padding: 1em 3em;
     border-radius: 3px;
     border: none;
     margin-top: 2em;
+    transition: background-color 0.8s;
 }
 
 .subBtn:disabled {
-    background-color: var(--ion-color-medium-tint);
+    background-color: var(--ion-color-medium-shade);
+    opacity: 0.5;
 }
 
 .headLine {

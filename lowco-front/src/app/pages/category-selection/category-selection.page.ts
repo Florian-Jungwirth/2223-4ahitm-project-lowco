@@ -22,7 +22,6 @@ export class ActivitySelectionPage implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private navController: NavController,
     private titleService: TitleService,
     private surveyService: SurveyService
   ) {}
@@ -32,6 +31,7 @@ export class ActivitySelectionPage implements OnInit {
   }
 
   search() {
+    this.selectedCategories = []
     this.selectedCategories = this.categoryService.getCategoriesWithSurveysByName(
       this.categories,
       this.surveys,

@@ -1,86 +1,29 @@
 <ion-content>
-  <div id="profile" *ngIf="returnValue; let _data">
-    <div id="topItem">
-      <ion-icon name="person-circle-outline"></ion-icon>
-    </div>
-    <div class="users">
-      <div class="userItem">
-        <p>{{returnValue.firstname}} {{returnValue.lastname}}</p>
-        <div (click)="showNameChange(true)" class="edit"><ion-icon name="create-outline"></ion-icon></div>
-      </div>
-      <div class="userItem">
-        <p>{{returnValue.email}}</p>
-        <div (click)="showEmailChange(true)" class="edit"><ion-icon name="create-outline"></ion-icon></div>
-      </div>
-      <div class="userItem">
-        <p>Password</p>
-        <div (click)="showPWChange(true)" class="edit"><ion-icon name="create-outline"></ion-icon></div>
-      </div>
-    </div>
-
-    <ion-modal #modal>
-      <ng-template>
-        <div class="positioning">
-          <form [formGroup]="changeNameForm" class="editForm">
-            <ion-item>
-              <ion-label position="floating">Firstname</ion-label>
-              <ion-input type="text" formControlName="firstname"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Lastname</ion-label>
-              <ion-input type="text" formControlName="lastname"></ion-input>
-            </ion-item>
-            <div id="subBtnDiv">
-              <input [disabled]="!changeNameForm.valid" class="subBtn" value="Speichern" type="button"
-                (click)="editName()">
-              <p (click)="showNameChange(false)">Abbrechen</p>
-            </div>
-          </form>
-        </div>
-      </ng-template>
-    </ion-modal>
-
-    <ion-modal #modal2>
-      <ng-template>
-        <div class="positioning">
-          <form [formGroup]="changeEmailForm" class="editForm">
-            <ion-item>
-              <ion-label position="floating">New Email</ion-label>
-              <ion-input type="email" autocomplete="email" formControlName="email"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Email wiederholen</ion-label>
-              <ion-input type="email" formControlName="emailRepeat"></ion-input>
-            </ion-item>
-            <div id="subBtnDiv">
-              <input [disabled]="!changeEmailForm.valid" class="subBtn" value="Speichern" type="button"
-                (click)="editEmail()">
-              <p (click)="showEmailChange(false)">Abbrechen</p>
-            </div>
-          </form>
-        </div>
-      </ng-template>
-    </ion-modal>
-
-    <ion-modal #modal3>
-      <ng-template>
-        <div class="positioning">
-          <form [formGroup]="changePWForm" class="editForm">
-            <ion-item>
-              <ion-label position="floating">New Password</ion-label>
-              <ion-input type="password" formControlName="pw"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Password wiederholen</ion-label>
-              <ion-input type="password" formControlName="pwRepeat"></ion-input>
-            </ion-item>
-            <div id="subBtnDiv">
-              <input [disabled]="!changePWForm.valid" class="subBtn" value="Speichern" type="button" (click)="editPW()">
-              <p (click)="showPWChange(false)">Abbrechen</p>
-            </div>
-          </form>
-        </div>
-      </ng-template>
-    </ion-modal>
+  <div id="profile">
+    <ion-input
+      type="email"
+      fill="solid"
+      label="Email"
+      labelPlacement="floating"
+      errorText="Invalid email"
+      ngModel
+      email
+    ></ion-input>
+    <ion-input
+      type="text"
+      fill="solid"
+      label="Vorname"
+      labelPlacement="floating"
+      errorText="Invalid email"
+      ngModel
+    ></ion-input>
+    <ion-input
+      type="textd"
+      fill="solid"
+      label="Nachname"
+      labelPlacement="floating"
+      errorText="Invalid email"
+      ngModel
+    ></ion-input>
   </div>
 </ion-content>

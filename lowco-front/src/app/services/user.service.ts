@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {API2_URL, API_URL} from '../constants';
+import {API2_URL} from '../constants';
 import { RegisterModel } from '../models/user.model';
 import { Observable } from 'rxjs';
 
@@ -20,5 +20,20 @@ export class UserService {
 
   updateMetric(user: RegisterModel) {
     return this.httpClient.put(`${API2_URL}user/updateUser`, user)
+  }
+
+  searchUserByEmail(users: any[], search: string) {
+    let selectedUsers = []
+
+    if(search == '') {
+      return users;
+    }
+
+    for (const user of users) {
+      if(String(user.email).toLowerCase().includes(search)) {
+        selectedUsers.push(user)
+      }
+    }
+    return selectedUsers
   }
 }

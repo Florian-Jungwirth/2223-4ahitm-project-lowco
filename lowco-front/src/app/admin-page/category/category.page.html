@@ -7,7 +7,7 @@
 
     <div id="categoryList">
       <ng-container *ngFor="let category of setCategories">
-        <div *ngIf="category.activated == 1">
+        <div *ngIf="category.activated">
           <div class="left"><ion-icon name="{{category.iconName}}"></ion-icon>
             <p>{{category.title}}</p>
           </div>
@@ -30,7 +30,7 @@
 
     <div *ngIf="!collapsed" id="deactivatedList">
       <ng-container *ngFor="let category of setCategories">
-        <div *ngIf="category.activated == 0">
+        <div *ngIf="!category.activated">
           <div class="left"><ion-icon name="{{category.iconName}}"></ion-icon>
             <p>{{category.title}}</p>
           </div>
@@ -55,8 +55,8 @@
             <ion-input type="text" formControlName="categoryTitle"></ion-input>
           </ion-item>
           <ion-item (click)="modal2.present()">
-            <ion-input type="text" *ngIf="selectedIcon == ''" readonly value="Icon auswählen"></ion-input>
-            <ion-icon *ngIf="selectedIcon != ''" [name]="selectedIcon"></ion-icon>
+            <ion-input type="text" *ngIf="selectedIcon === ''" readonly value="Icon auswählen"></ion-input>
+            <ion-icon *ngIf="selectedIcon !== ''" [name]="selectedIcon"></ion-icon>
           </ion-item>
 
           <div id="subBtnDiv">
