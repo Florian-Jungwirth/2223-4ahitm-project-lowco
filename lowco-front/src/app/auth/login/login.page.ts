@@ -41,12 +41,23 @@ export class LoginPage implements OnInit {
 
     this.authService.login(this.loginForm.value as UserLoginModel).subscribe({
       next(data) {
+        console.log(JSON.stringify(data));
+        
         sessionStorage.setItem('jwt-token', data.access_token)
         self.router.navigate([''])
       },
       async error(error) {
+        console.log(JSON.stringify(error));
+        let errormessage = ''
+
+        if(error?.error?.error_description) {
+          errormessage = error.error.error_description
+        } else {
+          errormessage = 'Etwas ist schiefgelaufen'
+        }
+
         const toast = await self.toastController.create({
-          message: error.error.error_description,
+          message: errormessage,
           duration: 3000,
         });
         toast.present()

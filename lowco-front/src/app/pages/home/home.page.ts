@@ -89,7 +89,6 @@ export class HomePage {
   ionViewWillEnter() {
     this.quickSelection = []
     this.titleService.setTitle('LowCo2');
-    this.surveyService.getActiveQuicksHome()
     this.surveyService.activeQuicksHomeEmitter.subscribe((quicks: JoinedUserSurveyModel[]) => {
 
       this.quickSelection = quicks;
@@ -111,6 +110,7 @@ export class HomePage {
         this.setHeight(window.innerHeight - this.height, true);
       }, 200);
     })
+    this.surveyService.getActiveQuicksHome()
   }
 
   getValueById(survey: any) {

@@ -7,6 +7,8 @@ import {BackgroundGeolocationPlugin} from "@capacitor-community/background-geolo
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
+import { NgrokInterceptor } from './interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],

@@ -6,6 +6,7 @@ import {SurveyModel} from '../models/survey.model';
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
 import {BehaviorSubject, Observable, firstValueFrom} from "rxjs";
 import {UserService} from './user.service';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import {UserService} from './user.service';
 export class SurveyService {
   activeQuicksHomeEmitter = new BehaviorSubject<JoinedUserSurveyModel[]>([])
 
-  constructor(private httpClient: HttpClient, private authService: AuthService, private userService: UserService) {
+  constructor(private httpClient: HttpClient, private authService: AuthService, private userService: UserService, private toast: ToastController) {
   }
 
   getActiveQuicks() {
@@ -38,9 +39,22 @@ export class SurveyService {
   }
 
   getActiveQuicksHome() {
-    this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/${this.authService.getUserKeyCloak().sub}`).subscribe((data) => {
-      this.activeQuicksHomeEmitter.next(data)
-    })
+    this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/${this.authService.getUserKeyCloak().sub}`).subscribe(
+      {
+        next: (data) => {
+          this.activeQuicksHomeEmitter.next(data)
+        },
+        error: async (data) => {
+          let toast = await this.toast.create({ message: 'Etwas ist schiefgelaufen!', buttons: [
+            {
+              text: 'OK',
+              role: 'cancel'
+            }
+          ]})
+          toast.present()
+        }
+      }
+    )
   }
 
   getAllActiveJoined() {
