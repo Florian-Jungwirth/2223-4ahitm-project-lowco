@@ -1,6 +1,5 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
 import {API2_URL, MEASUREMENTS} from '../constants';
 import {SurveyModel} from '../models/survey.model';
 import {JoinedUserSurveyModel} from "../models/userSurvey.model";
@@ -14,11 +13,11 @@ import { ToastController } from '@ionic/angular';
 export class SurveyService {
   activeQuicksHomeEmitter = new BehaviorSubject<JoinedUserSurveyModel[]>([])
 
-  constructor(private httpClient: HttpClient, private authService: AuthService, private userService: UserService, private toast: ToastController) {
+  constructor(private httpClient: HttpClient, private userService: UserService, private toast: ToastController) {
   }
 
   getActiveQuicks() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicks/${this.authService.getUserKeyCloak().sub}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicks/6bb773ee-8071-49c1-afa7-ca51472670dd`)
   }
 
   deleteSurvey(surveyId: number) {
@@ -39,9 +38,10 @@ export class SurveyService {
   }
 
   getActiveQuicksHome() {
-    this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/${this.authService.getUserKeyCloak().sub}`).subscribe(
+    this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicksHome/6bb773ee-8071-49c1-afa7-ca51472670dd`).subscribe(
       {
         next: (data) => {
+          console.log(data)
           this.activeQuicksHomeEmitter.next(data)
         },
         error: async (data) => {
@@ -58,11 +58,11 @@ export class SurveyService {
   }
 
   getAllActiveJoined() {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getJoinedUserSurveysByUser/${this.authService.getUserKeyCloak().sub}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getJoinedUserSurveysByUser/6bb773ee-8071-49c1-afa7-ca51472670dd`)
   }
 
   getSurveysOfCategory(id: number): Observable<JoinedUserSurveyModel[]> {
-    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveByCategoryId/${this.authService.getUserKeyCloak().sub}/${id}`)
+    return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveByCategoryId/6bb773ee-8071-49c1-afa7-ca51472670dd/${id}`)
   }
 
   getAllActiveSurveys(): Observable<SurveyModel[]> {
@@ -70,16 +70,16 @@ export class SurveyService {
   }
 
   updateUserSurvey(surveyID: number, value: number, unit: string | null = null) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}`, {}).subscribe();
+    this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/6bb773ee-8071-49c1-afa7-ca51472670dd/${surveyID}/${value}/${unit}`, {}).subscribe();
   }
 
   updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/ ${unit}/${isAQuick}`, {}).subscribe();
+    return this.httpClient.put(`${API2_URL}userSurvey/updateQuick/6bb773ee-8071-49c1-afa7-ca51472670dd/${surveyID}/${value}/${unit}/${isAQuick}`, {});
   }
 
   addValueToUserSurvey(surveyId: number, value: number) {
     return this.httpClient.patch(
-      `${API2_URL}userSurvey/addValue/${this.authService.getUserKeyCloak().sub}/${surveyId}/${value}`, {})
+      `${API2_URL}userSurvey/addValue/6bb773ee-8071-49c1-afa7-ca51472670dd/${surveyId}/${value}`, {})
   }
 
   getSurveysByName(surveys: SurveyModel[], search: string): SurveyModel[] {
@@ -113,7 +113,7 @@ export class SurveyService {
       if (measurement.name == measurementGiven) {
         if (measurementGiven == 'd') {
 
-          if ((await firstValueFrom(this.userService.getUserByID(this.authService.getUserKeyCloak().sub))).metric) {
+          if ((await firstValueFrom(this.userService.getUserByID('6bb773ee-8071-49c1-afa7-ca51472670dd'))).metric) {
             if (unit == null || !Object.keys(measurement.units.metrisch).includes(unit)) {
               if (unit == 'mi') {
                 unit = 'km'

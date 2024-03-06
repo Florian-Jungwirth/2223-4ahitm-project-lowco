@@ -1,5 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {MEASUREMENTS, USER} from "../../constants";
 import { CategoryModel } from 'src/app/models/category.model';

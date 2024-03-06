@@ -7,17 +7,11 @@ const routes: Routes = [
 
   {
     path: '',
-    loadChildren: () => import('./pages/pages.module').then(m => m.PagesPageModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'login',
-    loadChildren: () => import('./auth/login/login.module').then(m => m.LoginPageModule)
+    loadChildren: () => import('./pages/pages.module').then(m => m.PagesPageModule)
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin-page/admin.module').then(m => m.AdminPageModule),
-    canActivate: [AdminGuard]
+    loadChildren: () => import('./admin-page/admin.module').then(m => m.AdminPageModule)
   },
   {
     path: '**',

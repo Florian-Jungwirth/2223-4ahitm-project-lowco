@@ -44,12 +44,14 @@ export class QuickselectionPage implements OnInit {
       if (this.selectedQuicks.length <= 3) {
         this.selectedQuicks.push(quick)
         if(quick.id) {
-          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true)
-          this.surveyService.getActiveQuicksHome()
+          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true).subscribe(() => {
+            this.surveyService.getActiveQuicksHome()
+          })
         } else {
-          let measure = this.surveyService.getMeasurement(quick.survey.measurement, null);
-          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, (await measure).unit, true)
-          this.surveyService.getActiveQuicksHome()
+          let measure = await this.surveyService.getMeasurement(quick.survey.measurement, null);
+          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, measure.unit, true).subscribe(() => {
+            this.surveyService.getActiveQuicksHome()
+          })
         }
         surveyDiv.classList.add('selected')
       } else {
@@ -57,7 +59,9 @@ export class QuickselectionPage implements OnInit {
       }
     } else {
       this.selectedQuicks.splice(this.selectedQuicks.indexOf(quick), 1)
-      this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, false)
+      this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, false).subscribe(() => {
+        this.surveyService.getActiveQuicksHome()
+      })
       surveyDiv.classList.remove('selected')
     }
   }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../auth/auth.service';
 import { TitleService } from 'src/app/services/title.service';
 import { PagesPage } from '../pages.page';
 import { UserService } from 'src/app/services/user.service';
@@ -16,12 +15,12 @@ export class SettingsPage implements OnInit {
   user: RegisterModel;
   metric: boolean;
 
-  constructor(private router: Router, private userService: UserService, private authService: AuthService, private titleService: TitleService) {
+  constructor(private router: Router, private userService: UserService, private titleService: TitleService) {
   }
 
   ngOnInit() {
-    this.isAdmin = this.authService.isUserAdmin();
-    this.userService.getUserByID(this.authService.getUserKeyCloak().sub).subscribe(user => {
+    this.isAdmin = true
+    this.userService.getUserByID('6bb773ee-8071-49c1-afa7-ca51472670dd').subscribe(user => {
       this.user = user;
       this.metric = user.metric;
     })
@@ -29,11 +28,6 @@ export class SettingsPage implements OnInit {
 
   ionViewWillEnter() {
     this.titleService.setTitle('Settings')
-  }
-
-  logOut() {
-    this.authService.logout();
-    this.router.navigateByUrl('/login');
   }
 
   changeInput(event: any) {

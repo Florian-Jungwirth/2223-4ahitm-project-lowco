@@ -28,25 +28,9 @@ const routes: Routes = [
           import('./category/category.module').then(
             (m) => m.CategoryPageModule
           ),
-      },
-      {
-        path: 'users',
-        loadChildren: () =>
-          import('./usermanagment/usermanagment.module').then(
-            (m) => m.UsermanagmentPageModule
-          ),
       }
     ],
-  },
-  {
-    path: '',
-    redirectTo: '',
-    pathMatch: 'full',
-  },
-  {
-    path: 'usermanagment',
-    loadChildren: () => import('./usermanagment/usermanagment.module').then( m => m.UsermanagmentPageModule)
-  },
+  }
 ];
 
 @NgModule({

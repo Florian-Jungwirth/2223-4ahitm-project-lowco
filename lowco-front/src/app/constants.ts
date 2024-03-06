@@ -1,5 +1,6 @@
 import {UserModel} from "./models/user.model";
 export const API2_URL = 'http://localhost:8080/'
+//export const API2_URL = 'https://7d62a8d96eb9-5456669655404188385.ngrok-free.app/'
 //export const API2_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2-neu/'
 export const KEYCLOAK_URL_ADMIN = 'http://localhost:8081/admin/realms/lowco2_realm/'
 export const KEYCLOAK_URL_TOKEN = 'http://localhost:8081/realms/lowco2_realm/'

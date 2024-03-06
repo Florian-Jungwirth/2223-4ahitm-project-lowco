@@ -15,7 +15,7 @@ export class UserService {
   }
 
   getUserByID(id: string): Observable<RegisterModel> {
-    return this.httpClient.get<RegisterModel>(`${API2_URL}user/getByID/${id}`)
+    return this.httpClient.get<RegisterModel>(`${API2_URL}user/getByID/6bb773ee-8071-49c1-afa7-ca51472670dd`)
   }
 
   updateMetric(user: RegisterModel) {
