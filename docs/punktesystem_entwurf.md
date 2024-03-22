@@ -1,11 +1,11 @@
 # Punktesystem
 
 ## Mögliche Punkte
-- Hängt von der Anzahl der vom Benutzer eingegebenen Daten ab
+- Hängt von der Anzahl der vom Benutzer eingegebenen Abfragen ab
 - Werden mit jeder neuen Abfrage erhöht
 - Abfragen, bei denen der Benutzer noch keinen neuen Wert eingegeben hat werden nicht berücksichtigt
 - Für jede Abfrage werden maximale Punkte zwischen 1 und 10 vom Anleger definiert (so werden die Abfragen verschieden gewichtet aufgrund ihres unterschiedlichen CO2-Ausstoßs)
-- Bei Umfragen, die gut fürs Klima sind wird bei 60% der möglichen Punkte gestartet, damit sie keine negativen Auswirkungen haben
+- Bei Abfragen, die gut fürs Klima sind wird bei 60% der möglichen Punkte gestartet, damit sie keine negativen Auswirkungen haben
 
 ## Inselveränderung berechnen
 - Je nach Prozent der erreichten Punkte verändert sich die 3D-Map positiv oder negativ
