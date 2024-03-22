@@ -10,6 +10,8 @@
 ## Inselveränderung berechnen
 - Je nach Prozent der erreichten Punkte verändert sich die 3D-Map positiv oder negativ
 - Zustand verbessert sich, wenn über 60 % der Punkte erreicht wurden
+- Wenn weniger als 60% der Punkte erreicht wurden, verschlechtert sich der Zustand der Insel
+- Je weiter der erreichte Prozentwert von den 60% entfernt ist, umso stärker verändert sich die Insel
 
 ## Punkteraster
 - Muss beim Anlegen der Abfragen definiert werden
