@@ -12,6 +12,7 @@
 - Zustand verbessert sich, wenn über 60 % der Punkte erreicht wurden
 - Wenn weniger als 60% der Punkte erreicht wurden, verschlechtert sich der Zustand der Insel
 - Je weiter der erreichte Prozentwert von den 60% entfernt ist, umso stärker verändert sich die Insel
+- Die Eingaben der Benutzer werden je nach Abfrage nach einem anderen Zeitraum aktualisiert (z.B. Auto -> wöchentlich, Flugzeug -> jährlich)
 
 ## Punkteraster
 - Muss beim Anlegen der Abfragen definiert werden
