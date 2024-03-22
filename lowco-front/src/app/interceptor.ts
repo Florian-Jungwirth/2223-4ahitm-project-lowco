@@ -9,27 +9,20 @@ export class Interceptor implements HttpInterceptor {
   jwtHelper = new JwtHelperService();
 
   constructor(private authService: AuthService) {
-    
+
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let token = sessionStorage.getItem('jwt-token')
+    const token = sessionStorage.getItem('jwt-token')
 
-    if(!this.jwtHelper.isTokenExpired(token) && token) {
-      
-      const modifiedRequest = request.clone({
+    if (!this.jwtHelper.isTokenExpired(token) && token) {
+      request = request.clone({
         setHeaders: {
-          'Authorization': 'Bearer ' + token
+          Authorization: `Bearer ${token}`
         }
       });
-
-    return next.handle(modifiedRequest);
-    } else {
-      this.authService.logout()
-
-      return of()
     }
-    
 
+    return next.handle(request);
   }
 }
