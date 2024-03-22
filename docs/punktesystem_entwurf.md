@@ -12,11 +12,15 @@
 - Zustand verbessert sich, wenn über 60 % der Punkte erreicht wurden
 
 ## Punkteraster
-- Muss beim anlegen der Abfragen definiert werden
+- Muss beim Anlegen der Abfragen definiert werden
 - z.B. Auto
     - 0km: 10 Punkte
     - 1-10km: 9 Punkte
     - ...
+- z.B. Gehen (maximal 6 Punkte)
+    - 0-5km: 4 Punkte
+    - 6-20km: 5 Punkte
+    - größer als 21km: 6 Punkte
 
 ## Benötigte Felder
 - maxPoints
