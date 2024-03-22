@@ -33,7 +33,7 @@ export class QuantityComponent {
   addOne() {
     this.value += 1;
     this.isClickable = 'changeQuantity';
-    this.surveyService.updateUserSurvey(this.id, this.value)
+    this.surveyService.updateUserSurvey(this.id, this.value).subscribe()
   }
 
   removeOne() {
@@ -43,7 +43,7 @@ export class QuantityComponent {
       if (this.value == 0) {
         this.isClickable = 'notClickable';
       }
-      this.surveyService.updateUserSurvey(this.id, this.value)
+      this.surveyService.updateUserSurvey(this.id, this.value).subscribe()
     }
   }
 

@@ -24,12 +24,12 @@ export class CategoryComponent {
   }
 
 
-  navigateToSearch(event: Event) {
+  async navigateToSearch(event: Event) {
     event.stopPropagation();
-    this.navController.navigateForward(`/lowco/category?id=${this.id}&s=${this.searchString}`);
+    await this.navController.navigateForward(`/lowco/category?id=${this.id}&s=${this.searchString}`);
   }
 
-  navigateTo() {
-    this.navController.navigateForward('/lowco/category?id=' + this.id);
+  async navigateTo() {
+    await this.navController.navigateForward('/lowco/category?id=' + this.id);
   }
 }

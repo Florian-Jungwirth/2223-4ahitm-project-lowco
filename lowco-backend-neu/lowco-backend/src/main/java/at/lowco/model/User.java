@@ -13,4 +13,12 @@ public class User extends PanacheEntityBase {
     public String id;
 
     public Boolean metric;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", metric=" + metric +
+                '}';
+    }
 }

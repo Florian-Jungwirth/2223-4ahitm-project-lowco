@@ -3,6 +3,7 @@ package at.lowco.resource;
 import at.lowco.dtos.UserSurveyDTO;
 import at.lowco.model.UserSurvey;
 import at.lowco.repository.UserSurveyRepository;
+import com.google.errorprone.annotations.InlineMe;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class UserSurveyRessource {
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurvey> allUserSurveys(){
         return userSurveyRepository.listAll(Sort.by("survey.title"));
     }
@@ -32,6 +35,7 @@ public class UserSurveyRessource {
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public UserSurvey getUserSurveyByID(@PathParam("id") long id){
         return userSurveyRepository.findById(id);
     }
@@ -39,6 +43,7 @@ public class UserSurveyRessource {
     @Path("getByUserId/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurvey> getUserSurveyByUserID(@PathParam("id") long id){
         return userSurveyRepository.getByUserId(id);
     }
@@ -46,6 +51,7 @@ public class UserSurveyRessource {
     @Path("getActiveByCategoryId/{userID}/{categoryID}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurveyDTO> getActiveByCategoryId(@PathParam("userID") String userID, @PathParam("categoryID") long categoryID){
         return userSurveyRepository.getActiveByCategoryId(userID, categoryID);
     }
@@ -53,6 +59,7 @@ public class UserSurveyRessource {
     @PATCH
     @Path("addValue/{userID}/{surveyID}/{value}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     @Transactional
     public Response updateUserSurvey(@PathParam("userID") String userID, @PathParam("surveyID") long surveyID, @PathParam("value") double value){
         userSurveyRepository.addValue(userID, surveyID, value);
@@ -62,6 +69,7 @@ public class UserSurveyRessource {
     @PUT
     @Path("updateUserSurvey/{userID}/{surveyID}/{value}/{unit}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     @Transactional
     public Response updateUserSurvey(@PathParam("userID") String userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value){
         userSurveyRepository.updateUserSurvey(userID, surveyID, value, unit);
@@ -71,6 +79,7 @@ public class UserSurveyRessource {
     @PUT
     @Path("updateQuick/{userID}/{surveyID}/{value}/{unit}/{isAQuick}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     @Transactional
     public Response updateQuick(@PathParam("userID") String userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value, @PathParam("isAQuick") boolean isAQuick){
         userSurveyRepository.updateQuick(userID, surveyID, value, unit, isAQuick);
@@ -80,6 +89,7 @@ public class UserSurveyRessource {
     @Path("getJoinedUserSurveysByUser/{userID}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurveyDTO> getJoinedUserSurveysByUser(@PathParam("userID") String userID){
         return userSurveyRepository.getJoinedUserSurveysByUser(userID);
     }
@@ -87,6 +97,7 @@ public class UserSurveyRessource {
     @Path("getActiveQuicks/{userID}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurveyDTO> getActiveQuicks(@PathParam("userID") String userID){
         return userSurveyRepository.getActiveQuicks(userID);
     }
@@ -94,6 +105,7 @@ public class UserSurveyRessource {
     @Path("getActiveQuicksHome/{userID}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<UserSurveyDTO> getActiveQuicksHome(@PathParam("userID") String userID){
         return userSurveyRepository.getActiveQuicksHome(userID);
     }

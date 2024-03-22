@@ -70,11 +70,11 @@ export class SurveyService {
   }
 
   updateUserSurvey(surveyID: number, value: number, unit: string | null = null) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}`, {}).subscribe();
+    return this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}`, {});
   }
 
-  updateUserSurveyISAQuick(surveyID: number, value: number, unit: string, isAQuick: boolean) {
-    this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/ ${unit}/${isAQuick}`, {}).subscribe();
+  updateUserSurveyISAQuick(surveyID: number, value: number, unit: string | null, isAQuick: boolean) {
+    return this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}/${isAQuick}`, {});
   }
 
   addValueToUserSurvey(surveyId: number, value: number) {

@@ -5,17 +5,17 @@
                 <ion-searchbar class="search" (ionChange)="search($event)"
                     placeholder="Nach Emissionswerte suchen"></ion-searchbar>
             </div>
-            <div id="surveys" *ngIf="!loading">
-                <div *ngFor="let userSurvey of selectedSurveys" style="-ms-grid-column-span: 1;" #surveyDiv
+            <div id="surveys" *ngIf="!loading" [class.loadingBetween]="loadingBetween">
+                <div *ngFor="let userSurvey of selectedSurveys" style="-ms-grid-column-span: 1;" class="survey" #surveyDiv
                     [class.selected]="userSurvey.isAQuick">
                     <div (click)="addToQuicks(userSurvey, surveyDiv)" id="box">
                         <div class="titleAndInfo">
                             <p class="title" id="{{userSurvey.survey.id}}">{{userSurvey.survey.title}}</p>
-                            <ion-popover trigger="{{userSurvey.survey.id}}" triggerAction="click">
+                            <!--<ion-popover trigger="{{userSurvey.survey.id}}" triggerAction="click">
                                 <ng-template>
                                     <ion-content class="ion-padding">{{userSurvey.survey.title}}</ion-content>
                                 </ng-template>
-                            </ion-popover>
+                            </ion-popover>-->
                         </div>
                         <ion-icon [name]="userSurvey.survey.iconName" class="icon"></ion-icon>
                     </div>

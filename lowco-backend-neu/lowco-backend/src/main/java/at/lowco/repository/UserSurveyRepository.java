@@ -5,6 +5,7 @@ import at.lowco.model.Survey;
 import at.lowco.model.User;
 import at.lowco.model.UserSurvey;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -98,14 +99,14 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
     }
 
     public List<UserSurvey> getByUserId(Long id) {
-        return list("user.id", id);
+        return list("user.id", id, Sort.by("survey.title"));
     }
 
     public List<UserSurveyDTO> getJoinedUserSurveysByUser(String userID) {
         TypedQuery<UserSurveyDTO> query = getEntityManager().createQuery(
                 "SELECT NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, s)" +
                         "FROM Survey s LEFT JOIN UserSurvey u ON s.id = u.survey.id AND u.user.id = :id" +
-                        " WHERE s.activated = true", UserSurveyDTO.class
+                        " WHERE s.activated = true order by s.title", UserSurveyDTO.class
         );
 
         query.setParameter("id", userID);
@@ -115,7 +116,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
 
     public List<UserSurveyDTO> getActiveQuicksHome(String userID) {
         TypedQuery<UserSurveyDTO> queryQuicks = getEntityManager().createQuery(
-                "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true", UserSurveyDTO.class
+                "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true order by u.survey.title", UserSurveyDTO.class
         );
 
         queryQuicks.setParameter("id", userID);
@@ -129,7 +130,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         TypedQuery<UserSurveyDTO> queryNormal = getEntityManager().createQuery(
                 "SELECT NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, s)" +
                         "FROM Survey s LEFT JOIN UserSurvey u ON s.id = u.survey.id AND u.user.id = :id" +
-                        " WHERE s.activated = true", UserSurveyDTO.class
+                        " WHERE s.activated = true order by s.title", UserSurveyDTO.class
         );
 
         queryNormal.setParameter("id", userID);
@@ -139,7 +140,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
 
     public List<UserSurveyDTO> getActiveQuicks(String userID) {
         TypedQuery<UserSurveyDTO> queryQuicks = getEntityManager().createQuery(
-                "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true", UserSurveyDTO.class
+                "select  NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, u.survey) from UserSurvey u where u.user.id = :id and u.isAQuick = true and u.survey.activated = true order by u.survey.title", UserSurveyDTO.class
         );
 
         queryQuicks.setParameter("id", userID);
@@ -151,7 +152,7 @@ public class UserSurveyRepository implements PanacheRepository<UserSurvey> {
         TypedQuery<UserSurveyDTO> query = getEntityManager().createQuery(
                 "SELECT NEW at.lowco.dtos.UserSurveyDTO(u.id, u.value, u.unit, u.isAQuick, s)" +
                         "FROM Survey s LEFT JOIN UserSurvey u ON s.id = u.survey.id AND u.user.id = :userID" +
-                        " WHERE s.activated = true and s.category.activated = true and s.category.id = :categoryID", UserSurveyDTO.class
+                        " WHERE s.activated = true and s.category.activated = true and s.category.id = :categoryID order by s.title", UserSurveyDTO.class
         );
 
         query.setParameter("categoryID", categoryID);

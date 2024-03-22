@@ -1,7 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {AuthService} from 'src/app/auth/auth.service';
 import {SurveyService} from 'src/app/services/survey.service';
-import {MEASUREMENTS, USER} from "../../constants";
 import { CategoryModel } from 'src/app/models/category.model';
 
 @Component({
@@ -32,10 +30,10 @@ export class SimpleComponent {
     if (this.value == null) {
       this.value = this.standardValue
     }
-    let measure = this.surveyService.getMeasurement(this.measurement, this.unit)
-    this.value = this.value / (await measure).divisor;
-    this.relevantMeasures = (await measure).relevantMeasures;
-    this.unit = (await measure).unit
+    let measure = await this.surveyService.getMeasurement(this.measurement, this.unit)
+    this.value = this.value / measure.divisor;
+    this.relevantMeasures = measure.relevantMeasures;
+    this.unit = measure.unit
   }
 
   openModal() {

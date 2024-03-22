@@ -48,7 +48,7 @@ export class DashboardPage {
           },
         ],
       }
-    });    
+    });
   }
 
   createDoughnatChart() {
@@ -78,7 +78,9 @@ export class DashboardPage {
         labels.push(joinedSurvey.survey.title)
         data.push(joinedSurvey.value)
       }
-      
+
+      let ctx = this.pieChart.nativeElement
+
       this.pie = new Chart(this.pieChart.nativeElement, {
         type: 'pie',
         data: {
@@ -90,8 +92,8 @@ export class DashboardPage {
               borderWidth: 0,
             },
           ],
-        }
+        },
       });
     })
-  }  
+  }
 }

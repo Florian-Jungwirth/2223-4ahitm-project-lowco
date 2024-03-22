@@ -5,6 +5,7 @@ import at.lowco.model.User;
 import at.lowco.repository.SurveyRepository;
 import at.lowco.repository.UserSurveyRepository;
 import io.quarkus.panache.common.Sort;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,7 @@ public class SurveyResource {
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<Survey> allSurveys(){
         return surveyRepository.listAll(Sort.by("title"));
     }
@@ -34,6 +36,7 @@ public class SurveyResource {
     @Path("getAllActiveSurveys")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<Survey> getAllActiveSurveys(){
         return surveyRepository.list("activated", Sort.by("title"), true);
     }
@@ -41,6 +44,7 @@ public class SurveyResource {
     @Path("{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public Survey getUserByID(@PathParam("id") long id){
         return surveyRepository.findById(id);
     }
@@ -48,6 +52,7 @@ public class SurveyResource {
     @PUT
     @Path("updateSurvey")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin"})
     @Transactional
     public Response updateSurvey(Survey survey){
         surveyRepository.update(survey);
@@ -58,6 +63,7 @@ public class SurveyResource {
     @Path("createSurvey")
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
+    @RolesAllowed({"admin"})
     public Response createSurvey(Survey survey) {
         survey.persist();
         return Response.created(URI.create("/category/" + survey.id)).build();
@@ -65,6 +71,7 @@ public class SurveyResource {
 
     @DELETE
     @Path("deleteWithUserSurveys/{id}")
+    @RolesAllowed({"admin"})
     @Transactional
     public Response deleteWithUserSurveys(@PathParam("id") long id) {
         userSurveyRepository.delete("survey.id", id);

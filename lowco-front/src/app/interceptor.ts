@@ -1,18 +1,35 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { Observable, of } from "rxjs";
+import { AuthService } from "./auth/auth.service";
 
 @Injectable()
-export class NgrokInterceptor implements HttpInterceptor {
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Append the header to the request
-    const modifiedRequest = request.clone({
-      setHeaders: {
-        'ngrok-skip-browser-warning': '29'
-      }
-    });
+export class Interceptor implements HttpInterceptor {
+  jwtHelper = new JwtHelperService();
 
-    // Pass the modified request to the next handler
+  constructor(private authService: AuthService) {
+    
+  }
+
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let token = sessionStorage.getItem('jwt-token')
+
+    if(!this.jwtHelper.isTokenExpired(token) && token) {
+      
+      const modifiedRequest = request.clone({
+        setHeaders: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+
     return next.handle(modifiedRequest);
+    } else {
+      this.authService.logout()
+
+      return of()
+    }
+    
+
   }
 }

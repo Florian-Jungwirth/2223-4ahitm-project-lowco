@@ -1,11 +1,11 @@
 <div class="hwDiv">
   <div class="titleAndInfo">
     <p class="title" id="{{id}}">{{title}}</p>
-    <ion-popover trigger="{{id}}" triggerAction="click">
+    <!--<ion-popover trigger="{{id}}" triggerAction="click">
       <ng-template>
         <ion-content class="ion-padding">{{title}}</ion-content>
       </ng-template>
-    </ion-popover>
+    </ion-popover>-->
     <!-- <ion-icon name="information-circle-outline" class="infoIcon"></ion-icon> -->
   </div>
 
@@ -27,7 +27,7 @@
       <p>{{ daysLeft }}d</p>
     </div>
 
-  
+
     <div class="start-button">
       <button (click)="hasBeenStarted()" *ngIf="category.id === 1" class="start-icon"><ion-icon name="{{currentIcon}}"></ion-icon></button>
     </div>

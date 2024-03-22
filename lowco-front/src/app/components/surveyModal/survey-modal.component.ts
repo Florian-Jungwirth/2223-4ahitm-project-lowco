@@ -28,38 +28,38 @@ export class SurveyModalComponent {
   ngOnInit() {
     this.value = (this.value == null) ? 0 : this.value
     this.valueBefore = this.value
-    
+
     if (!this.isQuantity) {
       this.units = Object.keys(this.relevantMeasures);
       this.unitBefore = this.unit
     }
   }
 
-  okModal() {
-    
+  async okModal() {
+
     if (this.value != null && this.unit != null) {
-      
-      
+
+
       if (!(this.valueBefore == this.value && this.unit == this.unitBefore)) {
-        
+
         if (!this.isQuantity) {
           this.surveyService.updateUserSurvey(
             this.id,
             this.value * this.relevantMeasures[this.unit],
             this.unit
-          );
+          ).subscribe()
         } else {
           this.surveyService.updateUserSurvey(
             this.id,
             this.value,
             ''
-          );
+          ).subscribe()
         }
       }
 
       this.valuesChanged.emit({ id: this.id, value: this.value, unit: this.unit })
     }
-    this.modal.dismiss()
+    await this.modal.dismiss()
   }
 
   changeInput(e: any) {

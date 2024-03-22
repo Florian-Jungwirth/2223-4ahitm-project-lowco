@@ -12,6 +12,7 @@ import {JoinedUserSurveyModel} from "../../../models/userSurvey.model";
 export class QuickselectionPage implements OnInit {
   surveys: any;
   loading: boolean = true;
+  loadingBetween: boolean = false;
   selectedSurveys: JoinedUserSurveyModel[] = []
   selectedQuicks: JoinedUserSurveyModel[] = []
 
@@ -27,6 +28,7 @@ export class QuickselectionPage implements OnInit {
       this.selectedSurveys = quicks;
       this.selectedQuicks = quicks.filter((i) => {return i.isAQuick})
       this.loading = false;
+      this.loadingBetween = false
     })
   }
 
@@ -40,25 +42,38 @@ export class QuickselectionPage implements OnInit {
   }
 
   async addToQuicks(quick: JoinedUserSurveyModel, surveyDiv: any) {
-    if (!this.selectedQuicks.includes(quick)) {
-      if (this.selectedQuicks.length <= 3) {
-        this.selectedQuicks.push(quick)
-        if(quick.id) {
-          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true)
-          this.surveyService.getActiveQuicksHome()
+    if(!this.loadingBetween) {
+
+      this.loadingBetween = true;
+      if (!this.selectedQuicks.includes(quick)) {
+        if (this.selectedQuicks.length <= 3) {
+          if(quick.id) {
+            this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, true).subscribe(() => {
+              this.ngOnInit()
+            })
+          } else {
+            let measure = await this.surveyService.getMeasurement(quick.survey.measurement, null);
+
+            this.surveyService.updateUserSurveyISAQuick(
+              quick.survey.id,
+              quick.survey.standardValue,
+              measure.unit === '' ? null : measure.unit, // Check if measure.unit is empty, replace with null if true
+              true
+            ).subscribe(() => {
+              this.ngOnInit()
+            });
+
+          }
         } else {
-          let measure = this.surveyService.getMeasurement(quick.survey.measurement, null);
-          this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.survey.standardValue, (await measure).unit, true)
-          this.surveyService.getActiveQuicksHome()
+          this.loadingBetween = false;
+          await this.presentToast()
         }
-        surveyDiv.classList.add('selected')
       } else {
-        this.presentToast()
+        this.selectedQuicks.splice(this.selectedQuicks.indexOf(quick), 1)
+        this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, false).subscribe(() => {
+          this.ngOnInit()
+        })
       }
-    } else {
-      this.selectedQuicks.splice(this.selectedQuicks.indexOf(quick), 1)
-      this.surveyService.updateUserSurveyISAQuick(quick.survey.id, quick.value, quick.unit, false)
-      surveyDiv.classList.remove('selected')
     }
   }
 

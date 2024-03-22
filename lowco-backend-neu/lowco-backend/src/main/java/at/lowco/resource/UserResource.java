@@ -3,6 +3,7 @@ package at.lowco.resource;
 import at.lowco.model.User;
 import at.lowco.repository.UserRepository;
 import io.quarkus.panache.common.Sort;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -22,6 +23,7 @@ public class UserResource {
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public List<User> allUsers(){
         return userRepository.listAll();
     }
@@ -29,6 +31,7 @@ public class UserResource {
     @GET
     @Path("getByID/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     public User getUserByID(@PathParam("id") String id){
         return userRepository.find("id", id).firstResult();
     }
@@ -36,6 +39,7 @@ public class UserResource {
     @PUT
     @Path("updateUser")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
     @Transactional
     public Response updateUser(User user){
         userRepository.update(user);
@@ -47,6 +51,7 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response register(User user) {
+        System.out.println(user);
         userRepository.persist(user);
         return Response.status(Response.Status.CREATED).build();
     }

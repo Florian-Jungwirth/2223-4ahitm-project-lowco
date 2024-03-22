@@ -51,7 +51,7 @@ export class AuthService {
         }
 
         this.httpClient
-          .post(`/admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
+          .post(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
             next (data)  {
               let userLogin: UserLoginModel = {
                 email: user.email,
@@ -83,13 +83,13 @@ export class AuthService {
   }
 
   mapDefaultRole(uid: string, token: string) {
-    this.httpClient.get(`/admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe((role) => {
+    this.httpClient.get(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe((role) => {
       this.mapRole(role, uid, token)
     })
   }
 
   mapRole(role: Object, uid: string, token: string) {
-    this.httpClient.post(`/admin/realms/lowco2_realm/users/${uid}/role-mappings/clients/${CLIENT_UUID}`, [role], {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
+    this.httpClient.post(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users/${uid}/role-mappings/clients/${CLIENT_UUID}`, [role], {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
   }
 
   getKeyCloakToken(): Observable<any> {
@@ -99,7 +99,7 @@ export class AuthService {
       .set('grant_type', 'client_credentials');
 
 
-    return this.httpClient.post(`/realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
+    return this.httpClient.post(`${KEYCLOAK_URL_TOKEN}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
   login(user: UserLoginModel): Observable<any> {
@@ -110,7 +110,7 @@ export class AuthService {
       .set('username', user.email)
       .set('password', user.password);
 
-      return this.httpClient.post(`/realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
+      return this.httpClient.post(`${KEYCLOAK_URL_TOKEN}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
   logout() {
@@ -135,16 +135,16 @@ export class AuthService {
 
   async getAllUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>('/admin/realms/lowco2_realm/users', {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 
   async getAllDefaultUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>(`admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 
   async getAllAdminUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>(`admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/admin/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/admin/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 }

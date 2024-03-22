@@ -1,11 +1,11 @@
 {
   "/admin": {
-    "target": "http://localhost:8081",
+    "target": "https://student.cloud.htl-leonding.ac.at/lowco2-neu/",
     "secure": false,
     "changeOrigin": true
   },
   "/realms": {
-    "target": "http://localhost:8081",
+    "target": "https://student.cloud.htl-leonding.ac.at/lowco2-neu/",
     "secure": false,
     "changeOrigin": true
   }

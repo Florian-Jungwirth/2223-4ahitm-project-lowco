@@ -253,6 +253,7 @@ export class HomePage {
 
     addCloud();
     addCloud();
+    addCloud();
 
     // Skybox
 

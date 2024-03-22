@@ -7,6 +7,7 @@ import at.lowco.repository.CategoryRepository;
 import at.lowco.repository.SurveyRepository;
 import at.lowco.repository.UserSurveyRepository;
 import io.quarkus.panache.common.Sort;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -33,12 +34,14 @@ public class CategoryResource {
 
     @Path("all")
     @GET
+    @RolesAllowed({"admin", "default"})
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> allCategories(){
         return categoryRepository.listAll(Sort.by("title"));
     }
 
     @Path("allActive")
+    @RolesAllowed({"admin", "default"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> allActive(){
@@ -46,6 +49,7 @@ public class CategoryResource {
     }
 
     @Path("{id}")
+    @RolesAllowed({"admin", "default"})
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Category getCategoryByID(@PathParam("id") long id){
@@ -54,6 +58,7 @@ public class CategoryResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin"})
     @Transactional
     public Response createCategory(Category category){
         category.persist();
@@ -62,6 +67,7 @@ public class CategoryResource {
 
     @PUT
     @Path("updateCategory")
+    @RolesAllowed({"admin"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
     public Response updateCategory(Category category){
@@ -70,6 +76,7 @@ public class CategoryResource {
     }
 
     @DELETE
+    @RolesAllowed({"admin"})
     @Path("deleteWithSurveys/{id}")
     @Transactional
     public Response deleteWithSurveys(@PathParam("id") long id) {
