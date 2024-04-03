@@ -125,6 +125,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
@@ -144,21 +149,21 @@ jobs:
       - name: Build APK
         run: |
           cd lowco-front
-           npm install -g @ionic/cli  
+          npm install -g @ionic/cli  
           
-           npm install -g @capacitor/cli 
+          npm install -g @capacitor/cli 
           
-           npm i @capacitor/core
+          npm i @capacitor/core
           
-           ionic capacitor build android
+          ionic capacitor build android
           
-           ionic capacitor copy android
+          ionic capacitor copy android
           
-           cd android
+          cd android
           
-           chmod +x ./gradlew
+          chmod +x ./gradlew
           
-           ./gradlew assembleDebug
+          ./gradlew assembleDebug
 
       - name: Upload APK file
         uses: svenstaro/upload-release-action@v2
