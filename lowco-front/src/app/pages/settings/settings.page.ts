@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { TitleService } from 'src/app/services/title.service';
-import { PagesPage } from '../pages.page';
 import { UserService } from 'src/app/services/user.service';
 import { RegisterModel } from 'src/app/models/user.model';
 

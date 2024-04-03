@@ -1,12 +1,11 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
-import {Observable, BehaviorSubject, firstValueFrom} from 'rxjs';
+import {Observable, firstValueFrom} from 'rxjs';
 
 import { Storage } from '@ionic/storage';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { API2_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL } from '../constants';
-import { UserModel, UserLoginModel, RegisterModel, RegisterModelKeyCloak } from '../models/user.model';
+import { UserLoginModel, RegisterModel, RegisterModelKeyCloak } from '../models/user.model';
 import { Router } from '@angular/router';
 
 @Injectable({

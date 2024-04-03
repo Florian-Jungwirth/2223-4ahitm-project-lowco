@@ -10,7 +10,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {
   BackSide,
   BoxGeometry,
-  CylinderGeometry, Fog, FogExp2,
+  CylinderGeometry, Fog,
   Mesh,
   MeshPhysicalMaterial,
   PCFShadowMap,

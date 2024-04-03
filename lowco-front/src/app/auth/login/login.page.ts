@@ -3,10 +3,8 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { AuthService } from '../auth.service';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { RegisterModelKeyCloak, UserLoginModel } from 'src/app/models/user.model';

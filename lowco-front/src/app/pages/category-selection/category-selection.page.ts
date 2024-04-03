@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
 import { TitleService } from 'src/app/services/title.service';
 import { CategoryService } from 'src/app/services/category.service';
 import {CategoryModel} from "../../models/category.model";
 import {SurveyService} from "../../services/survey.service";
-import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
 import {SurveyModel} from "../../models/survey.model";
 
 @Component({

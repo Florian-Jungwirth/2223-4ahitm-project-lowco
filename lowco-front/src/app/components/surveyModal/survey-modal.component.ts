@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { SurveyService } from "../../services/survey.service";
-import { mapOneOrManyArgs } from "rxjs/internal/util/mapOneOrManyArgs";
 import { IonModal } from "@ionic/angular";
 
 @Component({
