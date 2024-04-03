@@ -4,15 +4,13 @@
 
     <ion-item>
       <ion-icon name="mail-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input class="custom" type="email" formControlName="email" autocomplete="username"></ion-input>
+      <ion-input class="custom" type="email" formControlName="email" autocomplete="username" labelPlacement="floating" label="Email"></ion-input>
       <ion-icon name="close-circle" slot="end" (click)="clearFieldLogin('email')"></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Password</ion-label>
-      <ion-input class="custom" type="{{ showPassLog ? 'text' : 'password' }}" formControlName="password" autocomplete="current-password"></ion-input>
+      <ion-input class="custom" type="{{ showPassLog ? 'text' : 'password' }}" formControlName="password" autocomplete="current-password" labelPlacement="floating" label="Password"></ion-input>
       <ion-icon name="{{ !showPassLog ? 'eye-off-outline' : 'eye-outline' }}" slot="end" (click)="showPassLogin()"></ion-icon>
     </ion-item>
 
@@ -26,48 +24,42 @@
     <!-- First Name -->
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Vorname</ion-label>
-      <ion-input class="custom" type="text" formControlName="firstname" autocomplete="given-name"></ion-input>
+      <ion-input class="custom" type="text" formControlName="firstname" autocomplete="given-name" labelPlacement="floating" label="First Name"></ion-input>
       <ion-icon name="close-circle" slot="end" (click)="clearFieldRegister('firstname')"></ion-icon>
     </ion-item>
     
     <!-- Last Name -->
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Nachname</ion-label>
-      <ion-input class="custom" type="text" formControlName="lastname" autocomplete="family-name"></ion-input>
+      <ion-input class="custom" type="text" formControlName="lastname" autocomplete="family-name" labelPlacement="floating" label="Last Name"></ion-input>
       <ion-icon name="close-circle" slot="end" (click)="clearFieldRegister('lastname')"></ion-icon>
     </ion-item>
     
     <!-- E-Mail -->
     <ion-item>
       <ion-icon name="mail-outline" slot="start"></ion-icon>
-      <ion-label position="floating">E-Mail</ion-label>
-      <ion-input class="custom" type="email" formControlName="email" autocomplete="email"></ion-input>
+      <ion-input class="custom" type="email" formControlName="email" autocomplete="email" labelPlacement="floating" label="Email"></ion-input>
       <ion-icon name="close-circle" slot="end" (click)="clearFieldRegister('email')"></ion-icon>
     </ion-item>
     
     <!-- Username -->
     <ion-item>
       <ion-icon name="person-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Benutzername</ion-label>
-      <ion-input class="custom" type="text" formControlName="username" autocomplete="username"></ion-input>
+      <ion-input class="custom" type="text" formControlName="username" autocomplete="username" labelPlacement="floating" label="Username"></ion-input>
       <ion-icon name="close-circle" slot="end" (click)="clearFieldRegister('username')"></ion-icon>
     </ion-item>
     
     <!-- Password -->
     <ion-item>
       <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Passwort</ion-label>
-      <ion-input class="custom" type="{{ showPassReg ? 'text' : 'password' }}" formControlName="password" autocomplete="current-password"></ion-input>
+      <ion-input class="custom" type="{{ showPassReg ? 'text' : 'password' }}" formControlName="password" autocomplete="current-password" labelPlacement="floating" label="Password"></ion-input>
       <ion-icon name="{{ !showPassReg ? 'eye-off-outline' : 'eye-outline' }}" slot="end" (click)="showPassRegister()"></ion-icon>
     </ion-item>
     
     <!-- Repeat Password -->    
     <ion-item>
       <ion-icon name="shield-checkmark-outline" slot="start"></ion-icon>
-      <ion-label position="floating">Passwort bestätigen</ion-label>
-      <ion-input class="custom" type="{{ showPassConfirmReg ? 'text' : 'password' }}" formControlName="confirmPassword"></ion-input>
+      <ion-input class="custom" type="{{ showPassConfirmReg ? 'text' : 'password' }}" formControlName="confirmPassword" labelPlacement="floating" label="Confirm Password"></ion-input>
       <ion-icon name="{{ !showPassConfirmReg ? 'eye-off-outline' : 'eye-outline' }}" slot="end" (click)="showPassRegister(true)"></ion-icon>
     </ion-item>
     

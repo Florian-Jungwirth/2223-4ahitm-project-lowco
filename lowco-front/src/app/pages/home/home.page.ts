@@ -258,8 +258,8 @@ export class HomePage {
     // Skybox
     this.sky = new Sky();
 
-    this.scene.fog = new Fog(0xffffff, 0, 200)
-    //this.scene.add(this.sky);
+    //this.scene.fog = new Fog(0xffffff, 0, 200)
+    this.scene.add(this.sky);
 
     
 
