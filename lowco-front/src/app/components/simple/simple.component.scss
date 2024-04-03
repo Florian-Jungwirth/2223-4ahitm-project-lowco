@@ -64,10 +64,23 @@ p {
 }
 
 .editBox {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  padding-top: 0.3em;
+}
+
+.daysLeft,
+.start-button,
+.edit {
+  width: 100%;
+}
+
+.edit {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center;
 }
 
 .contentDiv {
@@ -89,10 +102,9 @@ p {
   font-size: 2em;
 }
 .start-button{
-  margin-top: 1vh;
-  margin-right: 8vw;
-  width: 10vw;
-  height: 10vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .start-button button{

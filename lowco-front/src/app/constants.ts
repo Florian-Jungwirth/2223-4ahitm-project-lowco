@@ -1,9 +1,8 @@
 import {UserModel} from "./models/user.model";
 //export const API2_URL = 'http://localhost:8080/'
 export const API2_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2-neu/'
-export const KEYCLOAK_URL_ADMIN = 'https://student.cloud.htl-leonding.ac.at/lowco2-keycloak/'
-export const KEYCLOAK_URL_TOKEN = 'https://student.cloud.htl-leonding.ac.at/lowco2-keycloak/'
-export const CLIENT_SECRET = 'HplXEhgvG5MH3vMHjuCdsTrUPfQ3iYOW'
+export const KEYCLOAK_URL = 'https://student.cloud.htl-leonding.ac.at/lowco2-keycloak/'
+export const CLIENT_SECRET = 'SXABmdYtlUZOWGO9IxYZVYQ0Na6VsoO4'
 export const CLIENT_ID = 'lowco2_client'
 export const CLIENT_UUID = '75340221-2aa6-4349-bd27-51284929ac80'
 

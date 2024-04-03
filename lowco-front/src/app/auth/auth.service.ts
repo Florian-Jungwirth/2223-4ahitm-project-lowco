@@ -5,7 +5,7 @@ import {Observable, BehaviorSubject, firstValueFrom} from 'rxjs';
 
 import { Storage } from '@ionic/storage';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { API2_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL_ADMIN, KEYCLOAK_URL_TOKEN } from '../constants';
+import { API2_URL, CLIENT_ID, CLIENT_SECRET, CLIENT_UUID, KEYCLOAK_URL } from '../constants';
 import { UserModel, UserLoginModel, RegisterModel, RegisterModelKeyCloak } from '../models/user.model';
 import { Router } from '@angular/router';
 
@@ -23,6 +23,7 @@ export class AuthService {
   jwtHelper = new JwtHelperService();
 
   constructor(private httpClient: HttpClient, private storage: Storage, private router: Router) {
+    
   }
 
   register(user: RegisterModel) {
@@ -39,7 +40,7 @@ export class AuthService {
         let keyCloakUser = {
           "enabled": true,
           "email": user.email,
-          "emailVerified": true,
+          "emailVerified": false,
           "firstName": user.firstname,
           "lastName": user.lastname,
           "username": user.username,
@@ -51,20 +52,15 @@ export class AuthService {
         }
 
         this.httpClient
-          .post(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
+          .post(`${KEYCLOAK_URL}admin/realms/lowco2_realm/users`, keyCloakUser, {headers: new HttpHeaders().set('authorization', "Bearer "+ clientToken.access_token)}).subscribe({
             next (data)  {
-              let userLogin: UserLoginModel = {
-                email: user.email,
-                password: user.password
-              }
-              self.login(userLogin).subscribe(data => {
 
-                let uid = self.jwtHelper.decodeToken(data.access_token).sub
-                self.mapDefaultRole(uid, clientToken.access_token)
-
+              self.getKeyCloakUserByEmail(user.email, clientToken.access_token).subscribe((data: any) => {
+                self.sendVerificationEmail(data[0].id, clientToken.access_token)
+                self.mapDefaultRole(data[0].id, clientToken.access_token)
                 let register: RegisterModel = {
                   metric: true,
-                  id: uid
+                  id: data[0].id
                 }
                 self.register(register)
               })
@@ -83,13 +79,13 @@ export class AuthService {
   }
 
   mapDefaultRole(uid: string, token: string) {
-    this.httpClient.get(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe((role) => {
+    this.httpClient.get(`${KEYCLOAK_URL}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe((role) => {
       this.mapRole(role, uid, token)
     })
   }
 
   mapRole(role: Object, uid: string, token: string) {
-    this.httpClient.post(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users/${uid}/role-mappings/clients/${CLIENT_UUID}`, [role], {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
+    this.httpClient.post(`${KEYCLOAK_URL}admin/realms/lowco2_realm/users/${uid}/role-mappings/clients/${CLIENT_UUID}`, [role], {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
   }
 
   getKeyCloakToken(): Observable<any> {
@@ -99,7 +95,15 @@ export class AuthService {
       .set('grant_type', 'client_credentials');
 
 
-    return this.httpClient.post(`${KEYCLOAK_URL_TOKEN}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
+    return this.httpClient.post(`${KEYCLOAK_URL}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
+  }
+
+  sendVerificationEmail(uid: string, token: string) {
+    this.httpClient.put(`${KEYCLOAK_URL}admin/realms/lowco2_realm/users/${uid}/execute-actions-email?redirect_uri=${encodeURIComponent(window.location.origin)}&client_id=lowco2_client`, null, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)}).subscribe()
+  }
+
+  getKeyCloakUserByEmail(email: string, token: string) {
+    return this.httpClient.get(`${KEYCLOAK_URL}admin/realms/lowco2_realm/users?email=${email}`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 
   login(user: UserLoginModel): Observable<any> {
@@ -110,7 +114,7 @@ export class AuthService {
       .set('username', user.email)
       .set('password', user.password);
 
-      return this.httpClient.post(`${KEYCLOAK_URL_TOKEN}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
+      return this.httpClient.post(`${KEYCLOAK_URL}realms/lowco2_realm/protocol/openid-connect/token`, body.toString(), {"headers": new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')})
   }
 
   logout() {
@@ -135,16 +139,16 @@ export class AuthService {
 
   async getAllUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL}admin/realms/lowco2_realm/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 
   async getAllDefaultUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/default/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 
   async getAllAdminUsersKeycloak() {
     let token = (await firstValueFrom(this.getKeyCloakToken())).access_token
-    return this.httpClient.get<any>(`${KEYCLOAK_URL_ADMIN}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/admin/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
+    return this.httpClient.get<any>(`${KEYCLOAK_URL}admin/realms/lowco2_realm/clients/${CLIENT_UUID}/roles/admin/users`, {headers: new HttpHeaders().set('authorization', "Bearer "+ token)})
   }
 }

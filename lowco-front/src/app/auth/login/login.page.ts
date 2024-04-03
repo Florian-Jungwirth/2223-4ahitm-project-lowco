@@ -9,7 +9,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { RegisterModel, RegisterModelKeyCloak, UserLoginModel } from 'src/app/models/user.model';
+import { RegisterModelKeyCloak, UserLoginModel } from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -41,9 +41,8 @@ export class LoginPage implements OnInit {
 
     this.authService.login(this.loginForm.value as UserLoginModel).subscribe({
       next(data) {
-        console.log(JSON.stringify(data));
-        
         sessionStorage.setItem('jwt-token', data.access_token)
+        
         self.router.navigate([''])
       },
       async error(error) {
@@ -51,6 +50,9 @@ export class LoginPage implements OnInit {
         let errormessage = ''
 
         if(error?.error?.error_description) {
+          if(error.error.error_description == 'Account is not fully set up') {
+            error.error.error_description = 'Email is not verified!'
+          }
           errormessage = error.error.error_description
         } else {
           errormessage = 'Etwas ist schiefgelaufen'
@@ -59,6 +61,12 @@ export class LoginPage implements OnInit {
         const toast = await self.toastController.create({
           message: errormessage,
           duration: 3000,
+          buttons: [
+            {
+              text: 'OK',
+              role: 'cancel'
+            }
+          ], color: 'danger'
         });
         toast.present()
       }
@@ -81,7 +89,7 @@ export class LoginPage implements OnInit {
     ]),
     username: new FormControl('', [
       Validators.required,
-      Validators.minLength(2),
+      Validators.minLength(3),
     ]),
     password: new FormControl('', [
       Validators.required,
@@ -101,8 +109,12 @@ export class LoginPage implements OnInit {
     this.authService.registerKeyCloak(this.regform.value as RegisterModelKeyCloak).subscribe({
       async next(data) {
         const toast = await self.toastController.create({
-          message: 'User successfully created, please log in',
-          duration: 3000,
+          message: 'User created. Please verify your email!', buttons: [
+            {
+              text: 'OK',
+              role: 'cancel'
+            }
+          ], color: 'success'
         });
         toast.present()
         self.loginPage = !self.loginPage
@@ -111,6 +123,7 @@ export class LoginPage implements OnInit {
         const toast = await self.toastController.create({
           message: error.error.errorMessage,
           duration: 3000,
+          color: 'danger'
         });
         toast.present()
       }

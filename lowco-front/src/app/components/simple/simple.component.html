@@ -32,7 +32,9 @@
       <button (click)="hasBeenStarted()" *ngIf="category.id === 1" class="start-icon"><ion-icon name="{{currentIcon}}"></ion-icon></button>
     </div>
 
-    <ion-icon class="edit" name="create" (click)="openModal()"></ion-icon>
+    <div class="edit">
+      <ion-icon name="create" (click)="openModal()"></ion-icon>
+    </div>
   </div>
 </div>
 

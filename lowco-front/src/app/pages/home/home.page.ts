@@ -1,27 +1,28 @@
-import {ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
-import { createNoise2D } from 'simplex-noise';
-import { Water } from 'three/examples/jsm/objects/Water';
-import { Sky } from 'three/examples/jsm/objects/Sky';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import {mergeGeometries} from 'three/examples/jsm/utils/BufferGeometryUtils';
+import {createNoise2D} from 'simplex-noise';
+import {Water} from 'three/examples/jsm/objects/Water';
+import {Sky} from 'three/examples/jsm/objects/Sky';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 import {
+  BackSide,
   BoxGeometry,
-  CylinderGeometry,
+  CylinderGeometry, Fog, FogExp2,
   Mesh,
   MeshPhysicalMaterial,
   PCFShadowMap,
   SphereGeometry,
   Vector2,
 } from 'three';
-import TWEEN, { Tween } from '@tweenjs/tween.js';
+import TWEEN, {Tween} from '@tweenjs/tween.js';
 import SunCalc from 'suncalc';
-import { TitleService } from 'src/app/services/title.service';
-import { SurveyService } from 'src/app/services/survey.service';
-import { JoinedUserSurveyModel, UserSurveyModel } from "../../models/userSurvey.model";
-import { Types } from "../../constants";
+import {TitleService} from 'src/app/services/title.service';
+import {SurveyService} from 'src/app/services/survey.service';
+import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
+import {Types} from "../../constants";
 
 @Component({
   selector: 'app-home',
@@ -70,9 +71,9 @@ export class HomePage {
   longitude = 14.2533;
   sky: Sky;
   height = 0;
-  // trashObjects: THREE.Mesh[] = [];
+  trashObjects: THREE.Mesh[] = [];
   raycaster = new THREE.Raycaster();
-  meshTweens: { [key: string]: Tween<any> } = {};
+  meshTweens: Map<string, Tween<any>> = new Map();
   // intersects: THREE.Intersection[];
   // directionalLightHelper: THREE.DirectionalLightHelper
 
@@ -94,7 +95,7 @@ export class HomePage {
       this.quickSelection = quicks;
       this.surveys.nativeElement.style.height = '0px'
 
-      if(this.quickSelection.length%2 != 0) {
+      if (this.quickSelection.length % 2 != 0) {
         this.surveys.nativeElement.classList.add('odd')
       } else {
         this.surveys.nativeElement.classList.remove('odd')
@@ -163,7 +164,6 @@ export class HomePage {
     this.container.nativeElement.appendChild(this.renderer.domElement);
 
     //camera
-
     this.camera = new THREE.PerspectiveCamera(
       50,
       window.innerWidth / window.innerHeight,
@@ -256,22 +256,36 @@ export class HomePage {
     addCloud();
 
     // Skybox
-
     this.sky = new Sky();
+
+    this.scene.fog = new Fog(0xffffff, 0, 200)
+    //this.scene.add(this.sky);
+
+    
+
     this.sky.scale.setScalar(10000);
-    this.scene.add(this.sky);
+    let shader: any = Sky.SkyShader
 
     const skyUniforms = this.sky.material.uniforms;
+    skyUniforms['turbidity'].value = 11;
+    skyUniforms['rayleigh'].value = 0.1;
+    skyUniforms['mieCoefficient'].value = 0.000009;
+    skyUniforms['mieDirectionalG'].value = 0.9;
+
+    this.sky.material = new THREE.ShaderMaterial({
+      vertexShader: shader.vertexShader,
+      fragmentShader: shader.fragmentShader,
+      uniforms: skyUniforms,
+      side: BackSide
+    })
+
 
     // skyUniforms['turbidity'].value = 10;
     // skyUniforms['rayleigh'].value = 0.4;
     // skyUniforms['mieCoefficient'].value = 0.009;
     // skyUniforms['mieDirectionalG'].value = 0.95;
 
-    skyUniforms['turbidity'].value = 11;
-    skyUniforms['rayleigh'].value = 0.1;
-    skyUniforms['mieCoefficient'].value = 0.000009;
-    skyUniforms['mieDirectionalG'].value = 0.9;
+
 
     this.directionalLight = new THREE.DirectionalLight(this.sunColor, 0.1);
     this.directionalLight.castShadow = true;
@@ -358,7 +372,6 @@ export class HomePage {
     this.controls.minDistance = 40.0;
     this.controls.maxDistance = 200.0;
     this.controls.update();
-    // this.scene.fog = new THREE.FogExp2( 0xefd1b5, 0.006 );
   }
 
   render() {
@@ -373,13 +386,13 @@ export class HomePage {
     let oldHeight = {
       height: this.renderer.getSize(new THREE.Vector2()).height,
     };
-    let zoom = { zoom: this.camera.zoom };
+    let zoom = {zoom: this.camera.zoom};
 
     // https://sbcode.net/threejs/tween/ (Eases)
 
     // Create a new tween
     new TWEEN.Tween(oldHeight)
-      .to({ height: heightTo }, duration)
+      .to({height: heightTo}, duration)
       .easing(TWEEN.Easing.Sinusoidal.In)
       .onUpdate(() => {
         // Update the renderer size, camera aspect ratio, and projection matrix
@@ -392,7 +405,7 @@ export class HomePage {
 
     if (zoomIn) {
       new TWEEN.Tween(zoom)
-        .to({ zoom: 1.5 }, duration)
+        .to({zoom: 1.5}, duration)
         .easing(TWEEN.Easing.Sinusoidal.In)
         .onUpdate(() => {
           this.camera.zoom = zoom.zoom;
@@ -400,7 +413,7 @@ export class HomePage {
         .start();
     } else {
       new TWEEN.Tween(zoom)
-        .to({ zoom: 1.4 }, duration)
+        .to({zoom: 1.4}, duration)
         .easing(TWEEN.Easing.Sinusoidal.In)
         .onUpdate(() => {
           this.camera.zoom = zoom.zoom;
@@ -454,8 +467,8 @@ export class HomePage {
 
     // this.sun.setFromSphericalCoords(0.5, phi, theta);
 
-    let previousIntens = { intens: this.directionalLight.intensity };
-    let toIntens = { intens: intensity };
+    let previousIntens = {intens: this.directionalLight.intensity};
+    let toIntens = {intens: intensity};
 
     new TWEEN.Tween(previousIntens)
       .to(toIntens, duration)
@@ -464,10 +477,10 @@ export class HomePage {
       })
       .start();
 
-    let phiAndTheta = { phi: this.previousPhi, theta: this.previousTheta };
+    let phiAndTheta = {phi: this.previousPhi, theta: this.previousTheta};
 
     new TWEEN.Tween(phiAndTheta)
-      .to({ phi: phi, theta: theta }, duration)
+      .to({phi: phi, theta: theta}, duration)
       .onUpdate(() => {
         this.sun.setFromSphericalCoords(
           0.5,
@@ -550,7 +563,7 @@ export class HomePage {
       // this.directionalLight.target.position.set(mapGroup.position.x, mapGroup.position.y, mapGroup.position.z)
 
       mapGroup.add(stoneMesh, grassMesh, dirtMesh, dirt2Mesh, sandMesh);
-      this.scene.add(mapGroup);
+      this.scene.add(mapGroup)
 
       // let mapFloor = new Mesh(
       //   new CylinderGeometry(37, 37, MAX_HEIGHT * 0.1, 50),
@@ -681,48 +694,79 @@ export class HomePage {
       return mergeGeometries([geo, geo2, geo3]);
     }
 
-    // this.glbLoader('trash_models/bag.glb').then((glbScene) => {
-    //   let bag = glbScene.scene;
+    this.glbLoader('trash_models/bag.glb').then((glbScene) => {
+        let bagGroup = glbScene.scene;
 
-    //   bag.scale.set(0.05, 0.05, 0.05);
-    //   bag.position.set(0, 0.8, 20);
-    //   this.scene.add(bag);
+        bagGroup.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const bag = child as THREE.Mesh;
+            this.trashObjects.push(bag);
 
-    //   let yVec = {y: 0.8}
+            bag.scale.set(0.05, 0.05, 0.05);
+            bag.rotation.x = -1.5
+            bag.position.set(30, 0.8, 10);
+            this.scene.add(bag);
 
-    //   let tween = new TWEEN.Tween(yVec)
-    //     .to({ y: 1 }, 1000)
-    //     .easing(TWEEN.Easing.Sinusoidal.In)
-    //     .onUpdate(() => {
-    //       console.log(yVec);
+            let yVec = {y: 0.8}
 
-    //       bag.position.set(bag.position.x, yVec.y, bag.position.z);
-    //     })
-    //     .repeat(Infinity)
-    //     .yoyo(true)
-    //     .start();
+            let tween = new TWEEN.Tween(yVec)
+              .to({y: 1}, 800+Math.random()*1000)
+              .easing(TWEEN.Easing.Sinusoidal.In)
+              .onUpdate(() => {
+                bag.position.set(bag.position.x, yVec.y, bag.position.z);
+              })
+              .repeat(Infinity)
+              .yoyo(true)
+              .start();
 
-    //     bag.uuid = THREE.MathUtils.generateUUID();
+            let changeVec = new THREE.Vector2(bag.position.x, bag.position.z)
+            let tween2 = new TWEEN.Tween(changeVec)
+              .to(new THREE.Vector2(0, 0), 10000)
+              .easing(TWEEN.Easing.Sinusoidal.In)
+              .onUpdate(() => {
+                bag.position.set(changeVec.x, bag.position.y, changeVec.y);
+                this.raycaster.set(bag.position, new THREE.Vector3(0,0, -0.00001))
+                let interSecting = this.raycaster.intersectObjects(this.scene.children)
 
-    //     this.meshTweens[bag.uuid] = tween;
+                interSecting.forEach((elem) => {
+                  if(elem.object.parent?.name == 'map') {
+                    tween2.stop()
+                  }
+                })
+              })
+              .start();
 
-    //     console.log(this.meshTweens);
+            this.meshTweens.set(bag.uuid, tween);
 
-
-    //     bag.traverse((child) => {
-    //       if ((child as THREE.Mesh).isMesh) {
-    //         const childObj = child as THREE.Mesh;
-    //         this.trashObjects.push(childObj);
-    //       }
-    //     });
-    // });
+            console.log(bag)
+          }
+        });
+      });
 
     document.addEventListener('click', (event: MouseEvent) => {
+      const rect = this.renderer.domElement.getBoundingClientRect();
+
       let mouse = new THREE.Vector2(
-        (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1,
-        -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
       );
       this.raycaster.setFromCamera(mouse, this.camera);
+      this.raycaster.near = 0
+      this.raycaster.far = 100000
+      let intersectingObjects = this.raycaster.intersectObjects(this.scene.children)
+
+      intersectingObjects.forEach((elem) => {
+        this.trashObjects.forEach((trash) => {
+          if(elem.object.uuid == trash.uuid) {
+            this.trashObjects.splice(this.trashObjects.indexOf(trash), 1)
+            this.scene.remove(trash)
+            this.meshTweens.get(trash.uuid)?.stop()
+            console.log("found")
+            return;
+          }
+        })
+      })
+
       // this.intersects = this.raycaster.intersectObjects(
       //   this.trashObjects,
       //   true
