@@ -24,6 +24,7 @@ import {SurveyService} from 'src/app/services/survey.service';
 import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
 import {Types} from "../../constants";
 import { degToRad } from 'three/src/math/MathUtils';
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-home',
@@ -75,13 +76,15 @@ export class HomePage {
   trashObjects: THREE.Mesh[] = [];
   raycaster = new THREE.Raycaster();
   meshTweens: Map<string, Tween<any>> = new Map();
+  timeCategory: number | null = null
   cloudColor: '#565656'; // dark #565656 / light #ffffff
   // intersects: THREE.Intersection[];
   // directionalLightHelper: THREE.DirectionalLightHelper
 
   constructor(
     private surveyService: SurveyService,
-    private titleService: TitleService
+    private titleService: TitleService,
+    private categoryService: CategoryService
   ) {
     window.navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       this.longitude = position.coords.longitude;
@@ -157,6 +160,10 @@ export class HomePage {
     // );
   }
 
+  async ngOnInit() {
+    this.timeCategory = await this.categoryService.getHours()
+  }
+
   init() {
     const self = this;
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -205,7 +212,7 @@ export class HomePage {
     // const ambientLight = new THREE.AmbientLight(this.sunColor, 0.3);
     // this.scene.add(ambientLight);
 
-    
+
     function addCloud() {
       let geo = new SphereGeometry(0, 0, 0);
       let count = 1;
@@ -268,7 +275,7 @@ export class HomePage {
     var geometry = new THREE.PlaneGeometry(20000, 20000);
 
     var material = new THREE.MeshBasicMaterial({ color: 0xababab, transparent: true, opacity: 0.97 });
-    
+
     var plane = new THREE.Mesh(geometry, material);
     var plane2 = new THREE.Mesh(geometry, material);
     var plane3 = new THREE.Mesh(geometry, material);
@@ -279,7 +286,7 @@ export class HomePage {
     plane3.position.set(0,0,10000)
     plane4.position.set(0,0,-10000)
     plane5.position.set(0,10000,0)
-    
+
     plane.rotateY(degToRad(90))
     plane2.rotateY(degToRad(-90))
     plane3.rotateY(degToRad(180))

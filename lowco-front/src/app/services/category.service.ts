@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CategoryModel } from '../models/category.model';
 import { API2_URL } from '../constants';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { SurveyModel } from "../models/survey.model";
 import { SurveyService } from "./survey.service";
 
@@ -10,6 +10,7 @@ import { SurveyService } from "./survey.service";
   providedIn: 'root',
 })
 export class CategoryService {
+
   constructor(private httpClient: HttpClient, private surveyService: SurveyService) {
   }
 
@@ -81,5 +82,9 @@ export class CategoryService {
       }
     }
     return selectedCategories;
+  }
+
+  async getHours() {
+    return firstValueFrom(this.httpClient.get<number>(`${API2_URL}category/getHours`))
   }
 }

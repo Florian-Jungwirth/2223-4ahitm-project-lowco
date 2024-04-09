@@ -5,11 +5,11 @@
         placeholder="Nach Emissionswerte suchen"></ion-searchbar>
     </div>
     <div id="surveys" *ngIf="!loading">
-      <ng-container *ngIf="selectedUserSurveys.length != 0">
+      <ng-container *ngIf="selectedUserSurveys.length != 0 && time != null">
         <div *ngFor="let userSurvey of selectedUserSurveys" style="grid-column: 1/3;">
           <app-simple *ngIf="types.Einfach == userSurvey.survey.type"[category]="userSurvey.survey.category" [title]="userSurvey.survey.title" [showWarning]="false"
-            [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
-            [measurement]="userSurvey.survey.measurement" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-simple>
+            [icon]="userSurvey.survey.iconName" [time]="time" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
+            [measurement]="userSurvey.survey.measurement" [period]="userSurvey.survey.period" [standardValue]="userSurvey.survey.standardValue"></app-simple>
 
           <app-quantity *ngIf="types.Anzahl == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
             [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-quantity>

@@ -3,16 +3,16 @@
            (2, 'logo-electron', 'Energie', true),
            (3, 'shirt-outline', 'Konsumverhalten', true);
 
-    insert into SURVEY(ID, ICONNAME, TITLE, MEASUREMENT, STANDARDVALUE, ACTIVATED, TYPE, CATEGORY_ID)
-    values (1, 'bus-outline', 'Öffentliche Verkehrsmittel', 'd', 0, true, 'e', 1),
-           (2, 'car-sport-outline', 'Autofahren', 'd', 0, true, 'e', 1),
-           (3, 'bicycle-outline', 'Radfahren', 'd', 0, true, 'e', 1),
-           (4, 'airplane-outline', 'Flüge', 'd', 0, true, 'e', 1),
-           (5, 'walk-outline', 'Gehen', 'd', 0, true, 'e', 1),
-           (6, 'desktop-outline', 'Screentime', 'z', 0, true, 'e', 2),
-           (7, 'flame-outline', 'Heizung', 'z', 0, true, 'e', 2),
-           (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'a', 3),
-           (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'a', 3);
+    insert into SURVEY(ID, ICONNAME, TITLE, MEASUREMENT, STANDARDVALUE, ACTIVATED, TYPE, CATEGORY_ID, PERIOD)
+    values (1, 'bus-outline', 'Öffentliche Verkehrsmittel', 'd', 0, true, 'e', 1, 7),
+           (2, 'car-sport-outline', 'Autofahren', 'd', 0, true, 'e', 1, 7),
+           (3, 'bicycle-outline', 'Radfahren', 'd', 0, true, 'e', 1, 30),
+           (4, 'airplane-outline', 'Flüge', 'd', 0, true, 'e', 1, 180),
+           (5, 'walk-outline', 'Gehen', 'd', 0, true, 'e', 1, 1),
+           (6, 'desktop-outline', 'Screentime', 'z', 0, true, 'e', 2, 1),
+           (7, 'flame-outline', 'Heizung', 'z', 0, true, 'e', 2, 30),
+           (8, 'fast-food-outline', 'Restaurantbesuche', 'a', 0, true, 'a', 3, 30),
+           (9, 'shirt-outline', 'Kleidungsstücke', 'a', 0, true, 'a', 3, 180);
 
     insert into USERS(ID, METRIC)
     values

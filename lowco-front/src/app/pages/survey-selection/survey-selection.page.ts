@@ -4,6 +4,7 @@ import { SurveyService } from 'src/app/services/survey.service';
 import { TitleService } from 'src/app/services/title.service';
 import {Types} from "../../constants";
 import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-survey-selection',
@@ -18,12 +19,15 @@ export class CategoryPage implements OnInit {
   types = Types;
   loading = true
   searchString = ''
+  time: null | number = null
 
   constructor(
     private route: ActivatedRoute,
     private surveyService: SurveyService,
-    private titleService: TitleService
+    private titleService: TitleService,
+    private categoryService: CategoryService
   ) {
+
   }
 
   ionViewWillEnter() {
@@ -31,6 +35,7 @@ export class CategoryPage implements OnInit {
   }
 
   async ngOnInit() {
+    this.time = await this.categoryService.getHours()
     this.route.queryParams.subscribe((params) => {
       this.id = params['id'];
       this.searchString = params['s']

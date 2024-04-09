@@ -22,9 +22,14 @@
   </div>
 
   <div class="editBox" >
-    <div class="daysLeft">
+    <div class="daysLeft" *ngIf="!hoursLeft">
       <ion-icon name="calendar-outline"></ion-icon>
-      <p>{{ daysLeft }}d</p>
+      <p>{{ timeLeft }}d</p>
+    </div>
+
+    <div class="daysLeft" *ngIf="hoursLeft">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>{{ timeLeft }}h</p>
     </div>
 
 

@@ -16,6 +16,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -38,6 +45,27 @@ public class CategoryResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<Category> allCategories(){
         return categoryRepository.listAll(Sort.by("title"));
+    }
+
+    @Path("test")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String test() {
+        LocalDateTime date = LocalDateTime.of(2024, 4, 1, 0,0);
+        LocalDateTime today = LocalDateTime.now();
+        System.out.println(ChronoUnit.DAYS.between(date, today));
+        System.out.println(today);
+        System.out.println(ChronoUnit.DAYS.between(date, today)%30);
+        return "";
+    }
+
+    @Path("getHours")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Long currentDate() {
+        LocalDateTime date = LocalDateTime.of(2024, 4, 9, 0, 0);
+        LocalDateTime today = LocalDateTime.now();
+        return ChronoUnit.HOURS.between(date, today);
     }
 
     @Path("allActive")

@@ -17,15 +17,17 @@
         </div>
       </div>
       <div class="surveys" #surveys>
-        <ng-container *ngFor="let userSurvey of quickSelection">
-          <div>
-            <app-simple *ngIf="types.Einfach == userSurvey.survey.type" [category]="userSurvey.survey.category" [title]="userSurvey.survey.title" [showWarning]="false"
-                        [icon]="userSurvey.survey.iconName" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
-                        [measurement]="userSurvey.survey.measurement" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-simple>
+        <ng-container *ngIf="timeCategory !== null">
+          <ng-container *ngFor="let userSurvey of quickSelection">
+            <div>
+              <app-simple *ngIf="types.Einfach === userSurvey.survey.type" [category]="userSurvey.survey.category" [title]="userSurvey.survey.title" [showWarning]="false"
+                          [icon]="userSurvey.survey.iconName" [time]="timeCategory" [unit]="userSurvey.unit" [value]="userSurvey.value" [id]="userSurvey.survey.id"
+                          [measurement]="userSurvey.survey.measurement" [period]="userSurvey.survey.period" [standardValue]="userSurvey.survey.standardValue"></app-simple>
 
-            <app-quantity *ngIf="types.Anzahl == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
-              [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-quantity>
-          </div>
+              <app-quantity *ngIf="types.Anzahl === userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
+                [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-quantity>
+            </div>
+          </ng-container>
         </ng-container>
         <!-- <div class="inputSelection">
           <p>Water: </p>

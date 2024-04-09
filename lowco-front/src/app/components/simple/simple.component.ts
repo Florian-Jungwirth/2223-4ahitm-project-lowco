@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {SurveyService} from 'src/app/services/survey.service';
 import { CategoryModel } from 'src/app/models/category.model';
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-simple',
@@ -13,15 +14,18 @@ export class SimpleComponent {
   @Input() showWarning: boolean = false;
   @Input() unit: any;
   @Input() value: any;
+  @Input() time: number;
   @Input() id: number;
   @Input() category: CategoryModel;
   @Input() measurement: string;
-  @Input() daysLeft: number;
+  @Input() period: number;
   @Input() standardValue: number;
   relevantMeasures: any;
   showModal = false
   isStarted = false
   currentIcon = "caret-forward-outline"
+  timeLeft = 0
+  hoursLeft = false
 
   constructor(private surveyService: SurveyService) {
   }
@@ -34,6 +38,11 @@ export class SimpleComponent {
     this.value = this.value / measure.divisor;
     this.relevantMeasures = measure.relevantMeasures;
     this.unit = measure.unit
+    this.timeLeft = this.period - (Math.floor(this.time/24) % this.period)-1
+    if(this.timeLeft == 0) {
+      this.timeLeft = 24 - Math.floor(this.time)%24
+      this.hoursLeft = true;
+    }
   }
 
   openModal() {

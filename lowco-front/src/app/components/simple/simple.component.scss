@@ -75,12 +75,13 @@ p {
 .start-button,
 .edit {
   width: 100%;
+  display: flex;
 }
 
 .edit {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .contentDiv {
@@ -120,10 +121,10 @@ p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
   // background-color: var(--ion-color-medium);
   border-radius: 5px;
   padding: 0.25em;
+  justify-content: flex-start;
 
   p {
     margin: 0 0 0 5px;

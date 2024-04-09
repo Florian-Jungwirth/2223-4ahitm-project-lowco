@@ -13,6 +13,7 @@ public class Survey extends PanacheEntity {
     public Integer standardValue;
     public Boolean activated;
     public String type;
+    public Integer period;
 
     @ManyToOne
     @JoinColumn(name="category_id")
@@ -28,6 +29,7 @@ public class Survey extends PanacheEntity {
                 ", activated=" + activated +
                 ", type='" + type + '\'' +
                 ", category=" + category +
+                ", period=" + period +
                 ", id=" + id +
                 '}';
     }

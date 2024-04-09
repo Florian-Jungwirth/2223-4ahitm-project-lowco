@@ -9,4 +9,5 @@ export interface SurveyModel {
     type: string;
     category: CategoryModel;
     activated: boolean;
+    period: number
 }
