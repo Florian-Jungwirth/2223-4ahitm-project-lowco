@@ -41,8 +41,7 @@ export class PagesPage {
     private router: Router,
     private surveyService: SurveyService,
     private titleService: TitleService,
-    private navCtrl: NavController,
-    private home: HomePage
+    private navCtrl: NavController
   ) {
 
     connectedEmitter.subscribe(data => {
