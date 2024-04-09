@@ -23,6 +23,7 @@ import {TitleService} from 'src/app/services/title.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
 import {Types} from "../../constants";
+import { degToRad } from 'three/src/math/MathUtils';
 
 @Component({
   selector: 'app-home',
@@ -258,10 +259,34 @@ export class HomePage {
     // Skybox
     this.sky = new Sky();
 
-    //this.scene.fog = new Fog(0xffffff, 0, 200)
+    this.scene.fog = new Fog(0xababab, 0, 200)
     this.scene.add(this.sky);
 
+    var geometry = new THREE.PlaneGeometry(20000, 20000);
+
+    var material = new THREE.MeshBasicMaterial({ color: 0xababab, transparent: true, opacity: 0.97 });
     
+    var plane = new THREE.Mesh(geometry, material);
+    var plane2 = new THREE.Mesh(geometry, material);
+    var plane3 = new THREE.Mesh(geometry, material);
+    var plane4 = new THREE.Mesh(geometry, material);
+    var plane5 = new THREE.Mesh(geometry, material);
+    plane.position.set(-10000,0,0)
+    plane2.position.set(10000,0,0)
+    plane3.position.set(0,0,10000)
+    plane4.position.set(0,0,-10000)
+    plane5.position.set(0,10000,0)
+    
+    plane.rotateY(degToRad(90))
+    plane2.rotateY(degToRad(-90))
+    plane3.rotateY(degToRad(180))
+    plane5.rotateX(degToRad(90))
+
+    this.scene.add(plane)
+    this.scene.add(plane2)
+    this.scene.add(plane3)
+    this.scene.add(plane4)
+    this.scene.add(plane5)
 
     this.sky.scale.setScalar(10000);
     let shader: any = Sky.SkyShader
@@ -367,9 +392,9 @@ export class HomePage {
     updateSun();
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.maxPolarAngle = Math.PI * 0.495;
+    this.controls.maxPolarAngle = Math.PI * 0.52;
     this.controls.target.set(0, 10, 0);
-    this.controls.minDistance = 40.0;
+    this.controls.minDistance = 30.0;
     this.controls.maxDistance = 200.0;
     this.controls.update();
   }
