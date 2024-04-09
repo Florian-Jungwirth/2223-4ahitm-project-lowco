@@ -5,8 +5,8 @@
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4200",
-    "start2": "ng serve --proxy-config proxy.config.json --port 4200",
+    "start2": "ng serve --port 4200",
+    "start": "ng serve --proxy-config proxy.config.json --port 4200",
     "build": "ng build",
     "build-prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",

@@ -58,7 +58,7 @@ export class HomePage {
   envmap: THREE.Texture;
   sun = new THREE.Vector3();
   sunColor = 0xffffff;
-  waterColor = '#259e9a';
+  waterColor = '#3f2a14'; // #259e9a normal Water / #053c00 green Water / #3f2a14 brown Water
   previousTheta: any;
   previousPhi: any;
   quickSelection: JoinedUserSurveyModel[];
@@ -74,6 +74,7 @@ export class HomePage {
   trashObjects: THREE.Mesh[] = [];
   raycaster = new THREE.Raycaster();
   meshTweens: Map<string, Tween<any>> = new Map();
+  cloudColor: '#565656'; // dark #565656 / light #ffffff
   // intersects: THREE.Intersection[];
   // directionalLightHelper: THREE.DirectionalLightHelper
 
@@ -203,6 +204,7 @@ export class HomePage {
     // const ambientLight = new THREE.AmbientLight(this.sunColor, 0.3);
     // this.scene.add(ambientLight);
 
+    
     function addCloud() {
       let geo = new SphereGeometry(0, 0, 0);
       let count = 1;
@@ -243,6 +245,7 @@ export class HomePage {
         new THREE.MeshStandardMaterial({
           flatShading: true,
           opacity: 0.5,
+          color: self.cloudColor,
           transparent: true,
         })
         //new MeshBasicMaterial()
@@ -258,7 +261,13 @@ export class HomePage {
     // Skybox
     this.sky = new Sky();
 
-    //this.scene.fog = new Fog(0xffffff, 0, 200)
+
+    // Fog
+    // var fogGeometry = new THREE.SphereGeometry(100, 32, 32);
+    // var fogMaterial = new THREE.MeshBasicMaterial({color: 0x767676, transparent: true, opacity: 0.5});
+    // var fog = new THREE.Mesh(fogGeometry, fogMaterial);
+    // this.scene.add(fog);
+    // this.scene.fog = new Fog(0xffffff, 0, 200)
     this.scene.add(this.sky);
 
     
@@ -269,8 +278,8 @@ export class HomePage {
     const skyUniforms = this.sky.material.uniforms;
     skyUniforms['turbidity'].value = 11;
     skyUniforms['rayleigh'].value = 0.1;
-    skyUniforms['mieCoefficient'].value = 0.000009;
-    skyUniforms['mieDirectionalG'].value = 0.9;
+    skyUniforms['mieCoefficient'].value = 0.09; //0.000009
+    skyUniforms['mieDirectionalG'].value = 0.9; //0.9
 
     this.sky.material = new THREE.ShaderMaterial({
       vertexShader: shader.vertexShader,
@@ -551,12 +560,37 @@ export class HomePage {
       //   stone: await new THREE.TextureLoader().loadAsync('../../../assets/textures/stone.jpg'),
       // };
 
-      let stoneMesh = hexMesh(stoneGeo, 'rgb(168, 168, 168)'); //rgb(r,g,b)
+      // Color Grass
+      let rGrass = 185;
+      let gGrass = 161;
+      let bGrass = 45;
+
+      // Color Stone
+      let rStone = 120;
+      let gStone = 125;
+      let bStone = 120;
+
+      // Color Dirt
+      let rDirt = 93;
+      let gDirt = 70;
+      let bDirt = 26;
+
+      // Color Dirt2
+      let rDirt2 = 163;
+      let gDirt2 = 111;
+      let bDirt2 = 64;
+
+      // Color Sand
+      let rSand = 255;
+      let gSand = 234;
+      let bSand = 166;
+
+      let stoneMesh = hexMesh(stoneGeo, 'rgb('+rStone+','+gStone+','+bStone+')'); //rgb(168, 168, 168)
       // let stoneMesh = hexMeshTex(stoneGeo, textures.stone);
-      let grassMesh = hexMesh(grassGeo, 'rgb(86, 209, 79)');
-      let dirtMesh = hexMesh(dirtGeo, 'rgb(161, 109, 72)');
-      let dirt2Mesh = hexMesh(dirt2Geo, 'rgb(135, 90, 47)');
-      let sandMesh = hexMesh(sandGeo, 'rgb(255, 234, 166)');
+      let grassMesh = hexMesh(grassGeo, 'rgb('+rGrass+','+gGrass+','+bGrass+')'); //rgb(86, 209, 79) normal green
+      let dirtMesh = hexMesh(dirtGeo, 'rgb('+rDirt+','+gDirt+','+bDirt+')');      //rgb(161, 109, 72)
+      let dirt2Mesh = hexMesh(dirt2Geo, 'rgb('+rDirt2+','+gDirt2+','+bDirt2+')'); //rgb(135, 90, 47)
+      let sandMesh = hexMesh(sandGeo, 'rgb('+rSand+','+gSand+','+bSand+')');      //rgb(255, 234, 166)
 
       const mapGroup = new THREE.Group();
       mapGroup.name = 'map';
