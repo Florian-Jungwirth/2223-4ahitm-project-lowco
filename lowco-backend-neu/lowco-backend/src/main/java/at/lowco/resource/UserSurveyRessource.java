@@ -2,6 +2,7 @@ package at.lowco.resource;
 
 import at.lowco.dtos.UserSurveyDTO;
 import at.lowco.model.UserSurvey;
+import at.lowco.repository.SurveyRepository;
 import at.lowco.repository.UserSurveyRepository;
 import com.google.errorprone.annotations.InlineMe;
 import io.quarkus.panache.common.Sort;
@@ -22,6 +23,9 @@ import java.util.List;
 public class UserSurveyRessource {
     @Inject
     UserSurveyRepository userSurveyRepository;
+
+    @Inject
+    SurveyRepository surveyRepository;
 
 
     @Path("all")
@@ -71,9 +75,9 @@ public class UserSurveyRessource {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "default"})
     @Transactional
-    public Response updateUserSurvey(@PathParam("userID") String userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value){
+    public Object updateUserSurvey(@PathParam("userID") String userID, @PathParam("surveyID") long surveyID, @PathParam("unit") String unit, @PathParam("value") double value){
         userSurveyRepository.updateUserSurvey(userID, surveyID, value, unit);
-        return Response.status(Response.Status.NO_CONTENT).build();
+        return surveyRepository.points(userID);
     }
 
     @PUT

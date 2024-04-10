@@ -10,7 +10,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {
   BackSide,
   BoxGeometry,
-  CylinderGeometry, Fog,
+  CylinderGeometry, FogExp2,
   Mesh,
   MeshPhysicalMaterial,
   PCFShadowMap,
@@ -23,7 +23,7 @@ import {TitleService} from 'src/app/services/title.service';
 import {SurveyService} from 'src/app/services/survey.service';
 import {JoinedUserSurveyModel} from "../../models/userSurvey.model";
 import {Types} from "../../constants";
-import { degToRad } from 'three/src/math/MathUtils';
+import {degToRad} from 'three/src/math/MathUtils';
 import {CategoryService} from "../../services/category.service";
 
 @Component({
@@ -60,7 +60,6 @@ export class HomePage {
   envmap: THREE.Texture;
   sun = new THREE.Vector3();
   sunColor = 0xffffff;
-  waterColor = '#3f2a14'; // #259e9a normal Water / #053c00 green Water / #3f2a14 brown Water
   previousTheta: any;
   previousPhi: any;
   quickSelection: JoinedUserSurveyModel[];
@@ -72,14 +71,23 @@ export class HomePage {
   latitude = 48.27965;
   longitude = 14.2533;
   sky: Sky;
+  progress = 0
   height = 0;
   trashObjects: THREE.Mesh[] = [];
   raycaster = new THREE.Raycaster();
   meshTweens: Map<string, Tween<any>> = new Map();
   timeCategory: number | null = null
-  cloudColor: '#565656'; // dark #565656 / light #ffffff
-  // intersects: THREE.Intersection[];
-  // directionalLightHelper: THREE.DirectionalLightHelper
+  meshes = {
+    stoneMesh: new THREE.Mesh<any, THREE.MeshPhysicalMaterial, THREE.Object3DEventMap>,
+    dirt2Mesh: new THREE.Mesh<any, THREE.MeshPhysicalMaterial, THREE.Object3DEventMap>,
+    sandMesh: new THREE.Mesh<any, THREE.MeshPhysicalMaterial, THREE.Object3DEventMap>,
+    grassMesh: new THREE.Mesh<any, THREE.MeshPhysicalMaterial, THREE.Object3DEventMap>,
+    dirtMesh: new THREE.Mesh<any, THREE.MeshPhysicalMaterial, THREE.Object3DEventMap>
+  }
+
+  cloudColor = new THREE.Color(0xffffff); // dark #565656 / light #ffffff
+  cloudMaterial: THREE.MeshStandardMaterial
+  waterColor = new THREE.Color(0x259e9a); // #259e9a normal Water / #053c00 green Water / #3f2a14 brown Water
 
   constructor(
     private surveyService: SurveyService,
@@ -90,6 +98,11 @@ export class HomePage {
       this.longitude = position.coords.longitude;
       this.latitude = position.coords.latitude;
     });
+    this.surveyService.userPointsEmitter.subscribe((data) => {
+      this.setColorsPerPercentage(data)
+      console.log(data)
+    })
+    this.surveyService.getPointsOfUser()
   }
 
   ionViewWillEnter() {
@@ -119,24 +132,6 @@ export class HomePage {
     this.surveyService.getActiveQuicksHome()
   }
 
-  getValueById(survey: any) {
-    for (const value of this.values) {
-      if (survey.id == value.survey.id) {
-        return value.value;
-      }
-    }
-    return survey.standardValue;
-  }
-
-  getUnitById(survey: any) {
-    for (const value of this.values) {
-      if (survey.id == value.survey.id) {
-        return value.unit;
-      }
-    }
-    return null;
-  }
-
   ngAfterViewInit() {
     this.init();
     this.generateMap();
@@ -155,9 +150,6 @@ export class HomePage {
       }
     });
 
-    // this.changeWaterColor(
-    //   '#' + this.water.material.uniforms['waterColor'].value.getHexString()
-    // );
   }
 
   async ngOnInit() {
@@ -193,10 +185,11 @@ export class HomePage {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping
         }
       ),
-      sunDirection: new THREE.Vector3(),
+      sunDirection: new THREE.Vector3(10000,10000,10000),
       sunColor: this.sunColor,
       waterColor: this.waterColor,
-      distortionScale: 8,
+      distortionScale: 5,
+      alpha: 0.9,
       fog: this.scene.fog !== undefined,
     });
     this.water.rotation.x = -Math.PI / 2;
@@ -212,6 +205,12 @@ export class HomePage {
     // const ambientLight = new THREE.AmbientLight(this.sunColor, 0.3);
     // this.scene.add(ambientLight);
 
+    this.cloudMaterial = new THREE.MeshStandardMaterial({
+      flatShading: true,
+      opacity: 0.65,
+      color: self.cloudColor,
+      transparent: true,
+    })
 
     function addCloud() {
       let geo = new SphereGeometry(0, 0, 0);
@@ -248,18 +247,12 @@ export class HomePage {
         geo = mergeGeometries([geo, cloudGeo]) as SphereGeometry;
       }
 
-      const mesh = new Mesh(
+      let cloudMesh = new Mesh(
         geo,
-        new THREE.MeshStandardMaterial({
-          flatShading: true,
-          opacity: 0.5,
-          color: self.cloudColor,
-          transparent: true,
-        })
-        //new MeshBasicMaterial()
+        self.cloudMaterial
       );
 
-      self.scene.add(mesh);
+      self.scene.add(cloudMesh);
     }
 
     addCloud();
@@ -269,34 +262,7 @@ export class HomePage {
     // Skybox
     this.sky = new Sky();
 
-    this.scene.fog = new Fog(0xababab, 0, 200)
     this.scene.add(this.sky);
-
-    var geometry = new THREE.PlaneGeometry(20000, 20000);
-
-    var material = new THREE.MeshBasicMaterial({ color: 0xababab, transparent: true, opacity: 0.97 });
-
-    var plane = new THREE.Mesh(geometry, material);
-    var plane2 = new THREE.Mesh(geometry, material);
-    var plane3 = new THREE.Mesh(geometry, material);
-    var plane4 = new THREE.Mesh(geometry, material);
-    var plane5 = new THREE.Mesh(geometry, material);
-    plane.position.set(-10000,0,0)
-    plane2.position.set(10000,0,0)
-    plane3.position.set(0,0,10000)
-    plane4.position.set(0,0,-10000)
-    plane5.position.set(0,10000,0)
-
-    plane.rotateY(degToRad(90))
-    plane2.rotateY(degToRad(-90))
-    plane3.rotateY(degToRad(180))
-    plane5.rotateX(degToRad(90))
-
-    this.scene.add(plane)
-    this.scene.add(plane2)
-    this.scene.add(plane3)
-    this.scene.add(plane4)
-    this.scene.add(plane5)
 
     this.sky.scale.setScalar(10000);
     let shader: any = Sky.SkyShader
@@ -304,7 +270,7 @@ export class HomePage {
     const skyUniforms = this.sky.material.uniforms;
     skyUniforms['turbidity'].value = 11;
     skyUniforms['rayleigh'].value = 0.1;
-    skyUniforms['mieCoefficient'].value = 0.09; //0.000009
+    skyUniforms['mieCoefficient'].value = 0.000009; //0.09
     skyUniforms['mieDirectionalG'].value = 0.9; //0.9
 
     this.sky.material = new THREE.ShaderMaterial({
@@ -319,7 +285,6 @@ export class HomePage {
     // skyUniforms['rayleigh'].value = 0.4;
     // skyUniforms['mieCoefficient'].value = 0.009;
     // skyUniforms['mieDirectionalG'].value = 0.95;
-
 
 
     this.directionalLight = new THREE.DirectionalLight(this.sunColor, 0.1);
@@ -455,94 +420,10 @@ export class HomePage {
         })
         .start();
     }
-
-    // this.renderer.setSize(window.innerWidth, heightTo);
-    // this.camera.aspect = window.innerWidth / heightTo;
-    // this.camera.updateProjectionMatrix();
-  }
-
-  changeWaterColor(targetColor = '#053c00', duration = 2000) {
-    let start = this.water.material.uniforms['waterColor'].value;
-    new TWEEN.Tween(start)
-      .to(new THREE.Color(targetColor), duration)
-      .onUpdate(() => {
-        this.water.material.uniforms['waterColor'].value.set(start);
-      })
-      .start();
-  }
-
-  changeTime(targetDate: Date, duration = 8000) {
-    const latitude = this.latitude;
-    const longitude = this.longitude;
-    const sunPosition = SunCalc.getPosition(targetDate, latitude, longitude);
-
-    const phi = THREE.MathUtils.degToRad(
-      90 - sunPosition.altitude * (180 / Math.PI)
-    );
-
-    const theta = THREE.MathUtils.degToRad(
-      sunPosition.azimuth * (180 / Math.PI)
-    );
-
-    const hours =
-      targetDate.getHours() +
-      targetDate.getMinutes() / 60 +
-      targetDate.getSeconds() / 3600;
-    const eveningStart = 18;
-    const eveningEnd = 21;
-    let intensity: any = 1;
-
-    if (hours >= eveningStart && hours <= eveningEnd) {
-      const t = (hours - eveningStart) / (eveningEnd - eveningStart);
-      intensity = THREE.MathUtils.lerp(1, 0.2, t);
-    }
-    intensity = 0.1;
-
-    // this.directionalLight.intensity = intensity;
-
-    // this.sun.setFromSphericalCoords(0.5, phi, theta);
-
-    let previousIntens = {intens: this.directionalLight.intensity};
-    let toIntens = {intens: intensity};
-
-    new TWEEN.Tween(previousIntens)
-      .to(toIntens, duration)
-      .onUpdate(() => {
-        this.directionalLight.intensity = previousIntens.intens;
-      })
-      .start();
-
-    let phiAndTheta = {phi: this.previousPhi, theta: this.previousTheta};
-
-    new TWEEN.Tween(phiAndTheta)
-      .to({phi: phi, theta: theta}, duration)
-      .onUpdate(() => {
-        this.sun.setFromSphericalCoords(
-          0.5,
-          phiAndTheta.phi,
-          phiAndTheta.theta
-        );
-        this.water.material.uniforms['sunDirection'].value
-          .copy(this.sun)
-          .normalize();
-        this.sky.material.uniforms['sunPosition'].value.copy(this.sun);
-      })
-      .start();
-
-    this.previousTheta = theta;
-    this.previousPhi = phi;
   }
 
   animate = () => {
     requestAnimationFrame(this.animate);
-
-    // renderer.setAnimationLoop(() => {
-    //   controls.update();
-    //   renderer.render(scene, camera);
-    //   water.material.uniforms['time'].value += 1.0 / 1000.0;
-    //   lightHolder.quaternion.copy(camera.quaternion);
-    // });
-
     this.render();
   };
 
@@ -552,7 +433,7 @@ export class HomePage {
     const DIRT_HEIGHT = MAX_HEIGHT * 0.7;
     const GRASS_HEIGHT = MAX_HEIGHT * 0.5;
     const SAND_HEIGHT = MAX_HEIGHT * 0.3;
-    const DIRT2_HEIGHT = MAX_HEIGHT * 0;
+    const DIRT2_HEIGHT = MAX_HEIGHT * 0.1;
 
     let stoneGeo = new BoxGeometry(0, 0, 0);
     let dirtGeo = new BoxGeometry(0, 0, 0);
@@ -580,78 +461,17 @@ export class HomePage {
         }
       }
 
-      // console.log(noi);
+      this.meshes.stoneMesh = hexMesh(stoneGeo, new THREE.Color(0xa8a8a8)); //rgb(168, 168, 168)
+      this.meshes.grassMesh = hexMesh(grassGeo, new THREE.Color(0x56d14f)); //rgb(86, 209, 79) normal green
+      this.meshes.dirtMesh = hexMesh(dirtGeo, new THREE.Color(0xa16d48));      //rgb(161, 109, 72)
+      this.meshes.dirt2Mesh = hexMesh(dirt2Geo, new THREE.Color(0x875a2f)); //rgb(135, 90, 47)
+      this.meshes.sandMesh = hexMesh(sandGeo, new THREE.Color(0xffeaa6));      //rgb(255, 234, 166)
 
-      // let textures = {
-      //   stone: await new THREE.TextureLoader().loadAsync('../../../assets/textures/stone.jpg'),
-      // };
-
-      // Color Grass
-      let rGrass = 185;
-      let gGrass = 161;
-      let bGrass = 45;
-
-      // Color Stone
-      let rStone = 120;
-      let gStone = 125;
-      let bStone = 120;
-
-      // Color Dirt
-      let rDirt = 93;
-      let gDirt = 70;
-      let bDirt = 26;
-
-      // Color Dirt2
-      let rDirt2 = 163;
-      let gDirt2 = 111;
-      let bDirt2 = 64;
-
-      // Color Sand
-      let rSand = 255;
-      let gSand = 234;
-      let bSand = 166;
-
-      let stoneMesh = hexMesh(stoneGeo, 'rgb('+rStone+','+gStone+','+bStone+')'); //rgb(168, 168, 168)
-      // let stoneMesh = hexMeshTex(stoneGeo, textures.stone);
-      let grassMesh = hexMesh(grassGeo, 'rgb('+rGrass+','+gGrass+','+bGrass+')'); //rgb(86, 209, 79) normal green
-      let dirtMesh = hexMesh(dirtGeo, 'rgb('+rDirt+','+gDirt+','+bDirt+')');      //rgb(161, 109, 72)
-      let dirt2Mesh = hexMesh(dirt2Geo, 'rgb('+rDirt2+','+gDirt2+','+bDirt2+')'); //rgb(135, 90, 47)
-      let sandMesh = hexMesh(sandGeo, 'rgb('+rSand+','+gSand+','+bSand+')');      //rgb(255, 234, 166)
-
-      const mapGroup = new THREE.Group();
+      let mapGroup = new THREE.Group();
       mapGroup.name = 'map';
-      // this.directionalLight.target.position.set(mapGroup.position.x, mapGroup.position.y, mapGroup.position.z)
 
-      mapGroup.add(stoneMesh, grassMesh, dirtMesh, dirt2Mesh, sandMesh);
+      mapGroup.add(this.meshes.stoneMesh, this.meshes.grassMesh, this.meshes.dirtMesh, this.meshes.dirt2Mesh, this.meshes.sandMesh);
       this.scene.add(mapGroup)
-
-      // let mapFloor = new Mesh(
-      //   new CylinderGeometry(37, 37, MAX_HEIGHT * 0.1, 50),
-      //   new MeshPhysicalMaterial({
-      //     envMap: self.envmap,
-      //     color: new Color(0xa16d48),
-      //     envMapIntensity: 0.1,
-      //     side: DoubleSide,
-      //   })
-      //   //new MeshBasicMaterial({color: 0xa16d48})
-      // );
-      // mapFloor.receiveShadow = true;
-      // mapFloor.position.set(0, -MAX_HEIGHT * 0.05, 0);
-      // self.scene.add(mapFloor);
-
-      // let mapContainer = new Mesh(
-      //   new CylinderGeometry(34.2, 34.2, MAX_HEIGHT * 0.25, 50, 1, true),
-      //   new MeshPhysicalMaterial({
-      //     // envMap: envmap,
-      //     color: new Color(0xa16d48),
-      //     envMapIntensity: 0.2,
-      //     side: DoubleSide,
-      //   })
-      //   //new MeshBasicMaterial( {color: 0xa16d48, side: DoubleSide} )
-      // );
-      // mapContainer.receiveShadow = true;
-      // mapContainer.position.set(0, MAX_HEIGHT * 0.125, 0);
-      // self.scene.add(mapContainer);
     })();
 
     function hexGeometry(height: number, position: { x: number; y: number }) {
@@ -703,30 +523,9 @@ export class HomePage {
 
     function hexMesh(geo: any, color: any) {
       let mat = new MeshPhysicalMaterial({
-        // envMap: self.envmap,
         color: color,
-        // blending: THREE.NormalBlending,
         flatShading: true,
       });
-
-      //let mat = new MeshBasicMaterial({color: color})
-
-      let mesh = new Mesh(geo, mat);
-
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      return mesh;
-    }
-
-    function hexMeshTex(geo: any, map: any) {
-      let mat = new MeshPhysicalMaterial({
-        // envMap: self.envmap,
-        map: map,
-        // blending: THREE.NormalBlending,
-        flatShading: true,
-      });
-
-      //let mat = new MeshBasicMaterial({color: color})
 
       let mesh = new Mesh(geo, mat);
 
@@ -755,53 +554,53 @@ export class HomePage {
     }
 
     this.glbLoader('trash_models/bag.glb').then((glbScene) => {
-        let bagGroup = glbScene.scene;
+      let bagGroup = glbScene.scene;
 
-        bagGroup.traverse((child) => {
-          if ((child as THREE.Mesh).isMesh) {
-            const bag = child as THREE.Mesh;
-            this.trashObjects.push(bag);
+      bagGroup.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const bag = child as THREE.Mesh;
+          this.trashObjects.push(bag);
 
-            bag.scale.set(0.05, 0.05, 0.05);
-            bag.rotation.x = -1.5
-            bag.position.set(30, 0.8, 10);
-            this.scene.add(bag);
+          bag.scale.set(0.05, 0.05, 0.05);
+          bag.rotation.x = -1.5
+          bag.position.set(30, 0.8, 10);
+          this.scene.add(bag);
 
-            let yVec = {y: 0.8}
+          let yVec = {y: 0.8}
 
-            let tween = new TWEEN.Tween(yVec)
-              .to({y: 1}, 800+Math.random()*1000)
-              .easing(TWEEN.Easing.Sinusoidal.In)
-              .onUpdate(() => {
-                bag.position.set(bag.position.x, yVec.y, bag.position.z);
+          let tween = new TWEEN.Tween(yVec)
+            .to({y: 1}, 800 + Math.random() * 1000)
+            .easing(TWEEN.Easing.Sinusoidal.In)
+            .onUpdate(() => {
+              bag.position.set(bag.position.x, yVec.y, bag.position.z);
+            })
+            .repeat(Infinity)
+            .yoyo(true)
+            .start();
+
+          let changeVec = new THREE.Vector2(bag.position.x, bag.position.z)
+          let tween2 = new TWEEN.Tween(changeVec)
+            .to(new THREE.Vector2(0, 0), 10000)
+            .easing(TWEEN.Easing.Sinusoidal.In)
+            .onUpdate(() => {
+              bag.position.set(changeVec.x, bag.position.y, changeVec.y);
+              this.raycaster.set(bag.position, new THREE.Vector3(0, 0, -0.00001))
+              let interSecting = this.raycaster.intersectObjects(this.scene.children)
+
+              interSecting.forEach((elem) => {
+                if (elem.object.parent?.name == 'map') {
+                  tween2.stop()
+                }
               })
-              .repeat(Infinity)
-              .yoyo(true)
-              .start();
+            })
+            .start();
 
-            let changeVec = new THREE.Vector2(bag.position.x, bag.position.z)
-            let tween2 = new TWEEN.Tween(changeVec)
-              .to(new THREE.Vector2(0, 0), 10000)
-              .easing(TWEEN.Easing.Sinusoidal.In)
-              .onUpdate(() => {
-                bag.position.set(changeVec.x, bag.position.y, changeVec.y);
-                this.raycaster.set(bag.position, new THREE.Vector3(0,0, -0.00001))
-                let interSecting = this.raycaster.intersectObjects(this.scene.children)
+          this.meshTweens.set(bag.uuid, tween);
 
-                interSecting.forEach((elem) => {
-                  if(elem.object.parent?.name == 'map') {
-                    tween2.stop()
-                  }
-                })
-              })
-              .start();
-
-            this.meshTweens.set(bag.uuid, tween);
-
-            console.log(bag)
-          }
-        });
+          console.log(bag)
+        }
       });
+    });
 
     document.addEventListener('click', (event: MouseEvent) => {
       const rect = this.renderer.domElement.getBoundingClientRect();
@@ -817,7 +616,7 @@ export class HomePage {
 
       intersectingObjects.forEach((elem) => {
         this.trashObjects.forEach((trash) => {
-          if(elem.object.uuid == trash.uuid) {
+          if (elem.object.uuid == trash.uuid) {
             this.trashObjects.splice(this.trashObjects.indexOf(trash), 1)
             this.scene.remove(trash)
             this.meshTweens.get(trash.uuid)?.stop()
@@ -826,18 +625,6 @@ export class HomePage {
           }
         })
       })
-
-      // this.intersects = this.raycaster.intersectObjects(
-      //   this.trashObjects,
-      //   true
-      // );
-      // if (this.intersects.length > 0) {
-      //   console.log(this.intersects[0].object);
-      //   this.meshTweens[this.intersects[0].object.uuid].stop();
-      //   delete this.meshTweens[this.intersects[0].object.uuid];
-
-      //   this.intersects[0].object.visible = false;
-      // }
     });
   }
 
@@ -846,13 +633,138 @@ export class HomePage {
     return await loader.loadAsync('../../../assets/' + pathInAssets);
   }
 
-  waterChange() {
-    this.changeWaterColor(this.waterColor);
-  }
+  tween1: null | Tween<any> = null
+  tween2: null | Tween<any> = null
+  tween3: null | Tween<any> = null
+  tween4: null | Tween<any> = null
 
-  timeChange() {
-    console.log('ad');
+  setColorsPerPercentage(percentage = 0.3) {
 
-    this.changeTime(new Date('2017-06-01T' + this.time));
+    if(this.tween1) {
+      this.tween1.stop()
+    }
+
+    if(this.tween2) {
+      this.tween2.stop()
+    }
+
+
+    if(this.tween3) {
+      this.tween3.stop()
+    }
+
+    if(this.tween4) {
+      this.tween4.stop()
+    }
+
+    let badGrass = new THREE.Color(0xb9a22d)
+    let badStone = new THREE.Color(0x787d78)
+    let badDirt = new THREE.Color(0x5d461a)
+    let badDirt2 = new THREE.Color(0xa36e40)
+    let badSand = new THREE.Color(0xffeaa6)
+    let water = new THREE.Color(0xa8621d)
+    let clouds = new THREE.Color(0xa1a1a1)
+
+    let oldColors = {
+      badGrass: new THREE.Color(0x56d14f),
+      badStone: new THREE.Color(0xa8a8a8),
+      badDirt: new THREE.Color(0xa16d48),
+      badDirt2: new THREE.Color(0xa16d48),
+      badSand: new THREE.Color(0xffeaa6),
+      water: new THREE.Color(0x259e9a),
+      clouds: new THREE.Color(0xffffff)
+    }
+
+    this.tween1 = new TWEEN.Tween(oldColors)
+      .to({badGrass, badStone, badDirt, badDirt2, badSand, water, clouds}, 2000)
+      .easing(TWEEN.Easing.Sinusoidal.In)
+      .onUpdate((e, d) => {
+        if (d >= 1-percentage) {
+          if(this.tween1) {
+            this.tween1.stop()
+          }
+        } else {
+          this.meshes.grassMesh.material.color = e.badGrass
+          this.meshes.stoneMesh.material.color = e.badStone
+          this.meshes.dirtMesh.material.color = e.badDirt
+          this.meshes.dirt2Mesh.material.color = e.badDirt2
+          this.meshes.sandMesh.material.color = e.badSand
+          this.water.material.uniforms['waterColor'].value.set(e.water)
+          this.cloudMaterial.color = e.clouds
+        }
+      })
+      .start();
+
+      const geometry = new THREE.PlaneGeometry(20000, 20000);
+
+      const material = new THREE.MeshBasicMaterial({color: 0xababab, transparent: true, opacity: 0});
+
+      const plane = new THREE.Mesh(geometry, material);
+      const plane2 = new THREE.Mesh(geometry, material);
+      const plane3 = new THREE.Mesh(geometry, material);
+      const plane4 = new THREE.Mesh(geometry, material);
+      const plane5 = new THREE.Mesh(geometry, material);
+      plane.position.set(-10000, 0, 0)
+      plane2.position.set(10000, 0, 0)
+      plane3.position.set(0, 0, 10000)
+      plane4.position.set(0, 0, -10000)
+      plane5.position.set(0, 10000, 0)
+
+      plane.rotateY(degToRad(90))
+      plane2.rotateY(degToRad(-90))
+      plane3.rotateY(degToRad(180))
+      plane5.rotateX(degToRad(90))
+
+
+
+      let fog = new FogExp2(0xababab, 0)
+      this.scene.fog = fog
+      let start = {density: fog.density}
+
+      this.tween2 = new TWEEN.Tween(start)
+        .to({density: 0.007}, 2000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
+        .onUpdate((e, d) => {
+          if (d >= 1-percentage) {
+            if(this.tween2) {
+              this.tween2.stop()
+            }
+          } else {
+            fog.density = e.density
+          }
+        })
+        .start();
+
+      let startPlanes = {opacity: 0}
+
+       this.tween3 = new TWEEN.Tween(startPlanes)
+        .to({opacity: 0.96}, 2000)
+        .easing(TWEEN.Easing.Sinusoidal.In)
+        .onUpdate((e, d) => {
+          if (d >= 1-percentage) {
+            if(this.tween3) {
+              this.tween3.stop()
+            }
+          } else {
+            material.opacity = e.opacity
+          }
+        })
+        .start();
+
+    let start4 = {progress: this.progress}
+    this.tween4 = new TWEEN.Tween(start4)
+      .to({progress: percentage}, 2000)
+      .easing(TWEEN.Easing.Exponential.InOut)
+      .onUpdate((e, d) => {
+        this.progress = e.progress
+      })
+      .start();
+
+      this.scene.add(plane)
+      this.scene.add(plane2)
+      this.scene.add(plane3)
+      this.scene.add(plane4)
+      this.scene.add(plane5)
+
   }
 }

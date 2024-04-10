@@ -70,3 +70,29 @@ ion-content {
 .inputSelection input {
   margin-left: 5px;
 }
+
+.progressDiv {
+  padding: 0.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .progress {
+    border-radius: 5px;
+    height: 0.5em;
+    width: 80%;
+    margin: 0 0.5em;
+  }
+
+  .progress::part(track) {
+    background: var(--ion-color-project-brown-op);
+  }
+
+  .progress::part(progress) {
+    background: var(--ion-color-project-brown);
+  }
+
+  .icon {
+    font-size: 1.2em;
+  }
+}

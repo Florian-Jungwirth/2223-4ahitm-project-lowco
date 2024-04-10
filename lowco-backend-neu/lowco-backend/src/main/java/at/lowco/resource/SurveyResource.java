@@ -8,6 +8,7 @@ import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -32,6 +33,15 @@ public class SurveyResource {
     public List<Survey> allSurveys(){
         return surveyRepository.listAll(Sort.by("title"));
     }
+
+    @Path("getPointsOfUser/{userID}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "default"})
+    public Object getPointsOfUser(@PathParam("userID") String userID) {
+        return surveyRepository.points(userID);
+    }
+
 
     @Path("getAllActiveSurveys")
     @GET

@@ -13,12 +13,19 @@ import { ToastController } from '@ionic/angular';
 })
 export class SurveyService {
   activeQuicksHomeEmitter = new BehaviorSubject<JoinedUserSurveyModel[]>([])
+  userPointsEmitter = new BehaviorSubject<number>(1)
 
   constructor(private httpClient: HttpClient, private authService: AuthService, private userService: UserService, private toast: ToastController) {
   }
 
   getActiveQuicks() {
     return this.httpClient.get<JoinedUserSurveyModel[]>(`${API2_URL}userSurvey/getActiveQuicks/${this.authService.getUserKeyCloak().sub}`)
+  }
+
+  getPointsOfUser() {
+    return this.httpClient.get<number>(`${API2_URL}survey/getPointsOfUser/${this.authService.getUserKeyCloak().sub}`).subscribe((data: number) => {
+      this.userPointsEmitter.next(data)
+    })
   }
 
   deleteSurvey(surveyId: number) {
@@ -70,10 +77,13 @@ export class SurveyService {
   }
 
   updateUserSurvey(surveyID: number, value: number, unit: string | null = null) {
-    return this.httpClient.put(`${API2_URL}userSurvey/updateUserSurvey/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}`, {});
+    return this.httpClient.put<number>(`${API2_URL}userSurvey/updateUserSurvey/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}`, {}).subscribe((data) => {
+      this.userPointsEmitter.next(data);
+    });
   }
 
   updateUserSurveyISAQuick(surveyID: number, value: number, unit: string | null, isAQuick: boolean) {
+    console.log("quick")
     return this.httpClient.put(`${API2_URL}userSurvey/updateQuick/${this.authService.getUserKeyCloak().sub}/${surveyID}/${value}/${unit}/${isAQuick}`, {});
   }
 

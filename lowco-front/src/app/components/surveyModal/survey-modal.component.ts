@@ -46,13 +46,13 @@ export class SurveyModalComponent {
             this.id,
             this.value * this.relevantMeasures[this.unit],
             this.unit
-          ).subscribe()
+          )
         } else {
           this.surveyService.updateUserSurvey(
             this.id,
             this.value,
             ''
-          ).subscribe()
+          )
         }
       }
 

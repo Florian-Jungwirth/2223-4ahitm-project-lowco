@@ -12,7 +12,7 @@
             [measurement]="userSurvey.survey.measurement" [period]="userSurvey.survey.period" [standardValue]="userSurvey.survey.standardValue"></app-simple>
 
           <app-quantity *ngIf="types.Anzahl == userSurvey.survey.type" [title]="userSurvey.survey.title" [showWarning]="false"
-            [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [daysLeft]="0" [standardValue]="userSurvey.survey.standardValue"></app-quantity>
+            [icon]="userSurvey.survey.iconName" [value]="userSurvey.value" [id]="userSurvey.survey.id" [period]="userSurvey.survey.period" [time]="time" [standardValue]="userSurvey.survey.standardValue"></app-quantity>
         </div>
       </ng-container>
     </div>

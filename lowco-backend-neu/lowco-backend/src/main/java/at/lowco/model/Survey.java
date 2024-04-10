@@ -1,9 +1,12 @@
 package at.lowco.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.enterprise.inject.Default;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.resource.spi.ConfigProperty;
 
 @Entity
 public class Survey extends PanacheEntity {
@@ -14,6 +17,12 @@ public class Survey extends PanacheEntity {
     public Boolean activated;
     public String type;
     public Integer period;
+    public Integer maxPoints;
+
+    @Column(columnDefinition = "BOOLEAN default true")
+    public Boolean positive;
+    public Integer defaultPoints;
+    public Integer valuePerPoint;
 
     @ManyToOne
     @JoinColumn(name="category_id")
@@ -28,9 +37,11 @@ public class Survey extends PanacheEntity {
                 ", standardValue=" + standardValue +
                 ", activated=" + activated +
                 ", type='" + type + '\'' +
-                ", category=" + category +
                 ", period=" + period +
-                ", id=" + id +
+                ", maxPoints=" + maxPoints +
+                ", positive=" + positive +
+                ", defaultPoints=" + defaultPoints +
+                ", category=" + category +
                 '}';
     }
 }
